@@ -1229,27 +1229,23 @@ function talkHale(){
       {s:'noah', t:'I got a letter. It says you’d know me.'},
       {s:'narr', t:'You hold out the letter. Hale reads it twice. His hands go very still.'},
       {s:'hale', t:'That’s Elias’s hand. Nobody else crosses their sevens like a railway signal.'},
-      {s:’hale’, t:’But anyone can copy a hand, and I’ve been fooled before. If you’re truly his son, you’ll know the word Elias carved into everything he ever built — fenceposts, doorframes, tools.’},
+      {s:’hale’, t:’But anyone can copy a hand, and I’ve been fooled before. If you’re truly his son, you’ll know the word Elias carved into everything he built.’},
       {choice:[
-        {t:’I was six when he left. I don’t know any word.’, then:[ {s:’hale’, t:’Then find it. He and Tom Barrow were inseparable — try Tom’s farm, south of the road. And Clara Wynn in the square has the newspaper from the night it all went wrong.’} ]},
-        {t:’Why should I have to prove anything to you?’, then:[ {s:’hale’, t:’Because the last stranger who came asking about Elias Vale wasn’t his son. And I paid for trusting him. Check Tom Barrow’s fence — east side, by the oak.’} ]},
+        {t:’I was six when he left. I don’t know any word.’, then:[ {s:’hale’, t:’Then go find it. Elias and Tom Barrow built that east fence at Hollow Farm together — south road, past the old lane. Elias carved something into every post he made. You’ll know it when you see it.’} ]},
+        {t:’Why should I have to prove anything to you?’, then:[ {s:’hale’, t:’A man came here two years ago claiming to be Elias’s son. He wasn’t. It cost someone dearly. East fence at Tom Barrow’s farm, south road. Go look.’} ]},
       ]},
-      {s:’hale’, t:’Ask Clara Wynn too — she’s usually in the square. She keeps the town’s newspaper records. Whatever happened that night, she has the clipping.’},
+      {s:’hale’, t:’While you’re there — stop in the square and find Clara Wynn. She keeps the town’s old newspapers. You should know what happened to this town before you go digging in it.’},
       () => { F().hale1=1; addClue('hand'); },
     ]);
   } else if (!F().key){
-    if (has('carving')){
+    if (has(‘carving’)){
       dialog([
-        {s:'hale', t:'You’re back. Well? The word.'},
-        {choice:[
-          {t:'“Ashbourne.”', then:[ {s:'hale', t:'Everyone here could guess that. No.'} ]},
-          {t:'“Lantern.”', then: () => haleKey() },
-          {t:'“Mara.”', when: () => has('grave') || has('news'), then:[ {s:'hale', t:'…Don’t say her name like that in here. No.'} ]},
-          {t:'Let me think about it.', then:[ {s:'hale', t:'Think quickly. The light’s going.'} ]},
-        ]},
+        {s:’hale’, t:’You’re back. Tom’s fence, was it?’},
+        {s:’noah’, t:’E.V. plus T.B. The word was Lantern.’},
+        ...haleKey(),
       ]);
     } else {
-      dialog([{s:'hale', t: has('news') ? 'Clara gave you the newspaper, I see. That’s what the town believes. Now find the word Elias believed in.' : 'The word, Noah. Ask Clara Wynn in the square. She remembers what the rest of us pretend not to.'}]);
+      dialog([{s:’hale’, t: has(‘news’) ? ‘Good — Clara told you what this town believes. Now find the word carved into Tom Barrow\’s east fence. That\’s the truth your father left behind.’ : ‘The east fence at Tom Barrow\’s farm, south of the road. Go look at the posts. Then come back.’}]);
     }
   } else if (!F().lantern){
     dialog([{s:'hale', t:'Hollow Farm, south of the road, west of here. Tom Barrow. Ask him about 2006 — and watch his hands when you do.'}]);
@@ -1263,13 +1259,14 @@ function haleKey(){
   return [
     {s:'narr', t:'Hale sits down slowly, as if his knees have just remembered how old they are.'},
     {s:'hale', t:'Lantern. He said that’s what a good engineer should be. A small light somebody else can carry.'},
-    {s:'hale', t:'Whatever this town told you, your father didn’t run, Noah. He was pushed.'},
-    {s:'narr', t:'He presses a small brass key into your palm. It is warm, as if he has been holding it for a long time.'},
-    {s:'hale', t:'His workshop is beyond Ashwood forest. He made me promise to give you this and nothing more.'},
-    {s:'hale', t:'You’ll want a light in those woods. Tom Barrow at Hollow Farm has Elias’s old lantern. He won’t admit it.'},
+    {s:’hale’, t:’Whatever this town told you, your father didn’t run, Noah. He was pushed out. There’s a difference.’},
+    {s:’narr’, t:’He opens a drawer and places a small brass key on the counter between you.’},
+    {s:’hale’, t:’His workshop is beyond Ashwood forest. He left this with me twenty years ago. He said: if my son ever comes, and he knows the word, give it to him. Not before.’},
+    {s:’noah’, t:’He planned this. He always meant for me to come here.’},
+    {s:’hale’, t:’The forest trail is dark even in the afternoon. You’ll need a light. Tom Barrow kept your father’s old lantern — he won’t mention it, but ask him directly. Tell him Lantern. He’ll understand.’},
     {choice:[
-      {t:'Why would Tom hide it?', then:[ {s:'hale', t:'Ask him about the summer of 2006. Ask him what he signed.'} ]},
-      {t:'Why didn’t you tell me all this straight away?', then:[ {s:'hale', t:'Because twenty years ago I told the truth to the wrong people, and a good man had to disappear.'} ]},
+      {t:’Why did Tom keep the lantern all this time?’, then:[ {s:’hale’, t:’Guilt, mostly. Tom signed a false witness statement against Elias after the fire. Someone frightened him into it. He’s carried that ever since.’} ]},
+      {t:’Why didn’t you just tell me all this when I first walked in?’, then:[ {s:’hale’, t:’Because a man came in two years ago with the same story — said he was Elias’s son. He wasn’t. He was looking for the workshop. I told him nothing, but he found out I had the key. I can’t make that mistake again.’} ]},
     ]},
     () => { F().key=1; addClue('key'); setPhase(1); },
   ];
@@ -1307,9 +1304,17 @@ function talkClara(){
 function talkTom(){
   meet('tom');
   if (!F().key){
-    const l=[{s:'tom', t:'Farm’s private. If you’re selling something, I’m not buying.'}];
-    if (has('carving')){ l.push({s:'noah', t:'You and my father carved your initials into that fence.'}, {s:'narr', t:'Tom’s jaw works, but he says nothing. He looks at the road instead.'}, {s:'tom', t:'Lot of people carved things in those days. Go see Hale, if that’s who sent you.'}); }
-    else l.push({s:'tom', t:'Fence is older than you are. Leave it be.'});
+    const l=[{s:’tom’, t:’Farm’s private. If you’re selling something, I’m not buying.’}];
+    if (has(‘carving’)){ l.push(
+      {s:’noah’, t:’You and my father carved your initials into that fence post. E.V. and T.B. — and the word Lantern.’},
+      {s:’narr’, t:’Tom goes very still. He looks at the fence, then at Noah, then at the road — anywhere but back.’},
+      {s:’tom’, t:’You’re Elias’s boy. I can see it now.’},
+      {s:’tom’, t:’Go back to Hale. Tell him the word. He’ll explain more than I’m able to right now.’}
+    ); }
+    else l.push(
+      {s:’tom’, t:’Not interested in visitors. Check the fence if you like — it’s old.’},
+      {s:’noah’, t:’(There’s something on that east fence post. I should look more carefully.)’}
+    );
     dialog(l);
   } else if (!F().lantern){
     dialog([
@@ -1331,10 +1336,11 @@ function talkTom(){
 function tomConfess(){
   return [
     {s:'narr', t:'A long silence. A crow complains somewhere in the field.'},
-    {s:'tom', t:'Lantern. Damn him.'},
-    {s:'tom', t:'We were brothers in everything but blood. When the office burned, men came to my door and told me what I’d seen.'},
-    {s:'tom', t:'I signed it. Said I saw Elias leave that building before the smoke started.'},
-    {s:'tom', t:'I didn’t see anything. I was scared, and I had a farm and a wife, and he had a head start.'},
+    {s:’tom’, t:’Lantern. God. He told you the word.’},
+    {s:’tom’, t:’We built half this farm together. He was the closest thing to a brother I ever had.’},
+    {s:’tom’, t:’The night the office burned — two men in suits came to my door before dawn. Railway company men. They told me what I’d witnessed. Told me word for word what my statement would say.’},
+    {s:’tom’, t:’I signed it. Said I saw Elias leave the building before the smoke. I didn’t see a thing. I was in bed. I signed because they knew things about me — about the farm’s debts. I was a coward.’},
+    {s:’tom’, t:’Elias never wrote to me. Never blamed me. That’s the worst part.’},
     {choice:[
       {t:'Tell him about the letter', then:[
         () => { F().toldTom=1; },
@@ -1438,9 +1444,11 @@ function actGrave(){
 }
 function actWatch(){
   dialog([
-    {s:'narr', t:'A pocket watch, half-buried in moss, stopped at 2:14.'},
+    {s:'narr', t:'A pocket watch, half-buried in the forest moss. Stopped at 2:14.'},
     {s:'narr', t:'Engraved on the back: “E — keep time for me. M.”'},
-    {s:'noah', t:'M. Mara? Why would she give my father a watch?'},
+    {s:'noah', t:'M. That's Mara. She gave this to Dad.'},
+    {s:'noah', t:'But — Silas said her watch was never found in the fire's ashes. Because it was never in that building.'},
+    {s:'noah', t:'She gave it to Dad before she died. She knew something was going to happen that night.'},
     () => { F().watch=1; addClue('watch'); },
   ]);
 }
@@ -1488,13 +1496,17 @@ const LETTER2 = `Noah —
 
 If you're reading this, Hale trusted you and Tom found his courage. Good.
 
-I didn't set that fire. Mara found that the railway's books didn't add up — money moving, a quiet sale of the land. She was going to show me. Someone made sure she couldn't.
+I didn't set that fire. Here is what actually happened.
 
-They put my name on it because I was the one who asks questions. Leaving was the only way to keep you out of it. It was the wrong choice. I've had twenty years to know that.
+Mara was the railway accounts clerk. She found that her supervisors had been falsifying the books — selling off the old branch-line land to a private developer without the council vote the law required. Thousands of pounds, quietly moved. She copied the ledger and was going to bring it to me the morning after she found it.
 
-The ledger she found is hidden where the trains used to sleep.
+She never got to. Someone set the office on fire that night, with Mara inside. They put my name on it because I was the one who had been asking uncomfortable questions about the company accounts. Tom saw nothing — but they made him say he did.
 
-Come to the old platform at dawn. I'll be there.
+I ran because they made it clear that if I stayed, you would be in danger too. You were six years old. I made the wrong choice and I have known it every day since.
+
+The ledger Mara copied is hidden in the old engine shed — where the branch-line trains used to be kept before the line closed. It is the proof that none of this had to happen.
+
+Come to the old platform at dawn. I will be there.
 
 — Dad`;
 
@@ -1528,6 +1540,7 @@ function runEnding(){
     fd.classList.remove('on');
     const pages = [
       {html:true, t:'Inside: dust on everything except the workbench. Fresh candle stubs. Someone has been here, and not long ago.'},
+      {html:true, t:'On the wall, a hand-drawn map of Ashbourne. The old branch railway line is circled in pencil. And beside it, written small:\n\n*"Engine shed. South of the old platform. That\'s where she hid it."*'},
       {paper:true, t:LETTER2},
     ];
     if (F().watch) pages.push({html:true, t:'You set Mara’s watch on the workbench beside the letter. *2:14.* The hands still haven’t moved.'});

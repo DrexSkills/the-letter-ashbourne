@@ -109,7 +109,7 @@
   /* Full-screen overlays */
   .overlay { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; padding: 20px; }
   .overlay.on { display: flex; }
-  #title { background: radial-gradient(ellipse at 50% 35%, rgba(20,18,50,.5) 0%, rgba(5,6,14,.98) 75%); flex-direction: column; text-align: center; overflow: hidden; }
+  #title { background: radial-gradient(ellipse 60% 55% at 50% 45%, rgba(8,10,26,.62) 0%, rgba(8,10,26,.38) 55%, rgba(5,6,14,.18) 100%); flex-direction: column; text-align: center; overflow: hidden; }
   #titleBg { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
   #title > *:not(#titleBg) { position: relative; z-index: 1; }
   #title h1 { font-family: var(--display); font-weight: 400; margin: 0; font-size: clamp(72px, 15vw, 150px); line-height: .85; color: var(--paper);
@@ -121,6 +121,7 @@
   }
   #title .sub { font-size: clamp(18px, 3vw, 26px); color: var(--amber); margin: 12px 0 0; letter-spacing: .12em; text-transform: uppercase; opacity: .9; }
   #title .divider { width: min(280px, 60%); height: 1px; margin: 14px auto 14px; background: linear-gradient(to right, transparent, rgba(242,194,122,.6), transparent); }
+  #title .tag, #title .hint, #title .sub { text-shadow: 2px 2px 0 #070a12, 0 0 12px rgba(5,6,14,.9); }
   #title .tag { font-size: clamp(18px, 2.4vw, 22px); color: #bec6e0; max-width: 38ch; margin: 0 auto 28px; line-height: 1.4; font-style: italic; }
   #title .row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
   #title .keys { margin-top: 22px; color: var(--dim); font-size: 18px; line-height: 1.4; padding: 10px 20px; background: rgba(0,0,0,.25); border: 1px solid rgba(58,72,114,.4); display: inline-block; border-radius: 2px; }
@@ -799,18 +800,18 @@ function save(){ try { S0.x=P.x; S0.y=P.y; S0.dir=P.dir; S0.cat={x:cat.x,y:cat.y
 function loadSave(){ try { const s=localStorage.getItem(SAVE_KEY); return s?JSON.parse(s):null; } catch(e){ return null; } }
 
 const CLUES = {
-  letter:  { t:’The letter’, d:’Dad’s handwriting — the first thing he’s ever sent me. Go to Ashbourne. Find the bookseller near the station. Trust no one until I know who is safe.’ },
-  photo:   { t:’Photograph from the train’, d:’Dad beside a woman and two men, outside a brick building. Back reads: “Ashbourne, spring 2009.” He vanished in 2006 — so someone photographed him three years after he supposedly disappeared.’ },
-  hand:    { t:’The bookseller — Edmund Hale’, d:’Hale recognised Dad’s handwriting. He won’t help me until I prove I’m really Elias’s son: I need to find the word Dad carved into things he built. Hale says to try Tom Barrow’s farm south of the road.’ },
-  news:    { t:’Ashbourne Gazette, June 2006’, d:’Fire at the railway office. Mara Voss — the railway clerk — died inside. Elias Vale, signal engineer, went missing and was “sought for questioning.” The town still thinks he started the fire.’ },
-  carving: { t:’The fence post carving’, d:’East fence at Hollow Farm: “E.V. + T.B. — LANTERN”. E.V. is Elias Vale. T.B. is Tom Barrow, the farmer. They were close friends. LANTERN is the word Hale was asking about.’ },
-  grave:   { t:’Mara Voss’s grave’, d:’1974–2006. Fresh wildflowers at the stone — someone still visits. Mara is the woman standing next to Dad in the 2009 photograph, even though she’s supposed to have died in 2006.’ },
-  key:     { t:’Brass key — from Hale’, d:’Opens Dad’s workshop, hidden beyond Ashwood forest. Hale said: “He didn’t run, Noah. He was pushed.” To get through the forest safely, I need the lantern from Tom Barrow at Hollow Farm.’ },
-  lantern: { t:’Dad’s old lantern’, d:’Tom Barrow kept it for twenty years. He confessed: men came to his door after the fire and told him what to say. He signed a false witness statement against Dad — out of fear.’ },
-  silas:   { t:’Silas Voss’, d:’Mara’s brother. He waits in Ashwood at night, watching the old trail. He believes Dad let Mara die and ran — and he wants answers. He’s not dangerous, just grieving.’ },
-  watch:   { t:’Mara’s pocket watch’, d:’Half-buried in the forest moss. Engraved: “E — keep time for me. M.” Mara gave this to Dad. Silas said it was never found in the fire’s ashes — because it was never in the building.’ },
-  postcard:{ t:’Postcard, 2009’, d:’Hidden behind June’s café counter for years. Postmarked Harlow Cross, three years after Dad vanished: “Still keeping left. — E.” He was alive, and he was writing to people in Ashbourne.’ },
-  workshop:{ t:’Dad’s second letter — the truth’, d:’Mara discovered the railway’s financial records had been falsified — money was being moved and land was being sold illegally. Someone killed her to keep it quiet, then framed Dad because he asked too many questions. Dad fled to protect me. The evidence ledger is hidden “where the trains used to sleep” — the old engine shed. Meet him at the old platform at dawn.’ },
+  letter:  { t:'The letter', d:'Dad’s handwriting — the first thing he’s ever sent me. Go to Ashbourne. Find the bookseller near the station. Trust no one until I know who is safe.' },
+  photo:   { t:'Photograph from the train', d:'Dad beside a woman and two men, outside a brick building. Back reads: “Ashbourne, spring 2009.” He vanished in 2006 — so someone photographed him three years after he supposedly disappeared.' },
+  hand:    { t:'The bookseller — Edmund Hale', d:'Hale recognised Dad’s handwriting. He won’t help me until I prove I’m really Elias’s son: I need to find the word Dad carved into things he built. Hale says to try Tom Barrow’s farm south of the road.' },
+  news:    { t:'Ashbourne Gazette, June 2006', d:'Fire at the railway office. Mara Voss — the railway clerk — died inside. Elias Vale, signal engineer, went missing and was “sought for questioning.” The town still thinks he started the fire.' },
+  carving: { t:'The fence post carving', d:'East fence at Hollow Farm: “E.V. + T.B. — LANTERN”. E.V. is Elias Vale. T.B. is Tom Barrow, the farmer. They were close friends. LANTERN is the word Hale was asking about.' },
+  grave:   { t:'Mara Voss’s grave', d:'1974–2006. Fresh wildflowers at the stone — someone still visits. Mara is the woman standing next to Dad in the 2009 photograph, even though she’s supposed to have died in 2006.' },
+  key:     { t:'Brass key — from Hale', d:'Opens Dad’s workshop, hidden beyond Ashwood forest. Hale said: “He didn’t run, Noah. He was pushed.” To get through the forest safely, I need the lantern from Tom Barrow at Hollow Farm.' },
+  lantern: { t:'Dad’s old lantern', d:'Tom Barrow kept it for twenty years. He confessed: men came to his door after the fire and told him what to say. He signed a false witness statement against Dad — out of fear.' },
+  silas:   { t:'Silas Voss', d:'Mara’s brother. He waits in Ashwood at night, watching the old trail. He believes Dad let Mara die and ran — and he wants answers. He’s not dangerous, just grieving.' },
+  watch:   { t:'Mara’s pocket watch', d:'Half-buried in the forest moss. Engraved: “E — keep time for me. M.” Mara gave this to Dad. Silas said it was never found in the fire’s ashes — because it was never in the building.' },
+  postcard:{ t:'Postcard, 2009', d:'Hidden behind June’s café counter for years. Postmarked Harlow Cross, three years after Dad vanished: “Still keeping left. — E.” He was alive, and he was writing to people in Ashbourne.' },
+  workshop:{ t:'Dad’s second letter — the truth', d:'Mara discovered the railway’s financial records had been falsified — money was being moved and land was being sold illegally. Someone killed her to keep it quiet, then framed Dad because he asked too many questions. Dad fled to protect me. The evidence ledger is hidden “where the trains used to sleep” — the old engine shed. Meet him at the old platform at dawn.' },
 };
 const MEMS = {
   ticket: { t:'Ticket stub', d:'Wedged under the bench: Ashbourne → City, single, 13 June 2006. The night before the fire. One way.' },
@@ -1229,23 +1230,23 @@ function talkHale(){
       {s:'noah', t:'I got a letter. It says you’d know me.'},
       {s:'narr', t:'You hold out the letter. Hale reads it twice. His hands go very still.'},
       {s:'hale', t:'That’s Elias’s hand. Nobody else crosses their sevens like a railway signal.'},
-      {s:’hale’, t:’But anyone can copy a hand, and I’ve been fooled before. If you’re truly his son, you’ll know the word Elias carved into everything he built.’},
+      {s:'hale', t:'But anyone can copy a hand, and I’ve been fooled before. If you’re truly his son, you’ll know the word Elias carved into everything he built.'},
       {choice:[
-        {t:’I was six when he left. I don’t know any word.’, then:[ {s:’hale’, t:’Then go find it. Elias and Tom Barrow built that east fence at Hollow Farm together — south road, past the old lane. Elias carved something into every post he made. You’ll know it when you see it.’} ]},
-        {t:’Why should I have to prove anything to you?’, then:[ {s:’hale’, t:’A man came here two years ago claiming to be Elias’s son. He wasn’t. It cost someone dearly. East fence at Tom Barrow’s farm, south road. Go look.’} ]},
+        {t:'I was six when he left. I don’t know any word.', then:[ {s:'hale', t:'Then go find it. Elias and Tom Barrow built that east fence at Hollow Farm together — south road, past the old lane. Elias carved something into every post he made. You’ll know it when you see it.'} ]},
+        {t:'Why should I have to prove anything to you?', then:[ {s:'hale', t:'A man came here two years ago claiming to be Elias’s son. He wasn’t. It cost someone dearly. East fence at Tom Barrow’s farm, south road. Go look.'} ]},
       ]},
-      {s:’hale’, t:’While you’re there — stop in the square and find Clara Wynn. She keeps the town’s old newspapers. You should know what happened to this town before you go digging in it.’},
+      {s:'hale', t:'While you’re there — stop in the square and find Clara Wynn. She keeps the town’s old newspapers. You should know what happened to this town before you go digging in it.'},
       () => { F().hale1=1; addClue('hand'); },
     ]);
   } else if (!F().key){
-    if (has(‘carving’)){
+    if (has('carving')){
       dialog([
-        {s:’hale’, t:’You’re back. Tom’s fence, was it?’},
-        {s:’noah’, t:’E.V. plus T.B. The word was Lantern.’},
+        {s:'hale', t:'You’re back. Tom’s fence, was it?'},
+        {s:'noah', t:'E.V. plus T.B. The word was Lantern.'},
         ...haleKey(),
       ]);
     } else {
-      dialog([{s:’hale’, t: has(‘news’) ? ‘Good — Clara told you what this town believes. Now find the word carved into Tom Barrow’s east fence. That’s the truth your father left behind.’ : ‘The east fence at Tom Barrow’s farm, south of the road. Go look at the posts. Then come back.’}]);
+      dialog([{s:'hale', t: has('news') ? 'Good — Clara told you what this town believes. Now find the word carved into Tom Barrow’s east fence. That’s the truth your father left behind.' : 'The east fence at Tom Barrow’s farm, south of the road. Go look at the posts. Then come back.'}]);
     }
   } else if (!F().lantern){
     dialog([{s:'hale', t:'Hollow Farm, south of the road, west of here. Tom Barrow. Ask him about 2006 — and watch his hands when you do.'}]);
@@ -1259,14 +1260,14 @@ function haleKey(){
   return [
     {s:'narr', t:'Hale sits down slowly, as if his knees have just remembered how old they are.'},
     {s:'hale', t:'Lantern. He said that’s what a good engineer should be. A small light somebody else can carry.'},
-    {s:’hale’, t:’Whatever this town told you, your father didn’t run, Noah. He was pushed out. There’s a difference.’},
-    {s:’narr’, t:’He opens a drawer and places a small brass key on the counter between you.’},
-    {s:’hale’, t:’His workshop is beyond Ashwood forest. He left this with me twenty years ago. He said: if my son ever comes, and he knows the word, give it to him. Not before.’},
-    {s:’noah’, t:’He planned this. He always meant for me to come here.’},
-    {s:’hale’, t:’The forest trail is dark even in the afternoon. You’ll need a light. Tom Barrow kept your father’s old lantern — he won’t mention it, but ask him directly. Tell him Lantern. He’ll understand.’},
+    {s:'hale', t:'Whatever this town told you, your father didn’t run, Noah. He was pushed out. There’s a difference.'},
+    {s:'narr', t:'He opens a drawer and places a small brass key on the counter between you.'},
+    {s:'hale', t:'His workshop is beyond Ashwood forest. He left this with me twenty years ago. He said: if my son ever comes, and he knows the word, give it to him. Not before.'},
+    {s:'noah', t:'He planned this. He always meant for me to come here.'},
+    {s:'hale', t:'The forest trail is dark even in the afternoon. You’ll need a light. Tom Barrow kept your father’s old lantern — he won’t mention it, but ask him directly. Tell him Lantern. He’ll understand.'},
     {choice:[
-      {t:’Why did Tom keep the lantern all this time?’, then:[ {s:’hale’, t:’Guilt, mostly. Tom signed a false witness statement against Elias after the fire. Someone frightened him into it. He’s carried that ever since.’} ]},
-      {t:’Why didn’t you just tell me all this when I first walked in?’, then:[ {s:’hale’, t:’Because a man came in two years ago with the same story — said he was Elias’s son. He wasn’t. He was looking for the workshop. I told him nothing, but he found out I had the key. I can’t make that mistake again.’} ]},
+      {t:'Why did Tom keep the lantern all this time?', then:[ {s:'hale', t:'Guilt, mostly. Tom signed a false witness statement against Elias after the fire. Someone frightened him into it. He’s carried that ever since.'} ]},
+      {t:'Why didn’t you just tell me all this when I first walked in?', then:[ {s:'hale', t:'Because a man came in two years ago with the same story — said he was Elias’s son. He wasn’t. He was looking for the workshop. I told him nothing, but he found out I had the key. I can’t make that mistake again.'} ]},
     ]},
     () => { F().key=1; addClue('key'); setPhase(1); },
   ];
@@ -1281,15 +1282,15 @@ function talkClara(){
         {t:'I’m trying to learn about Elias Vale.', then:[ {s:'clara', t:'Vale. The engineer. Now there’s a name that clears a room.'} ]},
         {t:'Hale said you keep the town’s memory.', then:[ {s:'clara', t:'Edmund is too kind. I keep the town’s paperwork. Memory is what people do to paperwork.'}, {s:'noah', t:'Then — Elias Vale. Does your paperwork remember him?'} ]},
       ]},
-      {s:’narr’, t:’She unfolds a yellowed newspaper clipping from her satchel — like she always carries it, just in case.’},
-      {s:’clara’, t:’Ashbourne Gazette, June 2006. The old railway office burned down in the night. Mara Voss, the railway clerk, died inside.’},
-      {s:’clara’, t:’Elias Vale — signal engineer, your father — went missing. The paper says he was “sought for questioning.” He never came back to answer.’},
-      {s:’noah’, t:’So this whole town thinks my father killed someone and ran.’},
-      {s:’clara’, t:’Some do. Others still carve his initials into their fences for good luck. This town made up its mind and then kept arguing about it for twenty years.’},
-      {s:’clara’, t:’Mara worked with your father every day. If he had a reason to be here, she’s part of it. Her grave is behind the church. And Tom Barrow at Hollow Farm — he and your father were close. Your father helped build that fence.’},
-      () => { F().news=1; addClue(‘news’); },
-      () => { if (F().hale1 && !has(‘carving’)) D.queue.unshift({s:’clara’, t:’If Hale needs proof — check the east fence at Tom’s farm. Your father carved things into everything he built.’}); },
-      {s:’clara’, t:’If you find anything about Mara — anything at all — come and tell me. She deserves someone still looking.’},
+      {s:'narr', t:'She unfolds a yellowed newspaper clipping from her satchel — like she always carries it, just in case.'},
+      {s:'clara', t:'Ashbourne Gazette, June 2006. The old railway office burned down in the night. Mara Voss, the railway clerk, died inside.'},
+      {s:'clara', t:'Elias Vale — signal engineer, your father — went missing. The paper says he was “sought for questioning.” He never came back to answer.'},
+      {s:'noah', t:'So this whole town thinks my father killed someone and ran.'},
+      {s:'clara', t:'Some do. Others still carve his initials into their fences for good luck. This town made up its mind and then kept arguing about it for twenty years.'},
+      {s:'clara', t:'Mara worked with your father every day. If he had a reason to be here, she’s part of it. Her grave is behind the church. And Tom Barrow at Hollow Farm — he and your father were close. Your father helped build that fence.'},
+      () => { F().news=1; addClue('news'); },
+      () => { if (F().hale1 && !has('carving')) D.queue.unshift({s:'clara', t:'If Hale needs proof — check the east fence at Tom’s farm. Your father carved things into everything he built.'}); },
+      {s:'clara', t:'If you find anything about Mara — anything at all — come and tell me. She deserves someone still looking.'},
     ]);
   } else {
     const l=[];
@@ -1304,16 +1305,16 @@ function talkClara(){
 function talkTom(){
   meet('tom');
   if (!F().key){
-    const l=[{s:’tom’, t:’Farm’s private. If you’re selling something, I’m not buying.’}];
-    if (has(‘carving’)){ l.push(
-      {s:’noah’, t:’You and my father carved your initials into that fence post. E.V. and T.B. — and the word Lantern.’},
-      {s:’narr’, t:’Tom goes very still. He looks at the fence, then at Noah, then at the road — anywhere but back.’},
-      {s:’tom’, t:’You’re Elias’s boy. I can see it now.’},
-      {s:’tom’, t:’Go back to Hale. Tell him the word. He’ll explain more than I’m able to right now.’}
+    const l=[{s:'tom', t:'Farm’s private. If you’re selling something, I’m not buying.'}];
+    if (has('carving')){ l.push(
+      {s:'noah', t:'You and my father carved your initials into that fence post. E.V. and T.B. — and the word Lantern.'},
+      {s:'narr', t:'Tom goes very still. He looks at the fence, then at Noah, then at the road — anywhere but back.'},
+      {s:'tom', t:'You’re Elias’s boy. I can see it now.'},
+      {s:'tom', t:'Go back to Hale. Tell him the word. He’ll explain more than I’m able to right now.'}
     ); }
     else l.push(
-      {s:’tom’, t:’Not interested in visitors. Check the fence if you like — it’s old.’},
-      {s:’noah’, t:’(There’s something on that east fence post. I should look more carefully.)’}
+      {s:'tom', t:'Not interested in visitors. Check the fence if you like — it’s old.'},
+      {s:'noah', t:'(There’s something on that east fence post. I should look more carefully.)'}
     );
     dialog(l);
   } else if (!F().lantern){
@@ -1336,11 +1337,11 @@ function talkTom(){
 function tomConfess(){
   return [
     {s:'narr', t:'A long silence. A crow complains somewhere in the field.'},
-    {s:’tom’, t:’Lantern. God. He told you the word.’},
-    {s:’tom’, t:’We built half this farm together. He was the closest thing to a brother I ever had.’},
-    {s:’tom’, t:’The night the office burned — two men in suits came to my door before dawn. Railway company men. They told me what I’d witnessed. Told me word for word what my statement would say.’},
-    {s:’tom’, t:’I signed it. Said I saw Elias leave the building before the smoke. I saw nothing. I was in bed. They knew about the farm debts — I was scared, and I let them use that. I was a coward.’},
-    {s:’tom’, t:’Elias never wrote to me. Never blamed me. That’s the worst part.’},
+    {s:'tom', t:'Lantern. God. He told you the word.'},
+    {s:'tom', t:'We built half this farm together. He was the closest thing to a brother I ever had.'},
+    {s:'tom', t:'The night the office burned — two men in suits came to my door before dawn. Railway company men. They told me what I’d witnessed. Told me word for word what my statement would say.'},
+    {s:'tom', t:'I signed it. Said I saw Elias leave the building before the smoke. I saw nothing. I was in bed. They knew about the farm debts — I was scared, and I let them use that. I was a coward.'},
+    {s:'tom', t:'Elias never wrote to me. Never blamed me. That’s the worst part.'},
     {choice:[
       {t:'Tell him about the letter', then:[
         () => { F().toldTom=1; },
@@ -1360,23 +1361,23 @@ function tomConfess(){
 function talkSilas(){
   meet('silas');
   dialog([
-    {s:’silas’, t:’That lantern. I’d know it anywhere. I used to watch it bob along this path every night.’},
-    {s:’noah’, t:’Who are you?’},
-    {s:’silas’, t:’Silas Voss. My sister was Mara — the woman who died in the railway office fire. The fire your father was blamed for.’},
-    {s:’noah’, t:’Voss. Clara mentioned her. The clerk who died — that was your sister.’},
+    {s:'silas', t:'That lantern. I’d know it anywhere. I used to watch it bob along this path every night.'},
+    {s:'noah', t:'Who are you?'},
+    {s:'silas', t:'Silas Voss. My sister was Mara — the woman who died in the railway office fire. The fire your father was blamed for.'},
+    {s:'noah', t:'Voss. Clara mentioned her. The clerk who died — that was your sister.'},
     {choice:[
-      {t:’My father didn’t run. He was framed for it.’, then:[
-        {s:’silas’, t:’That’s what Hale says. Hale says a lot of things from behind a counter.’},
-        {s:’silas’, t:’If Elias is really out there alive, he owes me an answer. Not you. Him.’} ]},
-      {t:’I’m sorry about your sister.’, then:[
+      {t:'My father didn’t run. He was framed for it.', then:[
+        {s:'silas', t:'That’s what Hale says. Hale says a lot of things from behind a counter.'},
+        {s:'silas', t:'If Elias is really out there alive, he owes me an answer. Not you. Him.'} ]},
+      {t:'I’m sorry about your sister.', then:[
         () => { F().kindSilas=1; },
-        {s:’narr’, t:’Something in his shoulders gives way, just slightly.’},
-        {s:’silas’, t:’Nobody in this town says her name anymore. Twenty years and she might as well be a rumour.’},
-        {s:’silas’, t:’She had a pocket watch. Wore it every single day. It was never found in the ashes. I always thought that was strange.’} ]},
-      {t:’Get out of my way.’, then:[
-        {s:’silas’, t:’Brave, with his lantern. Your father was brave too, right up until he wasn’t.’} ]},
+        {s:'narr', t:'Something in his shoulders gives way, just slightly.'},
+        {s:'silas', t:'Nobody in this town says her name anymore. Twenty years and she might as well be a rumour.'},
+        {s:'silas', t:'She had a pocket watch. Wore it every single day. It was never found in the ashes. I always thought that was strange.'} ]},
+      {t:'Get out of my way.', then:[
+        {s:'silas', t:'Brave, with his lantern. Your father was brave too, right up until he wasn’t.'} ]},
     ]},
-    {s:’silas’, t:’Go on then. See what he left you. But if it explains anything about that night — you bring it to me. That’s not a request.’},
+    {s:'silas', t:'Go on then. See what he left you. But if it explains anything about that night — you bring it to me. That’s not a request.'},
     () => { F().silas=1; F().silasGone=1; addClue('silas'); },
   ]);
 }
@@ -1446,7 +1447,7 @@ function actWatch(){
   dialog([
     {s:'narr', t:'A pocket watch, half-buried in the forest moss. Stopped at 2:14.'},
     {s:'narr', t:'Engraved on the back: “E — keep time for me. M.”'},
-    {s:'noah', t:'M. That's Mara. She gave this to Dad.'},
+    {s:'noah', t:'M. That’s Mara. She gave this to Dad.'},
     {s:'noah', t:'But Silas said her watch was never found in the ashes. Because it was never in that building.'},
     {s:'noah', t:'She gave it to Dad before she died. She knew something was going to happen that night.'},
     () => { F().watch=1; addClue('watch'); },
@@ -1483,20 +1484,20 @@ function tickCut(dt){
 
 const LETTER1 = `Noah,
 
-You won't remember my handwriting. I'm sorry for that, and for a great deal more.
+You won’t remember my handwriting. I’m sorry for that, and for a great deal more.
 
-You're old enough now to know what happened. I did not set that fire. I left because staying would have put you in danger — from the same people who made sure the truth stayed buried.
+You’re old enough now to know what happened. I did not set that fire. I left because staying would have put you in danger — from the same people who made sure the truth stayed buried.
 
-Take the train to Ashbourne. Find the bookseller near the station — Edmund Hale. He'll know you by my handwriting.
+Take the train to Ashbourne. Find the bookseller near the station — Edmund Hale. He’ll know you by my handwriting.
 
-Don't tell anyone else why you've come. Not until you know who to trust. Some people in that town are still afraid, and fear makes people do things they're not proud of.
+Don’t tell anyone else why you’ve come. Not until you know who to trust. Some people in that town are still afraid, and fear makes people do things they’re not proud of.
 
 — Dad`;
 const LETTER2 = `Noah —
 
-If you're reading this, Hale trusted you and Tom found his courage. Good.
+If you’re reading this, Hale trusted you and Tom found his courage. Good.
 
-I didn't set that fire. Here is what actually happened.
+I didn’t set that fire. Here is what actually happened.
 
 Mara was the railway accounts clerk. She found that her supervisors had been falsifying the books — selling off the old branch-line land to a private developer without the council vote the law required. Thousands of pounds, quietly moved. She copied the ledger and was going to bring it to me the morning after she found it.
 
@@ -1565,16 +1566,16 @@ $('#againBtn').addEventListener('click', () => { $('#ending').classList.remove('
 // ================= objectives & HUD =================
 function objective(){
   const f=F();
-  if (!f.walt) return { t:’Ask the railway worker where to find the bookseller’, at:npcPos(‘walt’) };
-  if (!f.hale1) return { t:’Find Edmund Hale’s bookshop — west over the bridge, purple roof’, at:npcPos(‘hale’) };
+  if (!f.walt) return { t:'Ask the railway worker where to find the bookseller', at:npcPos('walt') };
+  if (!f.hale1) return { t:'Find Edmund Hale’s bookshop — west over the bridge, purple roof', at:npcPos('hale') };
   if (!f.key){
-    if (has(‘carving’)) return { t:’Return to Hale — you found the carved word: LANTERN’, at:npcPos(‘hale’) };
-    if (!f.news) return { t:’Talk to Clara Wynn in the square — she has newspaper records’, at:npcPos(‘clara’) };
-    return { t:’Find the fence post carving at Hollow Farm (east fence, south road)’, at:{x:29*T+8,y:46*T+6} };
+    if (has('carving')) return { t:'Return to Hale — you found the carved word: LANTERN', at:npcPos('hale') };
+    if (!f.news) return { t:'Talk to Clara Wynn in the square — she has newspaper records', at:npcPos('clara') };
+    return { t:'Find the fence post carving at Hollow Farm (east fence, south road)', at:{x:29*T+8,y:46*T+6} };
   }
-  if (!f.lantern) return { t:’Get Dad’s lantern from Tom Barrow — you’ll need it for the forest’, at:npcPos(‘tom’) };
-  if (!f.end) return { t:’Follow the forest trail north into Ashwood — keep left at every fork’, at: P.y>27*T ? {x:30*T+16,y:28*T} : {x:7*T+8,y:8*T} };
-  return { t:’Explore freely — Chapter Two coming soon’, at:null };
+  if (!f.lantern) return { t:'Get Dad’s lantern from Tom Barrow — you’ll need it for the forest', at:npcPos('tom') };
+  if (!f.end) return { t:'Follow the forest trail north into Ashwood — keep left at every fork', at: P.y>27*T ? {x:30*T+16,y:28*T} : {x:7*T+8,y:8*T} };
+  return { t:'Explore freely — Chapter Two coming soon', at:null };
 }
 function npcPos(id){ const n=npcs.find(n=>n.id===id); return {x:n.x,y:n.y-28}; }
 function refreshHUD(){
@@ -1612,104 +1613,104 @@ function renderJournal(){
 
 // ================= inventory =================
 const ITEMS = {
-  letter:  { name:"Dad’s letter",       key:false, src:’clue’, desc:"The letter that started everything. Elias Vale’s handwriting — the first thing he’s ever sent you." },
-  photo:   { name:"Photograph",          key:false, src:’clue’, desc:"Your father, spring 2009. On the back: Ashbourne. Three years after he disappeared." },
-  key:     { name:"Brass key",           key:true,  src:’clue’, desc:"Heavy, warm. From Edmund Hale. Opens your father’s workshop beyond Ashwood forest." },
-  lantern: { name:"Dad’s lantern",       key:true,  src:’clue’, desc:"A dented brass lantern Tom Barrow kept for twenty years. You’ll need it in Ashwood." },
-  watch:   { name:"Mara’s pocket watch", key:false, src:’clue’, desc:"Stopped at 2:14. Engraved: ‘E — keep time for me. M.’ Found half-buried in forest moss." },
-  postcard:{ name:"Postcard, 2009",      key:false, src:’clue’, desc:"Postmarked Harlow Cross. ‘Still keeping left. — E.’ He was alive and writing to Ashbourne." },
-  ticket:  { name:"Train ticket stub",   key:false, src:’mem’,  desc:"Ashbourne → City, single, 13 June 2006. One way. The night before the fire." },
+  letter:  { name:"Dad’s letter",       key:false, src:'clue', desc:"The letter that started everything. Elias Vale’s handwriting — the first thing he’s ever sent you." },
+  photo:   { name:"Photograph",          key:false, src:'clue', desc:"Your father, spring 2009. On the back: Ashbourne. Three years after he disappeared." },
+  key:     { name:"Brass key",           key:true,  src:'clue', desc:"Heavy, warm. From Edmund Hale. Opens your father’s workshop beyond Ashwood forest." },
+  lantern: { name:"Dad’s lantern",       key:true,  src:'clue', desc:"A dented brass lantern Tom Barrow kept for twenty years. You’ll need it in Ashwood." },
+  watch:   { name:"Mara’s pocket watch", key:false, src:'clue', desc:"Stopped at 2:14. Engraved: ‘E — keep time for me. M.’ Found half-buried in forest moss." },
+  postcard:{ name:"Postcard, 2009",      key:false, src:'clue', desc:"Postmarked Harlow Cross. ‘Still keeping left. — E.’ He was alive and writing to Ashbourne." },
+  ticket:  { name:"Train ticket stub",   key:false, src:'mem',  desc:"Ashbourne → City, single, 13 June 2006. One way. The night before the fire." },
 };
 
 function drawItemIcon(ctx, id){
   const g = ctx; const W=32, H=32;
   g.clearRect(0,0,W,H);
-  if (id===’letter’){
-    g.fillStyle=’#e9dcbc’; g.fillRect(4,8,24,18);
-    g.fillStyle=’#c4a96e’; g.fillRect(4,8,24,1); g.fillRect(4,25,24,1); g.fillRect(4,8,1,18); g.fillRect(27,8,1,18);
-    g.fillStyle=’#b39a6e’; g.beginPath(); g.moveTo(4,8); g.lineTo(16,18); g.lineTo(28,8); g.stroke();
-    g.strokeStyle=’#b39a6e’; g.lineWidth=1; g.beginPath(); g.moveTo(4,8); g.lineTo(16,18); g.lineTo(28,8); g.stroke();
-    g.fillStyle=’#c0341a’; g.beginPath(); g.arc(16,18,4,0,Math.PI*2); g.fill();
-  } else if (id===’photo’){
-    g.fillStyle=’#f0e8d0’; g.fillRect(5,4,22,24);
-    g.fillStyle=’#d4c8a8’; g.fillRect(5,4,22,1); g.fillRect(5,27,22,1); g.fillRect(5,4,1,24); g.fillRect(26,4,1,24);
-    g.fillStyle=’#7a9ec0’; g.fillRect(8,8,16,12);
-    g.fillStyle=’#5a7ea0’; g.fillRect(8,8,16,6);
-    g.fillStyle=’#e8c870’; g.beginPath(); g.arc(19,13,3,0,Math.PI*2); g.fill();
-    g.fillStyle=’#3a3028’; g.fillRect(8,22,16,2);
-    g.fillStyle=’#5a4838’; g.fillRect(8,20,5,2); g.fillRect(15,20,3,2);
-  } else if (id===’key’){
-    g.fillStyle=’#c8a040’; g.beginPath(); g.arc(10,16,6,0,Math.PI*2); g.fill();
-    g.fillStyle=’#0a0f1e’; g.beginPath(); g.arc(10,16,3,0,Math.PI*2); g.fill();
-    g.fillStyle=’#c8a040’; g.fillRect(15,15,12,3);
+  if (id==='letter'){
+    g.fillStyle='#e9dcbc'; g.fillRect(4,8,24,18);
+    g.fillStyle='#c4a96e'; g.fillRect(4,8,24,1); g.fillRect(4,25,24,1); g.fillRect(4,8,1,18); g.fillRect(27,8,1,18);
+    g.fillStyle='#b39a6e'; g.beginPath(); g.moveTo(4,8); g.lineTo(16,18); g.lineTo(28,8); g.stroke();
+    g.strokeStyle='#b39a6e'; g.lineWidth=1; g.beginPath(); g.moveTo(4,8); g.lineTo(16,18); g.lineTo(28,8); g.stroke();
+    g.fillStyle='#c0341a'; g.beginPath(); g.arc(16,18,4,0,Math.PI*2); g.fill();
+  } else if (id==='photo'){
+    g.fillStyle='#f0e8d0'; g.fillRect(5,4,22,24);
+    g.fillStyle='#d4c8a8'; g.fillRect(5,4,22,1); g.fillRect(5,27,22,1); g.fillRect(5,4,1,24); g.fillRect(26,4,1,24);
+    g.fillStyle='#7a9ec0'; g.fillRect(8,8,16,12);
+    g.fillStyle='#5a7ea0'; g.fillRect(8,8,16,6);
+    g.fillStyle='#e8c870'; g.beginPath(); g.arc(19,13,3,0,Math.PI*2); g.fill();
+    g.fillStyle='#3a3028'; g.fillRect(8,22,16,2);
+    g.fillStyle='#5a4838'; g.fillRect(8,20,5,2); g.fillRect(15,20,3,2);
+  } else if (id==='key'){
+    g.fillStyle='#c8a040'; g.beginPath(); g.arc(10,16,6,0,Math.PI*2); g.fill();
+    g.fillStyle='#0a0f1e'; g.beginPath(); g.arc(10,16,3,0,Math.PI*2); g.fill();
+    g.fillStyle='#c8a040'; g.fillRect(15,15,12,3);
     g.fillRect(23,12,3,3); g.fillRect(19,12,3,3);
-    g.fillStyle=’#e0c060’; g.fillRect(15,15,12,1); g.beginPath(); g.arc(10,16,6,Math.PI,Math.PI*1.5); g.strokeStyle=’#e0c060’; g.lineWidth=1; g.stroke();
-  } else if (id===’lantern’){
-    g.fillStyle=’#8a6a30’; g.fillRect(12,3,8,3);
-    g.fillStyle=’#c09040’; g.fillRect(10,6,12,2);
-    g.fillStyle=’rgba(255,200,80,.18)’; g.beginPath(); g.arc(16,18,9,0,Math.PI*2); g.fill();
-    g.fillStyle=’#c09040’; g.fillRect(10,8,2,18); g.fillRect(20,8,2,18);
+    g.fillStyle='#e0c060'; g.fillRect(15,15,12,1); g.beginPath(); g.arc(10,16,6,Math.PI,Math.PI*1.5); g.strokeStyle='#e0c060'; g.lineWidth=1; g.stroke();
+  } else if (id==='lantern'){
+    g.fillStyle='#8a6a30'; g.fillRect(12,3,8,3);
+    g.fillStyle='#c09040'; g.fillRect(10,6,12,2);
+    g.fillStyle='rgba(255,200,80,.18)'; g.beginPath(); g.arc(16,18,9,0,Math.PI*2); g.fill();
+    g.fillStyle='#c09040'; g.fillRect(10,8,2,18); g.fillRect(20,8,2,18);
     g.fillRect(10,8,12,2); g.fillRect(10,24,12,2);
-    g.fillStyle=’rgba(40,28,12,.7)’; g.fillRect(12,10,8,14);
-    g.fillStyle=’#ffe090’; g.beginPath(); g.arc(16,17,4,0,Math.PI*2); g.fill();
-    g.fillStyle=’#ffb030’; g.beginPath(); g.arc(16,17,2,0,Math.PI*2); g.fill();
-    g.fillStyle=’#c09040’; g.fillRect(13,26,6,3);
-  } else if (id===’watch’){
-    g.fillStyle=’#b8963c’; g.beginPath(); g.arc(16,16,10,0,Math.PI*2); g.fill();
-    g.fillStyle=’#e8e0c8’; g.beginPath(); g.arc(16,16,8,0,Math.PI*2); g.fill();
-    g.fillStyle=’#3a2a18’; g.beginPath(); g.arc(16,16,7,0,Math.PI*2); g.fill();
-    g.fillStyle=’#e8d090’; g.fillRect(15,10,2,7); g.fillRect(16,16,5,1);
-    g.fillStyle=’#b8963c’; g.fillRect(14,4,4,4); g.fillRect(14,24,4,4);
-    g.fillStyle=’#c8a848’; g.beginPath(); g.arc(16,16,1,0,Math.PI*2); g.fill();
-  } else if (id===’postcard’){
-    g.fillStyle=’#f0e8d8’; g.fillRect(3,7,26,18);
-    g.fillStyle=’#c8b898’; g.fillRect(3,7,26,1); g.fillRect(3,24,26,1); g.fillRect(3,7,1,18); g.fillRect(28,7,1,18);
-    g.fillStyle=’#7a9ec0’; g.fillRect(17,9,10,8);
-    g.strokeStyle=’#c8b898’; g.lineWidth=1;
+    g.fillStyle='rgba(40,28,12,.7)'; g.fillRect(12,10,8,14);
+    g.fillStyle='#ffe090'; g.beginPath(); g.arc(16,17,4,0,Math.PI*2); g.fill();
+    g.fillStyle='#ffb030'; g.beginPath(); g.arc(16,17,2,0,Math.PI*2); g.fill();
+    g.fillStyle='#c09040'; g.fillRect(13,26,6,3);
+  } else if (id==='watch'){
+    g.fillStyle='#b8963c'; g.beginPath(); g.arc(16,16,10,0,Math.PI*2); g.fill();
+    g.fillStyle='#e8e0c8'; g.beginPath(); g.arc(16,16,8,0,Math.PI*2); g.fill();
+    g.fillStyle='#3a2a18'; g.beginPath(); g.arc(16,16,7,0,Math.PI*2); g.fill();
+    g.fillStyle='#e8d090'; g.fillRect(15,10,2,7); g.fillRect(16,16,5,1);
+    g.fillStyle='#b8963c'; g.fillRect(14,4,4,4); g.fillRect(14,24,4,4);
+    g.fillStyle='#c8a848'; g.beginPath(); g.arc(16,16,1,0,Math.PI*2); g.fill();
+  } else if (id==='postcard'){
+    g.fillStyle='#f0e8d8'; g.fillRect(3,7,26,18);
+    g.fillStyle='#c8b898'; g.fillRect(3,7,26,1); g.fillRect(3,24,26,1); g.fillRect(3,7,1,18); g.fillRect(28,7,1,18);
+    g.fillStyle='#7a9ec0'; g.fillRect(17,9,10,8);
+    g.strokeStyle='#c8b898'; g.lineWidth=1;
     for(let y=10;y<24;y+=3){ g.beginPath(); g.moveTo(5,y); g.lineTo(14,y); g.stroke(); }
-    g.fillStyle=’#c03020’; g.fillRect(24,9,4,5);
-  } else if (id===’ticket’){
-    g.fillStyle=’#f5e8c0’; g.fillRect(3,10,26,14);
-    g.fillStyle=’#c8a860’; g.fillRect(3,10,26,1); g.fillRect(3,23,26,1); g.fillRect(3,10,1,14); g.fillRect(28,10,1,14);
-    g.fillStyle=’#c8a860’; g.fillRect(13,10,1,14);
-    g.fillStyle=’#2a1e0e’; g.font=’bold 5px monospace’; g.fillText(‘ASH’,4,18); g.fillText(‘CTY’,16,18);
-    g.fillStyle=’#a06030’; for(let y=11;y<23;y+=3){ g.fillRect(14,y,1,2); }
-    g.fillStyle=’#e09040’; g.beginPath(); g.arc(7,17,2,0,Math.PI*2); g.fill();
+    g.fillStyle='#c03020'; g.fillRect(24,9,4,5);
+  } else if (id==='ticket'){
+    g.fillStyle='#f5e8c0'; g.fillRect(3,10,26,14);
+    g.fillStyle='#c8a860'; g.fillRect(3,10,26,1); g.fillRect(3,23,26,1); g.fillRect(3,10,1,14); g.fillRect(28,10,1,14);
+    g.fillStyle='#c8a860'; g.fillRect(13,10,1,14);
+    g.fillStyle='#2a1e0e'; g.font='bold 5px monospace'; g.fillText('ASH',4,18); g.fillText('CTY',16,18);
+    g.fillStyle='#a06030'; for(let y=11;y<23;y+=3){ g.fillRect(14,y,1,2); }
+    g.fillStyle='#e09040'; g.beginPath(); g.arc(7,17,2,0,Math.PI*2); g.fill();
   }
 }
 
-function invHas(id){ const it=ITEMS[id]; if (!it) return false; return it.src===’clue’ ? S0.clues.includes(id) : S0.mems.includes(id); }
+function invHas(id){ const it=ITEMS[id]; if (!it) return false; return it.src==='clue' ? S0.clues.includes(id) : S0.mems.includes(id); }
 
-function openInv(){ mode=’inv’; $(‘#inv’).classList.add(‘on’); renderInv(); for (const k in keys) keys[k]=false; }
-function closeInv(){ $(‘#inv’).classList.remove(‘on’); mode=’play’; }
-$(‘#invBtn’).addEventListener(‘click’, () => { if (mode===’play’) openInv(); else if (mode===’inv’) closeInv(); $(‘#invBtn’).blur(); });
-$(‘#invClose’).addEventListener(‘click’, closeInv);
+function openInv(){ mode='inv'; $('#inv').classList.add('on'); renderInv(); for (const k in keys) keys[k]=false; }
+function closeInv(){ $('#inv').classList.remove('on'); mode='play'; }
+$('#invBtn').addEventListener('click', () => { if (mode==='play') openInv(); else if (mode==='inv') closeInv(); $('#invBtn').blur(); });
+$('#invClose').addEventListener('click', closeInv);
 
 function renderInv(){
-  const body=$(‘#invbody’); body.innerHTML=’’;
+  const body=$('#invbody'); body.innerHTML='';
   const owned = Object.keys(ITEMS).filter(id => invHas(id));
   if (!owned.length){
-    const e=document.createElement(‘div’); e.className=’inv-empty’;
+    const e=document.createElement('div'); e.className='inv-empty';
     e.textContent="Noah’s pockets are empty. Start by talking to the railway worker.";
     body.appendChild(e); return;
   }
   for (const id of owned){
     const it = ITEMS[id];
-    const card = document.createElement(‘div’);
-    card.className = ‘inv-item’ + (it.key ? ‘ key-item’ : ‘’);
-    const cv = document.createElement(‘canvas’); cv.width=32; cv.height=32;
-    drawItemIcon(cv.getContext(‘2d’), id);
+    const card = document.createElement('div');
+    card.className = 'inv-item' + (it.key ? ' key-item' : '');
+    const cv = document.createElement('canvas'); cv.width=32; cv.height=32;
+    drawItemIcon(cv.getContext('2d'), id);
     card.appendChild(cv);
-    const nm = document.createElement(‘div’); nm.className=’iname’; nm.textContent=it.name; card.appendChild(nm);
-    const ds = document.createElement(‘div’); ds.className=’idesc’; ds.textContent=it.desc; card.appendChild(ds);
-    if (it.key){ const b=document.createElement(‘div’); b.className=’ibadge’; b.textContent=’KEY ITEM’; card.appendChild(b); }
+    const nm = document.createElement('div'); nm.className='iname'; nm.textContent=it.name; card.appendChild(nm);
+    const ds = document.createElement('div'); ds.className='idesc'; ds.textContent=it.desc; card.appendChild(ds);
+    if (it.key){ const b=document.createElement('div'); b.className='ibadge'; b.textContent='KEY ITEM'; card.appendChild(b); }
     body.appendChild(card);
   }
 }
 
 // ================= zones =================
 const zones = [
-  { n:’Father’s workshop’, x0:2, y0:1, x1:13, y1:10 },
+  { n:'Father’s workshop', x0:2, y0:1, x1:13, y1:10 },
   { n:'Ashwood forest', x0:0, y0:0, x1:36, y1:27 },
   { n:'St. Aldric’s churchyard', x0:43, y0:2, x1:60, y1:12 },
   { n:'Hollow Farm', x0:8, y0:31, x1:33, y1:56 },
@@ -2060,9 +2061,9 @@ setInterval(() => { if (mode==='play') save(); }, 8000);
     sky.addColorStop(0,'rgba(28,18,58,.55)');
     sky.addColorStop(.5,'rgba(10,10,28,.38)');
     sky.addColorStop(1,'rgba(2,3,10,.0)');
-    gc.fillStyle=sky; gc.fillRect(0,0,W2,H2);
+    // (sky wash removed so the live village shows through behind the title)
     // stars
-    for (const s of stars){
+    for (const s of (mode==='title' ? [] : stars)){
       s.blink += s.da;
       const a = s.a * (.55 + .45*Math.sin(s.blink));
       gc.beginPath(); gc.arc(s.x,s.y,s.r,0,Math.PI*2);

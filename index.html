@@ -41,10 +41,10 @@
     background: radial-gradient(ellipse at center, transparent 55%, rgba(8,6,22,.6) 100%); }
 
   .panel {
-    background: rgba(18,24,41,.9);
-    border: 3px solid var(--edge);
-    box-shadow: 0 0 0 3px #070a12, inset 0 0 0 2px #0e1322, inset 0 2px 0 3px rgba(90,108,160,.18);
-    border-radius: 2px;
+    background: linear-gradient(180deg, rgba(24,32,52,.95) 0%, rgba(14,19,34,.97) 100%);
+    border: 2px solid var(--edge);
+    box-shadow: 0 0 0 2px #070a12, inset 0 1px 0 rgba(90,108,160,.22), 0 6px 24px rgba(0,0,0,.55);
+    border-radius: 3px;
   }
 
   /* HUD */
@@ -53,16 +53,21 @@
   #hud .time { font-size: 17px; color: var(--dim); margin-top: 2px; }
   #hud .obj { font-size: 19px; line-height: 1.1; margin-top: 6px; color: var(--ink); }
   #hud .obj::before { content: "◆ "; color: var(--rose); }
-  #topbtns { position: fixed; right: 12px; top: calc(12px + env(safe-area-inset-top, 0px)); display: none; gap: 8px; }
+  #topbtns { position: fixed; right: 12px; top: calc(12px + env(safe-area-inset-top, 0px)); display: none; gap: 6px; align-items: center; }
   .btn {
     font-family: var(--display); font-size: 22px; color: var(--ink); cursor: pointer;
-    background: var(--panel-2); border: 3px solid var(--edge); box-shadow: 0 0 0 3px #070a12;
+    background: linear-gradient(180deg, #1e2a40 0%, #111827 100%);
+    border: 2px solid var(--edge); box-shadow: 0 0 0 2px #070a12, 0 2px 6px rgba(0,0,0,.4);
     padding: 4px 14px 6px; line-height: 1; border-radius: 2px;
+    transition: border-color .18s, color .18s, box-shadow .18s, background .18s;
   }
-  .btn:hover { border-color: var(--edge-hi); color: #fff; }
-  .btn:focus-visible, button:focus-visible { outline: 3px solid var(--amber); outline-offset: 3px; }
-  .btn.big { font-size: 30px; padding: 8px 28px 10px; }
-  .btn.ghost { background: transparent; }
+  .btn:hover { border-color: var(--amber); color: #fff; background: linear-gradient(180deg, #2a3a58 0%, #1a2438 100%); box-shadow: 0 0 0 2px #070a12, 0 0 14px rgba(242,194,122,.22); }
+  .btn:active { transform: translateY(1px); box-shadow: 0 0 0 2px #070a12; }
+  .btn:focus-visible, button:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+  .btn.big { font-size: 30px; padding: 10px 36px 12px; background: linear-gradient(180deg, #243248 0%, #0e1828 100%); border-color: var(--edge-hi); letter-spacing: .04em; }
+  .btn.big:hover { background: linear-gradient(180deg, #2e4060 0%, #162030 100%); box-shadow: 0 0 0 2px #070a12, 0 0 22px rgba(242,194,122,.3), 0 0 44px rgba(242,194,122,.1); border-color: var(--amber); }
+  .btn.ghost { background: transparent; box-shadow: none; border-color: transparent; }
+  .btn.ghost:hover { background: rgba(26,34,56,.5); border-color: var(--edge); box-shadow: 0 0 0 2px #070a12; }
   .btn .k { color: var(--dim); font-family: var(--body); font-size: 18px; margin-left: 4px; }
 
   #zone { position: fixed; left: 50%; top: calc(16% + env(safe-area-inset-top, 0px)); transform: translateX(-50%);
@@ -83,34 +88,44 @@
 
   /* Dialogue */
   #dialog { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-    width: min(760px, calc(100% - 20px)); padding: 14px 16px 12px; display: none; gap: 14px; align-items: flex-start; }
+    width: min(760px, calc(100% - 20px)); padding: 14px 16px 12px; display: none; gap: 14px; align-items: flex-start;
+    border-top: 2px solid rgba(242,194,122,.45); box-shadow: 0 0 0 2px #070a12, 0 -2px 20px rgba(242,194,122,.06), 0 8px 32px rgba(0,0,0,.7); }
   #dialog.on { display: flex; }
-  #portrait { width: 96px; height: 96px; flex: none; image-rendering: pixelated; border: 3px solid var(--edge); box-shadow: 0 0 0 2px #070a12; background: #1f2840; }
+  #portrait { width: 96px; height: 96px; flex: none; image-rendering: pixelated; border: 2px solid var(--edge-hi); box-shadow: 0 0 0 2px #070a12, 0 0 12px rgba(90,108,160,.2); background: #1a2238; }
   #dialog.noport #portrait { display: none; }
   #dialog .txt { flex: 1; min-width: 0; }
-  #dialog .who { font-family: var(--display); font-size: 26px; color: var(--amber); line-height: 1; margin-bottom: 4px; }
-  #dialog .line { font-size: 23px; line-height: 1.15; min-height: 54px; }
-  #dialog.narr .line { color: #cdd3e8; font-style: italic; }
+  #dialog .who { font-family: var(--display); font-size: 27px; color: var(--amber); line-height: 1; margin-bottom: 6px; letter-spacing: .03em; text-shadow: 0 0 16px rgba(242,194,122,.3); }
+  #dialog .line { font-size: 23px; line-height: 1.2; min-height: 54px; }
+  #dialog.narr .line { color: #c8cfe8; font-style: italic; }
   #dialog .more { text-align: right; color: var(--dim); font-size: 17px; height: 18px; }
   #dialog .more span { animation: blink 1s steps(2) infinite; }
   @keyframes blink { 50% { opacity: 0; } }
-  #choices { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
-  #choices button { text-align: left; font-family: var(--body); font-size: 22px; color: var(--ink); background: var(--panel-2);
-    border: 2px solid var(--edge); padding: 4px 10px; cursor: pointer; border-radius: 2px; }
-  #choices button.sel, #choices button:hover { border-color: var(--amber); color: #fff; background: #26304d; }
+  #choices { display: flex; flex-direction: column; gap: 7px; margin-top: 10px; }
+  #choices button { text-align: left; font-family: var(--body); font-size: 22px; color: var(--ink); background: linear-gradient(180deg, #1a2238, #111827);
+    border: 2px solid var(--edge); padding: 5px 12px; cursor: pointer; border-radius: 2px; transition: border-color .15s, background .15s, box-shadow .15s; }
+  #choices button.sel, #choices button:hover { border-color: var(--amber); color: #fff; background: linear-gradient(180deg, #2a3a58, #1a2640); box-shadow: 0 0 10px rgba(242,194,122,.15); }
   #choices button .n { color: var(--amber); margin-right: 8px; }
 
   /* Full-screen overlays */
   .overlay { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; padding: 20px; }
   .overlay.on { display: flex; }
-  #title { background: radial-gradient(ellipse at 50% 40%, rgba(11,15,26,.25), rgba(8,8,20,.85)); flex-direction: column; text-align: center; }
+  #title { background: radial-gradient(ellipse at 50% 35%, rgba(20,18,50,.5) 0%, rgba(5,6,14,.98) 75%); flex-direction: column; text-align: center; position: relative; overflow: hidden; }
+  #titleBg { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+  #title > *:not(#titleBg) { position: relative; z-index: 1; }
   #title h1 { font-family: var(--display); font-weight: 400; margin: 0; font-size: clamp(72px, 15vw, 150px); line-height: .85; color: var(--paper);
-    text-shadow: 5px 5px 0 #070a12, 0 0 40px rgba(242,194,122,.35); letter-spacing: .02em; }
-  #title .sub { font-size: clamp(22px, 3.4vw, 30px); color: var(--amber); margin: 10px 0 4px; }
-  #title .tag { font-size: 21px; color: #c9cfe3; max-width: 34ch; margin: 0 auto 26px; line-height: 1.15; }
+    text-shadow: 6px 6px 0 #030409, 0 0 50px rgba(242,194,122,.55), 0 0 100px rgba(242,194,122,.2); letter-spacing: .04em;
+    animation: titleGlow 3.2s ease-in-out infinite alternate; }
+  @keyframes titleGlow {
+    from { text-shadow: 6px 6px 0 #030409, 0 0 40px rgba(242,194,122,.4), 0 0 80px rgba(242,194,122,.12); }
+    to   { text-shadow: 6px 6px 0 #030409, 0 0 70px rgba(242,194,122,.7), 0 0 130px rgba(242,194,122,.28), 0 0 200px rgba(200,150,80,.1); }
+  }
+  #title .sub { font-size: clamp(18px, 3vw, 26px); color: var(--amber); margin: 12px 0 0; letter-spacing: .12em; text-transform: uppercase; opacity: .9; }
+  #title .divider { width: min(280px, 60%); height: 1px; margin: 14px auto 14px; background: linear-gradient(to right, transparent, rgba(242,194,122,.6), transparent); }
+  #title .tag { font-size: clamp(18px, 2.4vw, 22px); color: #bec6e0; max-width: 38ch; margin: 0 auto 28px; line-height: 1.4; font-style: italic; }
   #title .row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
-  #title .keys { margin-top: 28px; color: var(--dim); font-size: 19px; line-height: 1.3; }
-  #title .keys b { color: var(--ink); font-weight: 400; }
+  #title .keys { margin-top: 22px; color: var(--dim); font-size: 18px; line-height: 1.4; padding: 10px 20px; background: rgba(0,0,0,.25); border: 1px solid rgba(58,72,114,.4); display: inline-block; border-radius: 2px; }
+  #title .keys b { color: #d4daf0; font-weight: 400; }
+  #title .hint { margin-top: 14px; color: rgba(151,161,192,.7); font-size: 18px; }
 
   #cut { background: rgba(5,6,14,.94); flex-direction: column; cursor: pointer; }
   #cut .card { white-space: pre-line; max-width: 620px; width: 100%; padding: 28px 30px 22px; font-size: 25px; line-height: 1.2; min-height: 160px; }
@@ -130,7 +145,8 @@
   #journal .objline { padding: 8px 16px; background: #0e1322; font-size: 21px; color: var(--ink); }
   #journal .objline b { color: var(--rose); font-weight: 400; }
   #jbody { padding: 12px 16px 16px; overflow-y: auto; display: grid; gap: 10px; }
-  .entry { display: flex; gap: 12px; padding: 10px 12px; background: var(--panel-2); border: 2px solid #283252; }
+  .entry { display: flex; gap: 12px; padding: 10px 12px; background: linear-gradient(180deg, #1a2238, #111827); border: 2px solid #283252; transition: border-color .15s; }
+  .entry:hover { border-color: #3a4872; }
   .entry .ic { width: 44px; height: 44px; flex: none; image-rendering: pixelated; background: #0e1322; border: 2px solid #283252; display: grid; place-items: center; font-size: 26px; }
   .entry canvas.ic { padding: 0; }
   .entry h3 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 24px; color: var(--amber); line-height: 1; }
@@ -148,13 +164,12 @@
   #ending .stats b { display: block; font-family: var(--display); font-weight: 400; color: var(--amber); font-size: 28px; line-height: 1; }
   #ending .note { font-size: 21px; color: #d9dcea; line-height: 1.15; margin-bottom: 18px; }
 
-  .menu { display: flex; flex-direction: column; gap: 12px; align-items: stretch; width: min(320px, 100%); margin: 0 auto; }
+  .menu { display: flex; flex-direction: column; gap: 10px; align-items: stretch; width: min(280px, 100%); margin: 0 auto; }
   .menu .btn { text-align: center; }
-  #title .hint { margin-top: 18px; color: var(--dim); font-size: 19px; }
   #title .hint.gone { visibility: hidden; }
-  #pause, #settings { background: rgba(5,6,14,.72); }
-  #pause .card, #settings .card { padding: 22px 24px 24px; width: min(520px, 100%); }
-  #pause h2, #settings h2 { font-family: var(--display); font-weight: 400; font-size: 46px; color: var(--paper); margin: 0 0 14px; line-height: .9; text-align: center; }
+  #pause, #settings { background: rgba(3,4,10,.78); backdrop-filter: blur(2px); }
+  #pause .card, #settings .card { padding: 24px 26px 26px; width: min(520px, 100%); }
+  #pause h2, #settings h2 { font-family: var(--display); font-weight: 400; font-size: 46px; color: var(--paper); margin: 0 0 16px; line-height: .9; text-align: center; text-shadow: 0 0 30px rgba(242,194,122,.2); }
   #settings { z-index: 5; }
   .srow { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 9px 0; border-bottom: 2px solid #1f2840; font-size: 22px; flex-wrap: wrap; }
   .srow > span { color: var(--ink); }
@@ -303,16 +318,18 @@
 </div>
 
 <div id="title" class="overlay on">
+  <canvas id="titleBg"></canvas>
   <h1>The Letter</h1>
-  <div class="sub">Chapter One — Ashbourne</div>
-  <p class="tag">Twenty years ago your father vanished. Three days ago, he wrote to you.</p>
+  <div class="sub">Chapter One &mdash; Ashbourne</div>
+  <div class="divider"></div>
+  <p class="tag">Twenty years ago your father vanished.<br>Three days ago, he wrote to you.</p>
   <div class="menu">
     <button class="btn big" id="playBtn">Play</button>
     <button class="btn" id="newBtn" style="display:none">New game</button>
     <button class="btn ghost" id="setBtn">Settings</button>
   </div>
   <div class="hint" id="soundHint">♪ Click anywhere to start the music</div>
-  <div class="keys"><b>WASD</b> / <b>arrows</b> walk &nbsp; <b>Shift</b> run &nbsp; <b>E</b> talk &amp; examine &nbsp; <b>J</b> journal</div>
+  <div class="keys"><b>WASD</b> / <b>arrows</b> walk &nbsp;&nbsp; <b>Shift</b> run &nbsp;&nbsp; <b>E</b> talk &amp; examine &nbsp;&nbsp; <b>J</b> journal</div>
 </div>
 
 <div id="cut" class="overlay">
@@ -1859,6 +1876,75 @@ $('#resetBtn').addEventListener('click', () => {
 refreshTitle();
 applyMini();
 setInterval(() => { if (mode==='play') save(); }, 8000);
+
+// ================= title screen atmosphere =================
+(function(){
+  const bg = document.getElementById('titleBg');
+  if (!bg) return;
+  const gc = bg.getContext('2d');
+  let W2, H2, particles, stars;
+  function resize2(){ W2=bg.width=window.innerWidth; H2=bg.height=window.innerHeight; }
+  function initParticles(){
+    stars = Array.from({length:90}, () => ({
+      x: Math.random()*W2, y: Math.random()*H2,
+      r: Math.random()*1.2+0.3,
+      a: Math.random(), da: (Math.random()-.5)*.006,
+      blink: Math.random()*Math.PI*2
+    }));
+    particles = Array.from({length:28}, () => mkFirefly());
+  }
+  function mkFirefly(){
+    return {
+      x: Math.random()*W2, y: Math.random()*H2*.9+H2*.05,
+      vx: (Math.random()-.5)*.28, vy: -(Math.random()*.18+.06),
+      a: 0, maxA: Math.random()*.72+.18,
+      r: Math.random()*2.2+1.2,
+      life: 0, maxLife: 180+Math.random()*260,
+      hue: Math.random()<.6 ? 46 : (Math.random()<.5 ? 38 : 200)
+    };
+  }
+  let raf2, t2=0;
+  function frame2(){
+    if (mode !== 'title' && mode !== 'settings'){ gc.clearRect(0,0,W2,H2); raf2=requestAnimationFrame(frame2); return; }
+    t2++;
+    gc.clearRect(0,0,W2,H2);
+    // deep sky gradient
+    const sky = gc.createRadialGradient(W2*.5,H2*.3,0, W2*.5,H2*.3,H2*.9);
+    sky.addColorStop(0,'rgba(28,18,58,.55)');
+    sky.addColorStop(.5,'rgba(10,10,28,.38)');
+    sky.addColorStop(1,'rgba(2,3,10,.0)');
+    gc.fillStyle=sky; gc.fillRect(0,0,W2,H2);
+    // stars
+    for (const s of stars){
+      s.blink += s.da;
+      const a = s.a * (.55 + .45*Math.sin(s.blink));
+      gc.beginPath(); gc.arc(s.x,s.y,s.r,0,Math.PI*2);
+      gc.fillStyle=`rgba(220,225,255,${a})`; gc.fill();
+    }
+    // fireflies
+    for (let i=0;i<particles.length;i++){
+      const p = particles[i];
+      p.life++; p.x+=p.vx; p.y+=p.vy;
+      p.vx += (Math.random()-.5)*.04;
+      if (p.life < 40) p.a = p.maxA * (p.life/40);
+      else if (p.life > p.maxLife-40) p.a = p.maxA * ((p.maxLife-p.life)/40);
+      else p.a = p.maxA * (.8+.2*Math.sin(p.life*.08));
+      if (p.life >= p.maxLife || p.y < -10 || p.x < -10 || p.x > W2+10){ particles[i]=mkFirefly(); particles[i].x=Math.random()*W2; particles[i].y=H2*.8+Math.random()*H2*.2; continue; }
+      const grd = gc.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*5);
+      grd.addColorStop(0,`hsla(${p.hue},90%,78%,${p.a})`);
+      grd.addColorStop(.4,`hsla(${p.hue},80%,60%,${p.a*.5})`);
+      grd.addColorStop(1,`hsla(${p.hue},70%,50%,0)`);
+      gc.beginPath(); gc.arc(p.x,p.y,p.r*5,0,Math.PI*2);
+      gc.fillStyle=grd; gc.fill();
+      gc.beginPath(); gc.arc(p.x,p.y,p.r*.7,0,Math.PI*2);
+      gc.fillStyle=`hsla(${p.hue},100%,92%,${p.a})`; gc.fill();
+    }
+    raf2=requestAnimationFrame(frame2);
+  }
+  resize2(); initParticles();
+  window.addEventListener('resize', () => { resize2(); initParticles(); });
+  raf2 = requestAnimationFrame(frame2);
+})();
 window.__game = { Music, SETTINGS, P, S0: () => S0, F, mode: () => mode, interact, advance, choose, D, objective, teleport:(tx,ty)=>{P.x=tx*T+8;P.y=ty*T+10;}, cutNext };
 requestAnimationFrame(step);
 })();

@@ -155,6 +155,20 @@
   .entry.locked p { color: #59617d; }
   .count { color: var(--dim); font-size: 19px; }
 
+  /* Inventory */
+  #inv { background: rgba(5,6,14,.78); }
+  #invBook { width: min(700px, 100%); max-height: calc(100% - 20px); display: flex; flex-direction: column; overflow: hidden; }
+  #invbody { padding: 14px 16px 18px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+  .inv-item { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 10px 14px; background: linear-gradient(180deg, #1a2238, #111827); border: 2px solid #283252; border-radius: 2px; cursor: default; transition: border-color .15s, box-shadow .15s; text-align: center; }
+  .inv-item:hover { border-color: var(--edge-hi); box-shadow: 0 0 12px rgba(90,108,160,.15); }
+  .inv-item.key-item { border-color: rgba(242,194,122,.35); }
+  .inv-item.key-item:hover { border-color: var(--amber); box-shadow: 0 0 14px rgba(242,194,122,.18); }
+  .inv-item canvas { image-rendering: pixelated; width: 64px; height: 64px; background: #0a0f1e; border: 2px solid #1e2840; }
+  .inv-item .iname { font-family: var(--display); font-size: 20px; color: var(--amber); line-height: 1.1; }
+  .inv-item .idesc { font-size: 17px; color: #a8b0cc; line-height: 1.2; }
+  .inv-item .ibadge { font-size: 14px; color: var(--rose); border: 1px solid rgba(233,140,122,.4); padding: 1px 7px; letter-spacing: .06em; }
+  .inv-empty { grid-column: 1 / -1; text-align: center; color: var(--dim); font-size: 21px; padding: 32px 0; }
+
   #ending { background: rgba(5,6,14,.92); }
   #ending .card { max-width: 600px; width: 100%; padding: 26px 28px; text-align: center; }
   #ending h2 { font-family: var(--display); font-weight: 400; font-size: 52px; color: var(--paper); margin: 0; line-height: .9; }
@@ -289,6 +303,7 @@
 <div id="topbtns">
   <button class="btn" id="mapBtn" aria-label="Map"><span class="lg">Map</span><span class="sm">⌖</span><span class="k">M</span></button>
   <button class="btn" id="jBtn" aria-label="Journal"><span class="lg">Journal</span><span class="sm">✎</span><span class="k">J</span></button>
+  <button class="btn" id="invBtn" aria-label="Inventory"><span class="lg">Items</span><span class="sm">⬡</span><span class="k">I</span></button>
   <button class="btn" id="sBtn" aria-label="Mute or unmute">♪</button>
   <button class="btn" id="mBtn" aria-label="Open menu"><span class="lg">Menu</span><span class="sm">☰</span><span class="k">Esc</span></button>
 </div>
@@ -353,6 +368,18 @@
   </div>
 </div>
 
+<div id="inv" class="overlay">
+  <div class="book panel" id="invBook">
+    <header>
+      <h2>Noah's pockets</h2>
+      <div class="tabs">
+        <button id="invClose" aria-label="Close inventory">✕</button>
+      </div>
+    </header>
+    <div id="invbody"></div>
+  </div>
+</div>
+
 <div id="ending" class="overlay">
   <div class="card panel">
     <h2>Chapter One complete</h2>
@@ -372,6 +399,7 @@
       <button class="btn big" id="pResume">Resume</button>
       <button class="btn" id="pMap">Map</button>
       <button class="btn" id="pJournal">Journal</button>
+      <button class="btn" id="pInv">Items</button>
       <button class="btn" id="pSettings">Settings</button>
       <button class="btn ghost" id="pQuit">Save &amp; quit</button>
     </div>
@@ -960,7 +988,7 @@ addEventListener('keydown', e => {
   if (e.repeat) return;
   const act = e.code==='KeyE'||e.code==='Space'||e.code==='Enter';
   if (e.code==='Escape' || (e.code==='KeyP' && (mode==='play'||mode==='pause'))){
-    if (mode==='play') openPause(); else if (mode==='pause') closePause(); else if (mode==='settings') closeSettings(); else if (mode==='journal') closeJournal(); else if (mode==='map') closeMap();
+    if (mode==='play') openPause(); else if (mode==='pause') closePause(); else if (mode==='settings') closeSettings(); else if (mode==='journal') closeJournal(); else if (mode==='map') closeMap(); else if (mode==='inv') closeInv();
     e.preventDefault(); return;
   }
   if (mode==='dialog'){
@@ -973,10 +1001,12 @@ addEventListener('keydown', e => {
   if (mode==='cut'){ if (act){ cutNext(); e.preventDefault(); } return; }
   if (mode==='journal'){ if (e.code==='KeyJ'||e.code==='Escape') closeJournal(); return; }
   if (mode==='map'){ if (e.code==='KeyM') closeMap(); return; }
+  if (mode==='inv'){ if (e.code==='KeyI'||e.code==='Escape') closeInv(); return; }
   if (mode==='play'){
     if (act){ interact(); e.preventDefault(); }
     if (e.code==='KeyJ') openJournal();
     if (e.code==='KeyM') openMap();
+    if (e.code==='KeyI') openInv();
   }
 });
 addEventListener('keyup', e => { if (kmap[e.code]) keys[kmap[e.code]]=false; });
@@ -1567,9 +1597,106 @@ function renderJournal(){
   }
 }
 
+// ================= inventory =================
+const ITEMS = {
+  letter:  { name:"Dad’s letter",       key:false, src:’clue’, desc:"The letter that started everything. Elias Vale’s handwriting — the first thing he’s ever sent you." },
+  photo:   { name:"Photograph",          key:false, src:’clue’, desc:"Your father, spring 2009. On the back: Ashbourne. Three years after he disappeared." },
+  key:     { name:"Brass key",           key:true,  src:’clue’, desc:"Heavy, warm. From Edmund Hale. Opens your father’s workshop beyond Ashwood forest." },
+  lantern: { name:"Dad’s lantern",       key:true,  src:’clue’, desc:"A dented brass lantern Tom Barrow kept for twenty years. You’ll need it in Ashwood." },
+  watch:   { name:"Mara’s pocket watch", key:false, src:’clue’, desc:"Stopped at 2:14. Engraved: ‘E — keep time for me. M.’ Found half-buried in forest moss." },
+  postcard:{ name:"Postcard, 2009",      key:false, src:’clue’, desc:"Postmarked Harlow Cross. ‘Still keeping left. — E.’ He was alive and writing to Ashbourne." },
+  ticket:  { name:"Train ticket stub",   key:false, src:’mem’,  desc:"Ashbourne → City, single, 13 June 2006. One way. The night before the fire." },
+};
+
+function drawItemIcon(ctx, id){
+  const g = ctx; const W=32, H=32;
+  g.clearRect(0,0,W,H);
+  if (id===’letter’){
+    g.fillStyle=’#e9dcbc’; g.fillRect(4,8,24,18);
+    g.fillStyle=’#c4a96e’; g.fillRect(4,8,24,1); g.fillRect(4,25,24,1); g.fillRect(4,8,1,18); g.fillRect(27,8,1,18);
+    g.fillStyle=’#b39a6e’; g.beginPath(); g.moveTo(4,8); g.lineTo(16,18); g.lineTo(28,8); g.stroke();
+    g.strokeStyle=’#b39a6e’; g.lineWidth=1; g.beginPath(); g.moveTo(4,8); g.lineTo(16,18); g.lineTo(28,8); g.stroke();
+    g.fillStyle=’#c0341a’; g.beginPath(); g.arc(16,18,4,0,Math.PI*2); g.fill();
+  } else if (id===’photo’){
+    g.fillStyle=’#f0e8d0’; g.fillRect(5,4,22,24);
+    g.fillStyle=’#d4c8a8’; g.fillRect(5,4,22,1); g.fillRect(5,27,22,1); g.fillRect(5,4,1,24); g.fillRect(26,4,1,24);
+    g.fillStyle=’#7a9ec0’; g.fillRect(8,8,16,12);
+    g.fillStyle=’#5a7ea0’; g.fillRect(8,8,16,6);
+    g.fillStyle=’#e8c870’; g.beginPath(); g.arc(19,13,3,0,Math.PI*2); g.fill();
+    g.fillStyle=’#3a3028’; g.fillRect(8,22,16,2);
+    g.fillStyle=’#5a4838’; g.fillRect(8,20,5,2); g.fillRect(15,20,3,2);
+  } else if (id===’key’){
+    g.fillStyle=’#c8a040’; g.beginPath(); g.arc(10,16,6,0,Math.PI*2); g.fill();
+    g.fillStyle=’#0a0f1e’; g.beginPath(); g.arc(10,16,3,0,Math.PI*2); g.fill();
+    g.fillStyle=’#c8a040’; g.fillRect(15,15,12,3);
+    g.fillRect(23,12,3,3); g.fillRect(19,12,3,3);
+    g.fillStyle=’#e0c060’; g.fillRect(15,15,12,1); g.beginPath(); g.arc(10,16,6,Math.PI,Math.PI*1.5); g.strokeStyle=’#e0c060’; g.lineWidth=1; g.stroke();
+  } else if (id===’lantern’){
+    g.fillStyle=’#8a6a30’; g.fillRect(12,3,8,3);
+    g.fillStyle=’#c09040’; g.fillRect(10,6,12,2);
+    g.fillStyle=’rgba(255,200,80,.18)’; g.beginPath(); g.arc(16,18,9,0,Math.PI*2); g.fill();
+    g.fillStyle=’#c09040’; g.fillRect(10,8,2,18); g.fillRect(20,8,2,18);
+    g.fillRect(10,8,12,2); g.fillRect(10,24,12,2);
+    g.fillStyle=’rgba(40,28,12,.7)’; g.fillRect(12,10,8,14);
+    g.fillStyle=’#ffe090’; g.beginPath(); g.arc(16,17,4,0,Math.PI*2); g.fill();
+    g.fillStyle=’#ffb030’; g.beginPath(); g.arc(16,17,2,0,Math.PI*2); g.fill();
+    g.fillStyle=’#c09040’; g.fillRect(13,26,6,3);
+  } else if (id===’watch’){
+    g.fillStyle=’#b8963c’; g.beginPath(); g.arc(16,16,10,0,Math.PI*2); g.fill();
+    g.fillStyle=’#e8e0c8’; g.beginPath(); g.arc(16,16,8,0,Math.PI*2); g.fill();
+    g.fillStyle=’#3a2a18’; g.beginPath(); g.arc(16,16,7,0,Math.PI*2); g.fill();
+    g.fillStyle=’#e8d090’; g.fillRect(15,10,2,7); g.fillRect(16,16,5,1);
+    g.fillStyle=’#b8963c’; g.fillRect(14,4,4,4); g.fillRect(14,24,4,4);
+    g.fillStyle=’#c8a848’; g.beginPath(); g.arc(16,16,1,0,Math.PI*2); g.fill();
+  } else if (id===’postcard’){
+    g.fillStyle=’#f0e8d8’; g.fillRect(3,7,26,18);
+    g.fillStyle=’#c8b898’; g.fillRect(3,7,26,1); g.fillRect(3,24,26,1); g.fillRect(3,7,1,18); g.fillRect(28,7,1,18);
+    g.fillStyle=’#7a9ec0’; g.fillRect(17,9,10,8);
+    g.strokeStyle=’#c8b898’; g.lineWidth=1;
+    for(let y=10;y<24;y+=3){ g.beginPath(); g.moveTo(5,y); g.lineTo(14,y); g.stroke(); }
+    g.fillStyle=’#c03020’; g.fillRect(24,9,4,5);
+  } else if (id===’ticket’){
+    g.fillStyle=’#f5e8c0’; g.fillRect(3,10,26,14);
+    g.fillStyle=’#c8a860’; g.fillRect(3,10,26,1); g.fillRect(3,23,26,1); g.fillRect(3,10,1,14); g.fillRect(28,10,1,14);
+    g.fillStyle=’#c8a860’; g.fillRect(13,10,1,14);
+    g.fillStyle=’#2a1e0e’; g.font=’bold 5px monospace’; g.fillText(‘ASH’,4,18); g.fillText(‘CTY’,16,18);
+    g.fillStyle=’#a06030’; for(let y=11;y<23;y+=3){ g.fillRect(14,y,1,2); }
+    g.fillStyle=’#e09040’; g.beginPath(); g.arc(7,17,2,0,Math.PI*2); g.fill();
+  }
+}
+
+function invHas(id){ const it=ITEMS[id]; if (!it) return false; return it.src===’clue’ ? S0.clues.includes(id) : S0.mems.includes(id); }
+
+function openInv(){ mode=’inv’; $(‘#inv’).classList.add(‘on’); renderInv(); for (const k in keys) keys[k]=false; }
+function closeInv(){ $(‘#inv’).classList.remove(‘on’); mode=’play’; }
+$(‘#invBtn’).addEventListener(‘click’, () => { if (mode===’play’) openInv(); else if (mode===’inv’) closeInv(); $(‘#invBtn’).blur(); });
+$(‘#invClose’).addEventListener(‘click’, closeInv);
+
+function renderInv(){
+  const body=$(‘#invbody’); body.innerHTML=’’;
+  const owned = Object.keys(ITEMS).filter(id => invHas(id));
+  if (!owned.length){
+    const e=document.createElement(‘div’); e.className=’inv-empty’;
+    e.textContent="Noah’s pockets are empty. Start by talking to the railway worker.";
+    body.appendChild(e); return;
+  }
+  for (const id of owned){
+    const it = ITEMS[id];
+    const card = document.createElement(‘div’);
+    card.className = ‘inv-item’ + (it.key ? ‘ key-item’ : ‘’);
+    const cv = document.createElement(‘canvas’); cv.width=32; cv.height=32;
+    drawItemIcon(cv.getContext(‘2d’), id);
+    card.appendChild(cv);
+    const nm = document.createElement(‘div’); nm.className=’iname’; nm.textContent=it.name; card.appendChild(nm);
+    const ds = document.createElement(‘div’); ds.className=’idesc’; ds.textContent=it.desc; card.appendChild(ds);
+    if (it.key){ const b=document.createElement(‘div’); b.className=’ibadge’; b.textContent=’KEY ITEM’; card.appendChild(b); }
+    body.appendChild(card);
+  }
+}
+
 // ================= zones =================
 const zones = [
-  { n:'Father’s workshop', x0:2, y0:1, x1:13, y1:10 },
+  { n:’Father’s workshop’, x0:2, y0:1, x1:13, y1:10 },
   { n:'Ashwood forest', x0:0, y0:0, x1:36, y1:27 },
   { n:'St. Aldric’s churchyard', x0:43, y0:2, x1:60, y1:12 },
   { n:'Hollow Farm', x0:8, y0:31, x1:33, y1:56 },
@@ -1845,6 +1972,7 @@ $('#mBtn').addEventListener('click', () => { if (mode==='play') openPause(); els
 $('#pResume').addEventListener('click', closePause);
 $('#pMap').addEventListener('click', () => { $('#pause').classList.remove('on'); mode='play'; openMap(); });
 $('#pJournal').addEventListener('click', () => { $('#pause').classList.remove('on'); mode='play'; openJournal(); });
+$('#pInv').addEventListener('click', () => { $('#pause').classList.remove('on'); mode='play'; openInv(); });
 $('#pSettings').addEventListener('click', () => { $('#pause').classList.remove('on'); openSettings('pause'); });
 $('#pQuit').addEventListener('click', () => {
   save(); $('#pause').classList.remove('on'); mode='title';

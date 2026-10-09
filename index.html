@@ -799,18 +799,18 @@ function save(){ try { S0.x=P.x; S0.y=P.y; S0.dir=P.dir; S0.cat={x:cat.x,y:cat.y
 function loadSave(){ try { const s=localStorage.getItem(SAVE_KEY); return s?JSON.parse(s):null; } catch(e){ return null; } }
 
 const CLUES = {
-  letter:  { t:’The letter’, d:’Dad\’s handwriting — the first thing he\’s ever sent me. Go to Ashbourne. Find the bookseller near the station. Trust no one until I know who is safe.’ },
+  letter:  { t:’The letter’, d:’Dad’s handwriting — the first thing he’s ever sent me. Go to Ashbourne. Find the bookseller near the station. Trust no one until I know who is safe.’ },
   photo:   { t:’Photograph from the train’, d:’Dad beside a woman and two men, outside a brick building. Back reads: “Ashbourne, spring 2009.” He vanished in 2006 — so someone photographed him three years after he supposedly disappeared.’ },
-  hand:    { t:’The bookseller — Edmund Hale’, d:’Hale recognised Dad\’s handwriting. He won\’t help me until I prove I\’m really Elias\’s son: I need to find the word Dad carved into things he built. Hale says to try Tom Barrow\’s farm south of the road.’ },
+  hand:    { t:’The bookseller — Edmund Hale’, d:’Hale recognised Dad’s handwriting. He won’t help me until I prove I’m really Elias’s son: I need to find the word Dad carved into things he built. Hale says to try Tom Barrow’s farm south of the road.’ },
   news:    { t:’Ashbourne Gazette, June 2006’, d:’Fire at the railway office. Mara Voss — the railway clerk — died inside. Elias Vale, signal engineer, went missing and was “sought for questioning.” The town still thinks he started the fire.’ },
   carving: { t:’The fence post carving’, d:’East fence at Hollow Farm: “E.V. + T.B. — LANTERN”. E.V. is Elias Vale. T.B. is Tom Barrow, the farmer. They were close friends. LANTERN is the word Hale was asking about.’ },
-  grave:   { t:’Mara Voss\’s grave’, d:’1974–2006. Fresh wildflowers at the stone — someone still visits. Mara is the woman standing next to Dad in the 2009 photograph, even though she\’s supposed to have died in 2006.’ },
-  key:     { t:’Brass key — from Hale’, d:’Opens Dad\’s workshop, hidden beyond Ashwood forest. Hale said: “He didn\’t run, Noah. He was pushed.” To get through the forest safely, I need the lantern from Tom Barrow at Hollow Farm.’ },
-  lantern: { t:’Dad\’s old lantern’, d:’Tom Barrow kept it for twenty years. He confessed: men came to his door after the fire and told him what to say. He signed a false witness statement against Dad — out of fear.’ },
-  silas:   { t:’Silas Voss’, d:’Mara\’s brother. He waits in Ashwood at night, watching the old trail. He believes Dad let Mara die and ran — and he wants answers. He\’s not dangerous, just grieving.’ },
-  watch:   { t:’Mara\’s pocket watch’, d:’Half-buried in the forest moss. Engraved: “E — keep time for me. M.” Mara gave this to Dad. Silas said it was never found in the fire\’s ashes — because it was never in the building.’ },
-  postcard:{ t:’Postcard, 2009’, d:’Hidden behind June\’s café counter for years. Postmarked Harlow Cross, three years after Dad vanished: “Still keeping left. — E.” He was alive, and he was writing to people in Ashbourne.’ },
-  workshop:{ t:’Dad\’s second letter — the truth’, d:’Mara discovered the railway\’s financial records had been falsified — money was being moved and land was being sold illegally. Someone killed her to keep it quiet, then framed Dad because he asked too many questions. Dad fled to protect me. The evidence ledger is hidden “where the trains used to sleep” — the old engine shed. Meet him at the old platform at dawn.’ },
+  grave:   { t:’Mara Voss’s grave’, d:’1974–2006. Fresh wildflowers at the stone — someone still visits. Mara is the woman standing next to Dad in the 2009 photograph, even though she’s supposed to have died in 2006.’ },
+  key:     { t:’Brass key — from Hale’, d:’Opens Dad’s workshop, hidden beyond Ashwood forest. Hale said: “He didn’t run, Noah. He was pushed.” To get through the forest safely, I need the lantern from Tom Barrow at Hollow Farm.’ },
+  lantern: { t:’Dad’s old lantern’, d:’Tom Barrow kept it for twenty years. He confessed: men came to his door after the fire and told him what to say. He signed a false witness statement against Dad — out of fear.’ },
+  silas:   { t:’Silas Voss’, d:’Mara’s brother. He waits in Ashwood at night, watching the old trail. He believes Dad let Mara die and ran — and he wants answers. He’s not dangerous, just grieving.’ },
+  watch:   { t:’Mara’s pocket watch’, d:’Half-buried in the forest moss. Engraved: “E — keep time for me. M.” Mara gave this to Dad. Silas said it was never found in the fire’s ashes — because it was never in the building.’ },
+  postcard:{ t:’Postcard, 2009’, d:’Hidden behind June’s café counter for years. Postmarked Harlow Cross, three years after Dad vanished: “Still keeping left. — E.” He was alive, and he was writing to people in Ashbourne.’ },
+  workshop:{ t:’Dad’s second letter — the truth’, d:’Mara discovered the railway’s financial records had been falsified — money was being moved and land was being sold illegally. Someone killed her to keep it quiet, then framed Dad because he asked too many questions. Dad fled to protect me. The evidence ledger is hidden “where the trains used to sleep” — the old engine shed. Meet him at the old platform at dawn.’ },
 };
 const MEMS = {
   ticket: { t:'Ticket stub', d:'Wedged under the bench: Ashbourne → City, single, 13 June 2006. The night before the fire. One way.' },
@@ -1245,7 +1245,7 @@ function talkHale(){
         ...haleKey(),
       ]);
     } else {
-      dialog([{s:’hale’, t: has(‘news’) ? ‘Good — Clara told you what this town believes. Now find the word carved into Tom Barrow\’s east fence. That\’s the truth your father left behind.’ : ‘The east fence at Tom Barrow\’s farm, south of the road. Go look at the posts. Then come back.’}]);
+      dialog([{s:’hale’, t: has(‘news’) ? ‘Good — Clara told you what this town believes. Now find the word carved into Tom Barrow’s east fence. That’s the truth your father left behind.’ : ‘The east fence at Tom Barrow’s farm, south of the road. Go look at the posts. Then come back.’}]);
     }
   } else if (!F().lantern){
     dialog([{s:'hale', t:'Hollow Farm, south of the road, west of here. Tom Barrow. Ask him about 2006 — and watch his hands when you do.'}]);
@@ -1288,7 +1288,7 @@ function talkClara(){
       {s:’clara’, t:’Some do. Others still carve his initials into their fences for good luck. This town made up its mind and then kept arguing about it for twenty years.’},
       {s:’clara’, t:’Mara worked with your father every day. If he had a reason to be here, she’s part of it. Her grave is behind the church. And Tom Barrow at Hollow Farm — he and your father were close. Your father helped build that fence.’},
       () => { F().news=1; addClue(‘news’); },
-      () => { if (F().hale1 && !has(‘carving’)) D.queue.unshift({s:’clara’, t:’If Hale needs proof — check the east fence at Tom\’s farm. Your father carved things into everything he built.’}); },
+      () => { if (F().hale1 && !has(‘carving’)) D.queue.unshift({s:’clara’, t:’If Hale needs proof — check the east fence at Tom’s farm. Your father carved things into everything he built.’}); },
       {s:’clara’, t:’If you find anything about Mara — anything at all — come and tell me. She deserves someone still looking.’},
     ]);
   } else {
@@ -1339,7 +1339,7 @@ function tomConfess(){
     {s:’tom’, t:’Lantern. God. He told you the word.’},
     {s:’tom’, t:’We built half this farm together. He was the closest thing to a brother I ever had.’},
     {s:’tom’, t:’The night the office burned — two men in suits came to my door before dawn. Railway company men. They told me what I’d witnessed. Told me word for word what my statement would say.’},
-    {s:’tom’, t:’I signed it. Said I saw Elias leave the building before the smoke. I didn’t see a thing. I was in bed. I signed because they knew things about me — about the farm’s debts. I was a coward.’},
+    {s:’tom’, t:’I signed it. Said I saw Elias leave the building before the smoke. I saw nothing. I was in bed. They knew about the farm debts — I was scared, and I let them use that. I was a coward.’},
     {s:’tom’, t:’Elias never wrote to me. Never blamed me. That’s the worst part.’},
     {choice:[
       {t:'Tell him about the letter', then:[
@@ -1447,7 +1447,7 @@ function actWatch(){
     {s:'narr', t:'A pocket watch, half-buried in the forest moss. Stopped at 2:14.'},
     {s:'narr', t:'Engraved on the back: “E — keep time for me. M.”'},
     {s:'noah', t:'M. That's Mara. She gave this to Dad.'},
-    {s:'noah', t:'But — Silas said her watch was never found in the fire's ashes. Because it was never in that building.'},
+    {s:'noah', t:'But Silas said her watch was never found in the ashes. Because it was never in that building.'},
     {s:'noah', t:'She gave it to Dad before she died. She knew something was going to happen that night.'},
     () => { F().watch=1; addClue('watch'); },
   ]);
@@ -1566,13 +1566,13 @@ $('#againBtn').addEventListener('click', () => { $('#ending').classList.remove('
 function objective(){
   const f=F();
   if (!f.walt) return { t:’Ask the railway worker where to find the bookseller’, at:npcPos(‘walt’) };
-  if (!f.hale1) return { t:’Find Edmund Hale\’s bookshop — west over the bridge, purple roof’, at:npcPos(‘hale’) };
+  if (!f.hale1) return { t:’Find Edmund Hale’s bookshop — west over the bridge, purple roof’, at:npcPos(‘hale’) };
   if (!f.key){
     if (has(‘carving’)) return { t:’Return to Hale — you found the carved word: LANTERN’, at:npcPos(‘hale’) };
     if (!f.news) return { t:’Talk to Clara Wynn in the square — she has newspaper records’, at:npcPos(‘clara’) };
     return { t:’Find the fence post carving at Hollow Farm (east fence, south road)’, at:{x:29*T+8,y:46*T+6} };
   }
-  if (!f.lantern) return { t:’Get Dad\’s lantern from Tom Barrow — you\’ll need it for the forest’, at:npcPos(‘tom’) };
+  if (!f.lantern) return { t:’Get Dad’s lantern from Tom Barrow — you’ll need it for the forest’, at:npcPos(‘tom’) };
   if (!f.end) return { t:’Follow the forest trail north into Ashwood — keep left at every fork’, at: P.y>27*T ? {x:30*T+16,y:28*T} : {x:7*T+8,y:8*T} };
   return { t:’Explore freely — Chapter Two coming soon’, at:null };
 }

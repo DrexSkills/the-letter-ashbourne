@@ -2,7 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0b0f1a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="The Letter">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
 <title>The Letter — Chapter One: Ashbourne</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -324,6 +332,74 @@
     #mapov .legend { gap: 4px 14px; font-size: 17px; }
   }
   @media (prefers-reduced-motion: reduce) { #zone, #toast, #fade { transition: none; } #dialog .more span { animation: none; } }
+
+  /* ===== mobile: app-like behaviour ===== */
+  html, body { overscroll-behavior: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; }
+  body { position: fixed; inset: 0; width: 100%; }
+  #hud { left: calc(12px + env(safe-area-inset-left, 0px)); }
+  #topbtns { right: calc(12px + env(safe-area-inset-right, 0px)); }
+  #mini { right: calc(12px + env(safe-area-inset-right, 0px)); }
+  #fsBtn { display: none; }
+  body.canfs.touch #fsBtn { display: inline-block; }
+
+  /* rotate-your-phone screen */
+  #rotate { z-index: 30; background: radial-gradient(ellipse at center, #141a2e, #05060e); flex-direction: column; text-align: center; gap: 6px; }
+  #rotate .phone { width: 46px; height: 78px; border: 4px solid var(--amber); border-radius: 9px; position: relative; margin: 0 auto 22px; animation: turn 2.4s ease-in-out infinite; box-shadow: 0 0 24px rgba(242,194,122,.25); }
+  #rotate .phone::after { content: ""; position: absolute; left: 50%; bottom: 5px; width: 8px; height: 3px; margin-left: -4px; background: var(--amber); border-radius: 2px; }
+  @keyframes turn { 0%,25% { transform: rotate(0); } 55%,85% { transform: rotate(-90deg); } 100% { transform: rotate(0); } }
+  #rotate h2 { font-family: var(--display); font-weight: 400; font-size: 40px; color: var(--paper); margin: 0; line-height: 1; }
+  #rotate p { margin: 4px 0 18px; font-size: 21px; color: #c9cfe3; max-width: 28ch; line-height: 1.15; }
+  #rotate .btn { font-size: 20px; }
+
+  /* add-to-home-screen tip on the title */
+  #install { display: none; margin: 16px auto 0; padding: 10px 14px; max-width: min(460px, 92%); text-align: left; gap: 12px; align-items: center; }
+  #install.on { display: flex; }
+  #install img { width: 44px; height: 44px; image-rendering: pixelated; border-radius: 10px; flex: none; }
+  #install .it { font-size: 19px; line-height: 1.15; flex: 1; }
+  #install .it b { color: var(--amber); font-weight: 400; }
+  #install .ix { background: none; border: 0; color: var(--dim); font-size: 22px; cursor: pointer; padding: 4px; }
+  #install .ib { margin-top: 6px; }
+
+  /* phones held sideways (short screens): compact HUD, controls at the edges */
+  @media (pointer: coarse) and (max-height: 520px) {
+    #hud { padding: 6px 10px 7px; max-width: min(300px, 38%); top: calc(8px + env(safe-area-inset-top, 0px)); }
+    #hud .chap { font-size: 17px; } #hud .time { font-size: 14px; } #hud .obj { font-size: 16px; margin-top: 3px; }
+    #topbtns { top: calc(8px + env(safe-area-inset-top, 0px)); flex-direction: row; gap: 6px; }
+    #topbtns .btn { width: 42px; height: 38px; padding: 0; display: grid; place-items: center; }
+    #topbtns .btn .lg, #topbtns .btn .k { display: none; }
+    #topbtns .btn .sm { display: inline; font-size: 20px; }
+    #mini { top: calc(54px + env(safe-area-inset-top, 0px)); width: 92px; height: 92px; }
+    #mini .lbl { display: none; }
+    #joybase { width: 112px; height: 112px; left: calc(22px + env(safe-area-inset-left, 0px)); bottom: calc(18px + env(safe-area-inset-bottom, 0px)); }
+    #joyknob { width: 48px; height: 48px; margin: -24px 0 0 -24px; }
+    #joyzone { width: 45%; height: 70%; }
+    .act { right: calc(14px + env(safe-area-inset-right, 0px)); bottom: calc(20px + env(safe-area-inset-bottom, 0px)); }
+    .act button { width: 66px; height: 66px; } .act button.small { width: 50px; height: 50px; }
+    #dialog { width: min(620px, calc(100% - 330px)); min-width: 300px; bottom: calc(8px + env(safe-area-inset-bottom, 0px)); padding: 8px 10px; gap: 10px; }
+    #portrait { width: 56px; height: 56px; }
+    #dialog .who { font-size: 21px; margin-bottom: 2px; } #dialog .line { font-size: 19px; min-height: 40px; }
+    #choices { gap: 4px; margin-top: 4px; } #choices button { font-size: 18px; padding: 3px 8px; }
+    #tut, #tut.on { bottom: calc(10px + env(safe-area-inset-bottom, 0px)); width: min(470px, calc(100% - 330px)); min-width: 280px; padding: 7px 12px; }
+    #tut .t { font-size: 17px; } #tut .s { font-size: 13px; } #tut .n { font-size: 24px; }
+    #prompt { bottom: calc(14px + env(safe-area-inset-bottom, 0px)); font-size: 18px; }
+    #toast, #toast.show { top: calc(122px + env(safe-area-inset-top, 0px)); left: calc(12px + env(safe-area-inset-left, 0px)); transform: none; max-width: min(300px, 38%); text-align: left; padding: 5px 10px; }
+    #toast .val { font-size: 20px; } #toast .lbl { font-size: 13px; }
+    #zone { font-size: 30px; top: calc(26% + env(safe-area-inset-top, 0px)); }
+    #title { justify-content: center; padding-top: 6px; padding-bottom: 6px; }
+    #title h1 { font-size: min(12vw, 19vh); }
+    #title .sub { font-size: 20px; margin: 4px 0; } #title .tag { font-size: 16px; margin-bottom: 8px; }
+    #title .menu { flex-direction: row; width: auto; flex-wrap: wrap; justify-content: center; }
+    #title .btn.big { font-size: 24px; padding: 6px 20px 8px; }
+    #title .keys { display: none; } #title .hint { margin-top: 6px; font-size: 15px; }
+    #install { margin-top: 6px; padding: 5px 10px; } #install .it { font-size: 15px; } #install img { width: 34px; height: 34px; }
+    #cut .card { font-size: 20px; padding: 16px 20px; max-height: 78vh; overflow-y: auto; }
+    #cut .card.narr { font-size: 22px; }
+    #chapcard .ttl { font-size: min(11vw, 22vh); } #chapcard .sub { font-size: 19px; } #chapcard .cont { margin-top: 14px; }
+    #ending .card, #pause .card, #settings .card { max-height: calc(100% - 16px); overflow-y: auto; padding: 12px 16px; }
+    #ending h2 { font-size: 38px; } #ending .stats { gap: 5px; } #ending .stats div { padding: 3px 8px; font-size: 16px; } #ending .stats b { font-size: 22px; }
+    #pause h2, #settings h2 { font-size: 34px; margin-bottom: 6px; } .srow { padding: 5px 0; font-size: 19px; }
+    #journal .book, #mapov .book, #inv .book { max-height: 100%; }
+  }
 </style>
 </head>
 <body>
@@ -340,6 +416,7 @@
   <button class="btn" id="mapBtn" aria-label="Map"><span class="lg">Map</span><span class="sm">⌖</span><span class="k">M</span></button>
   <button class="btn" id="jBtn" aria-label="Journal"><span class="lg">Journal</span><span class="sm">✎</span><span class="k">J</span></button>
   <button class="btn" id="invBtn" aria-label="Inventory"><span class="lg">Items</span><span class="sm">⬡</span><span class="k">I</span></button>
+  <button class="btn" id="fsBtn" aria-label="Full screen"><span class="lg">Full</span><span class="sm">⛶</span></button>
   <button class="btn" id="sBtn" aria-label="Mute or unmute">♪</button>
   <button class="btn" id="mBtn" aria-label="Open menu"><span class="lg">Menu</span><span class="sm">☰</span><span class="k">Esc</span></button>
 </div>
@@ -381,6 +458,7 @@
     <button class="btn ghost" id="setBtn">Settings</button>
   </div>
   <div class="hint" id="soundHint">♪ Click anywhere to start the music</div>
+  <div id="install" class="panel"><img src="icon-192.png" alt="" onerror="this.remove()"><div><div class="it"></div><button class="btn small ib" id="installBtn" style="display:none">Add to Home Screen</button></div><button class="ix" id="installX" aria-label="Hide tip">✕</button></div>
   <div class="keys"><b>WASD</b> / <b>arrows</b> walk &nbsp;&nbsp; <b>Shift</b> run &nbsp;&nbsp; <b>E</b> talk &amp; examine &nbsp;&nbsp; <b>J</b> journal</div>
 </div>
 
@@ -466,6 +544,7 @@
     <div class="legend"><span><b>▲</b> You</span><span><em>◆</em> Next objective</span><span>Faces: people you’ve met</span><span>M or Esc to close</span></div>
   </div>
 </div>
+<div id="rotate" class="overlay"><div class="phone"></div><h2>Turn your phone sideways</h2><p>The Letter plays best in landscape, full screen.</p><button class="btn" id="rotateOk">Play upright anyway</button></div>
 <div id="fade"></div>
 
 <script>
@@ -1205,9 +1284,27 @@ const Music = (() => {
   function sched(){ if (!ac || ac.state!=='running') return; while (nextBar < ac.currentTime+.8){ playBar(nextBar); nextBar += beat*4; bar++; } }
   return { init, apply, setMood:m => { if (MOODS[m]) mood=m; }, ctx:()=>ac, sfx:()=>sfx };
 })();
-const ensureAudio = () => Music.init();
-addEventListener('pointerdown', ensureAudio);
-addEventListener('keydown', ensureAudio);
+// Phones only allow sound after a real tap, and an iPhone's silent switch mutes
+// web audio unless a normal <audio> element is playing. So on every tap we
+// (1) create/resume the audio engine, (2) play a tiny empty sound inside the tap,
+// and (3) keep a silent looping <audio> element running so the music isn't muted.
+const SILENT_WAV = 'data:audio/wav;base64,UklGRmQGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YUAGAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA';
+let silentEl = null;
+function ensureAudio(){
+  Music.init();
+  const ac = Music.ctx(); if (!ac) return;
+  if (ac.state !== 'running') { try { ac.resume(); } catch(e){} }
+  try { const b=ac.createBuffer(1,1,22050), src=ac.createBufferSource(); src.buffer=b; src.connect(ac.destination); src.start(0); } catch(e){}
+  try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch(e){}
+  if (IS_TOUCH_DEVICE){
+    if (!silentEl){ silentEl = new Audio(SILENT_WAV); silentEl.loop = true; silentEl.setAttribute('playsinline',''); silentEl.preload='auto'; }
+    if (silentEl.paused) { const p = silentEl.play(); if (p && p.catch) p.catch(()=>{}); }
+  }
+  const ok = ac.state === 'running'; const h=$('#soundHint'); if (h && ok) h.classList.add('gone');
+}
+const IS_TOUCH_DEVICE = matchMedia('(hover: none) and (pointer: coarse)').matches || 'ontouchend' in window;
+for (const ev of ['touchstart','touchend','pointerdown','click','keydown']) addEventListener(ev, ensureAudio, { passive:true, capture:true });
+document.addEventListener('visibilitychange', () => { if (!document.hidden) { const ac=Music.ctx(); if (ac && ac.state!=='running') { try { ac.resume(); } catch(e){} } if (silentEl && silentEl.paused && Music.ctx()) silentEl.play().catch(()=>{}); } else if (silentEl) silentEl.pause(); });
 
 function beep(f, d=.04, type='square', vol=.03, when=0){
   const ac=Music.ctx(); if (!ac || SETTINGS.muted) return;
@@ -2233,7 +2330,7 @@ let gateCool=0;
 let SC=3, VW=0, VH=0, dark=mk(1,1), dctx=dark.getContext('2d');
 function resize(){
   const m=Math.min(innerWidth,innerHeight);
-  SC=Math.max(2, Math.round(m/230)+SETTINGS.zoom);
+  SC=Math.max(2, Math.round(IS_TOUCH_DEVICE ? m/130 : m/230)+SETTINGS.zoom);
   VW=Math.ceil(innerWidth/SC); VH=Math.ceil(innerHeight/SC);
   canvas.width=VW; canvas.height=VH; canvas.style.width=VW*SC+'px'; canvas.style.height=VH*SC+'px';
   ctx.imageSmoothingEnabled=false;
@@ -2245,6 +2342,52 @@ let camX=P.x-VW/2, camY=P.y-VH/2, forestF=0;
 const smoke=[];
 const flies=Array.from({length:70},()=>({x:(2+rng()*33)*T, y:(1+rng()*25)*T, p:rng()*6.28, s:.5+rng()}));
 const rflies=Array.from({length:25},()=>({x:(60+rng()*20)*T, y:rng()*H*T, p:rng()*6.28, s:.5+rng()}));
+
+// ================= mobile: full screen, rotate, install =================
+const isStandalone = () => matchMedia('(display-mode: fullscreen)').matches || matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+const fsEl = () => document.fullscreenElement || document.webkitFullscreenElement;
+const canFS = !!(document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen) && !isStandalone();
+if (IS_TOUCH_DEVICE) document.body.classList.add('touch');
+if (canFS) document.body.classList.add('canfs');
+function enterFullscreen(){
+  if (!canFS || fsEl()) return;
+  const el=document.documentElement, req=el.requestFullscreen || el.webkitRequestFullscreen;
+  try { const p=req.call(el, { navigationUI:'hide' }); const lock=()=>{ try { screen.orientation.lock('landscape').catch(()=>{}); } catch(e){} };
+    if (p && p.then) p.then(lock).catch(()=>{}); else lock(); } catch(e){}
+}
+function exitFullscreen(){ const ex=document.exitFullscreen || document.webkitExitFullscreen; if (ex && fsEl()) try { ex.call(document); } catch(e){} }
+$('#fsBtn').addEventListener('click', () => { fsEl() ? exitFullscreen() : enterFullscreen(); $('#fsBtn').blur(); });
+for (const ev of ['fullscreenchange','webkitfullscreenchange']) document.addEventListener(ev, () => setTimeout(resize, 120));
+
+let portraitOk = false;
+function checkOrientation(){
+  const portrait = innerHeight > innerWidth * 1.05;
+  $('#rotate').classList.toggle('on', IS_TOUCH_DEVICE && portrait && !portraitOk);
+}
+$('#rotateOk').addEventListener('click', () => { portraitOk=true; checkOrientation(); });
+addEventListener('resize', checkOrientation);
+addEventListener('orientationchange', () => setTimeout(() => { resize(); checkOrientation(); }, 250));
+if (window.visualViewport) visualViewport.addEventListener('resize', () => resize());
+checkOrientation();
+
+// "Add to Home Screen" tip
+let installEvt = null;
+const IS_IOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
+function showInstallTip(){
+  let hidden=false; try { hidden = localStorage.getItem('the-letter-install-hidden')==='1'; } catch(e){}
+  if (!IS_TOUCH_DEVICE || isStandalone() || hidden) return;
+  const t=$('#install .it');
+  if (installEvt){ t.innerHTML='<b>Play like an app:</b> add The Letter to your home screen for full screen, no browser bars.'; $('#installBtn').style.display=''; }
+  else if (IS_IOS) t.innerHTML='<b>Play full screen:</b> tap <b>Share ⬆</b> at the bottom of Safari, then <b>“Add to Home Screen”</b>. Open it from your home screen.';
+  else t.innerHTML='<b>Play full screen:</b> tap your browser’s <b>⋮ menu</b>, then <b>“Add to Home screen”</b> or <b>“Install app”</b>.';
+  $('#install').classList.add('on');
+}
+addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt=e; showInstallTip(); });
+$('#installBtn').addEventListener('click', async () => { if (!installEvt) return; installEvt.prompt(); try { await installEvt.userChoice; } catch(e){} installEvt=null; $('#install').classList.remove('on'); });
+$('#installX').addEventListener('click', () => { $('#install').classList.remove('on'); try { localStorage.setItem('the-letter-install-hidden','1'); } catch(e){} });
+showInstallTip();
+if (IS_TOUCH_DEVICE) { const h=$('#soundHint'); if (h) h.textContent='♪ Tap anywhere to turn on the music'; }
+if ('serviceWorker' in navigator && location.protocol==='https:' && /github\.io$/.test(location.hostname)) { navigator.serviceWorker.register('sw.js').catch(()=>{}); }
 
 // ================= tutorial =================
 let tutT=0, tutMoved=0;
@@ -2492,7 +2635,7 @@ function continueGame(){
   if (F().ch2end && chap()===2) return startChapter(3);
   beginPlay(); showZone('Welcome back', PHASE_NAMES[F().phase]);
 }
-$('#playBtn').addEventListener('click', () => { ensureAudio(); hasSave() ? continueGame() : startNew(); });
+$('#playBtn').addEventListener('click', () => { ensureAudio(); if (IS_TOUCH_DEVICE) enterFullscreen(); hasSave() ? continueGame() : startNew(); });
 $('#newBtn').addEventListener('click', () => {
   if (!newArmed){ newArmed=true; $('#newBtn').textContent='Erase save and start over?'; return; }
   startNew();

@@ -28,6 +28,13 @@ Open `index.html` in any modern browser, or enable GitHub Pages for this reposit
 | Journal | J | Journal button |
 | Pause menu | Esc or P | Menu button |
 
+## Playing on a phone
+
+- Turn your phone sideways — the game is laid out for landscape and zooms in for small screens.
+- **Add it to your home screen** to play full screen like an app: on iPhone, tap Share ⬆ then *Add to Home Screen*; on Android, tap ⋮ then *Add to Home screen* / *Install app* (or use the button on the title screen).
+- Tap anywhere once to turn on the sound. On iPhone, sound works even with the silent switch on.
+- Drag on the left side of the screen to walk; tap **E** to talk and examine.
+
 ## Features
 
 - A full chapter of story with seven characters, pixel portraits, typewriter dialogue and choices that change later scenes

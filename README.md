@@ -4,6 +4,17 @@ A story-driven, top-down 2D pixel-art mystery adventure that runs entirely in th
 
 Twenty years ago Noah's father, Elias Vale, vanished. Three days ago, he wrote to him. The letter sends Noah to the quiet countryside town of Ashbourne, where everyone remembers Elias differently, and the trail leads through the dark of Ashwood forest.
 
+
+## Story
+
+**Chapter One — The Letter.** Noah Vale arrives in Ashbourne after a letter from the father who vanished twenty years ago. A bookseller, a farmer's fence, a dark forest, and a hidden workshop.
+
+**Chapter Two — The Ledger.** Dawn on the old platform. His father doesn't come, but a note does. A locked engine shed, a landowner with too many answers, and the ledger Mara Voss died protecting.
+
+**Chapter Three — Keeping Left.** Who was "W.P."? The answer was at the station all along. Ends with a full finale and an epilogue shaped by your choices.
+
+New players get a short guided tutorial, yellow **!** markers above whoever moves the story forward, and a **Story so far** tab in the journal.
+
 ## Play
 
 Open `index.html` in any modern browser, or enable GitHub Pages for this repository and play it online.

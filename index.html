@@ -100,6 +100,38 @@
   #dialog .more { text-align: right; color: var(--dim); font-size: 17px; height: 18px; }
   #dialog .more span { animation: blink 1s steps(2) infinite; }
   @keyframes blink { 50% { opacity: 0; } }
+  #dialog .who .role { font-family: var(--body); font-size: 18px; color: var(--dim); margin-left: 8px; letter-spacing: 0; text-shadow: none; }
+  #dialog.think .line { font-style: italic; color: #d6dcf0; }
+  #dialog.think .line::before { content: "“"; color: var(--dim); } #dialog.think .line::after { content: "”"; color: var(--dim); }
+  #dialog .more { display: flex; justify-content: flex-end; align-items: center; gap: 10px; }
+  #dialog .more .tip { font-style: normal; color: var(--amber); font-size: 17px; animation: blink 1.2s steps(2) infinite; }
+  #choices .ask { font-size: 17px; color: var(--amber); margin-bottom: 2px; }
+  #tut { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(76px + env(safe-area-inset-bottom, 0px)); z-index: 5;
+    width: min(560px, calc(100% - 24px)); padding: 10px 16px 11px 14px; display: none; gap: 12px; align-items: center;
+    border-left: 6px solid var(--amber); pointer-events: none; }
+  #tut.on { display: flex; animation: tutIn .35s ease-out; }
+  #tut .n { font-family: var(--display); font-size: 30px; color: var(--amber); line-height: 1; flex: none; }
+  #tut .t { font-size: 21px; line-height: 1.15; }
+  #tut .t b { font-weight: 400; color: var(--amber); }
+  #tut .s { font-size: 15px; color: var(--dim); margin-top: 2px; }
+  @keyframes tutIn { from { opacity: 0; transform: translate(-50%, 10px); } to { opacity: 1; transform: translate(-50%, 0); } }
+  #hud.flash { animation: hudFlash 1.6s ease-out; }
+  @keyframes hudFlash { 0%,40% { border-color: var(--amber); box-shadow: 0 0 0 3px #070a12, 0 0 24px rgba(242,194,122,.55); } 100% { } }
+  #hud .newobj { display: none; font-size: 15px; color: var(--rose); margin-top: 4px; }
+  #hud.flash .newobj { display: block; }
+  #chapcard { background: radial-gradient(ellipse at center, rgba(14,12,30,.86), rgba(4,4,10,.97)); flex-direction: column; text-align: center; cursor: pointer; z-index: 8; }
+  #chapcard .num { font-size: 24px; color: var(--amber); letter-spacing: .3em; text-transform: uppercase; }
+  #chapcard .ttl { font-family: var(--display); font-size: clamp(56px, 11vw, 112px); color: var(--paper); line-height: .9; margin: 10px 0 6px;
+    text-shadow: 4px 4px 0 #070a12, 0 0 36px rgba(242,194,122,.3); }
+  #chapcard .rule { width: min(320px, 70%); height: 3px; background: linear-gradient(90deg, transparent, var(--amber), transparent); margin: 6px auto 14px; }
+  #chapcard .sub { font-size: 24px; color: #cdd3e8; font-style: italic; max-width: 32ch; }
+  #chapcard .cont { margin-top: 30px; color: var(--dim); font-size: 18px; }
+  #chapcard.on .ttl, #chapcard.on .num, #chapcard.on .sub { animation: cardIn 1.2s ease-out both; }
+  #chapcard.on .sub { animation-delay: .4s; }
+  @keyframes cardIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  .story h4 { font-family: var(--display); font-weight: 400; font-size: 26px; color: var(--amber); margin: 6px 0 2px; }
+  .story p { margin: 0 0 6px; font-size: 20px; line-height: 1.2; color: #d9dcea; }
+  .story p.next { color: var(--rose); }
   #choices { display: flex; flex-direction: column; gap: 7px; margin-top: 10px; }
   #choices button { text-align: left; font-family: var(--body); font-size: 22px; color: var(--ink); background: linear-gradient(180deg, #1a2238, #111827);
     border: 2px solid var(--edge); padding: 5px 12px; cursor: pointer; border-radius: 2px; transition: border-color .15s, background .15s, box-shadow .15s; }
@@ -280,7 +312,9 @@
     #topbtns .btn .lg { display: none; }
     #topbtns .btn .sm { display: inline; font-size: 22px; }
     #hud { max-width: calc(100% - 84px); }
-    #mini { top: calc(214px + env(safe-area-inset-top, 0px)); width: 96px; height: 96px; }
+    #mini { top: calc(268px + env(safe-area-inset-top, 0px)); width: 96px; height: 96px; }
+    #tut { bottom: calc(176px + env(safe-area-inset-bottom, 0px)); }
+    #tut .t { font-size: 19px; }
     #mini .lbl { display: none; }
     #zone { font-size: 32px; white-space: normal; width: 90%; text-align: center; top: calc(42% + env(safe-area-inset-top, 0px)); }
     #toast, #toast.show { top: calc(160px + env(safe-area-inset-top, 0px)); left: 12px; transform: none; max-width: calc(100% - 130px); text-align: left; }
@@ -297,9 +331,10 @@
 <div id="vignette"></div>
 
 <div id="hud" class="panel">
-  <div class="chap">Chapter One · Ashbourne</div>
+  <div class="chap" id="chapLbl">Chapter One · The Letter</div>
   <div class="time" id="timeLbl">Late afternoon</div>
   <div class="obj" id="objLbl"></div>
+  <div class="newobj">New objective</div>
 </div>
 <div id="topbtns">
   <button class="btn" id="mapBtn" aria-label="Map"><span class="lg">Map</span><span class="sm">⌖</span><span class="k">M</span></button>
@@ -312,6 +347,7 @@
 <div id="mini" class="panel" role="button" aria-label="Open map"><canvas id="minic" width="128" height="128"></canvas><div class="lbl">Map · M</div></div>
 <div id="zone"></div>
 <div id="toast" class="panel"><div class="lbl"></div><div class="val"></div></div>
+<div id="tut" class="panel"><div class="n">?</div><div><div class="t"></div><div class="s"></div></div></div>
 <div id="prompt" class="panel"><b>E</b> <span></span></div>
 
 <div id="dialog" class="panel">
@@ -320,7 +356,7 @@
     <div class="who"></div>
     <div class="line"></div>
     <div id="choices"></div>
-    <div class="more"><span>▼</span></div>
+    <div class="more"><em class="tip"></em><span>▼</span></div>
   </div>
 </div>
 
@@ -358,7 +394,8 @@
     <header>
       <h2>Noah's journal</h2>
       <div class="tabs">
-        <button data-tab="clues" class="on">Clues</button>
+        <button data-tab="story" class="on">Story</button>
+        <button data-tab="clues">Clues</button>
         <button data-tab="people">People</button>
         <button data-tab="mems">Memories</button>
         <button id="jClose" aria-label="Close journal">✕</button>
@@ -381,14 +418,15 @@
   </div>
 </div>
 
+<div id="chapcard" class="overlay"><div class="num"></div><div class="ttl"></div><div class="rule"></div><div class="sub"></div><div class="cont">Click or press E</div></div>
 <div id="ending" class="overlay">
   <div class="card panel">
-    <h2>Chapter One complete</h2>
-    <div class="sub">Next: Chapter Two — The Ledger</div>
+    <h2 id="endTitle">Chapter One complete</h2>
+    <div class="sub" id="endSub">Next: Chapter Two — The Ledger</div>
     <div class="stats" id="stats"></div>
     <div class="note" id="endNote"></div>
     <div class="row" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-      <button class="btn" id="roamBtn">Keep exploring</button>
+      <button class="btn" id="roamBtn">Continue</button>
       <button class="btn ghost" id="againBtn">New game</button>
     </div>
   </div>
@@ -471,6 +509,8 @@ rect(40,41,7,2,PATH); rect(48,42,11,1,PATH); rect(57,41,2,1,PATH);
 rect(59,27,2,3,PATH); rect(48,18,11,1,PATH); rect(41,17,5,1,PATH); rect(48,11,3,1,PATH);
 rect(25,32,2,7,PATH); rect(21,38,6,1,PATH); rect(21,39,2,1,PATH);   // Hollow Farm lane
 rect(12,41,17,12,FIELD);
+rect(81,15,2,9,PATH); rect(81,15,5,1,PATH);   // track-side path to the engine shed
+rect(79,11,10,3,PATH);                         // shed yard
 
 // forest trail
 const trail = [[30,29],[30,22],[25,22],[25,17],[28,17],[28,12],[20,12],[20,9],[14,9],[14,15],[9,15],[9,10],[7,10],[7,8]];
@@ -492,12 +532,13 @@ const houses = [
   { id:'books',    x:49, y:20, w:6, h:4, roof:'#4f4a72', wall:'#cdb48c', sign:true },
   { id:'records',  x:38, y:37, w:6, h:4, roof:'#3e4a5a', wall:'#b9a888', brick:true },
   { x:55, y:37, w:5, h:4, roof:'#6d4b34', wall:'#d6c2a2' },
-  { x:57, y:23, w:5, h:4, roof:'#8a3b2e', wall:'#c9b28a' },
+  { id:'post', x:57, y:23, w:5, h:4, roof:'#7a2e2e', wall:'#d8c3a0', post:true },
   { x:56, y:14, w:5, h:4, roof:'#3e5a4a', wall:'#d8c3a0' },
   { x:36, y:13, w:5, h:4, roof:'#7a5a3a', wall:'#d2bd98' },
   { id:'farm',     x:19, y:34, w:6, h:4, roof:'#7a3a2a', wall:'#c4a782', barn:true },
   { id:'station',  x:83, y:19, w:7, h:5, roof:'#2f5d63', wall:'#a8644a', brick:true, station:true },
   { id:'workshop', x:4,  y:3,  w:7, h:5, workshop:true },
+  { id:'shed', x:80, y:5, w:8, h:6, shed:true, roof:'#2a2624', wall:'#5a4038' },
 ];
 for (const h of houses){ for (let y=h.y;y<h.y+h.h;y++) for (let x=h.x;x<h.x+h.w;x++){ solid[y*W+x]=1; if(at(x,y)!==PATH) set(x,y,GRASS);} reserveRect(h.x-1,h.y-1,h.w+2,h.h+3); }
 function reserveRect(x0,y0,w,h){ for(let y=y0;y<y0+h;y++)for(let x=x0;x<x0+w;x++) if(x>=0&&y>=0&&x<W&&y<H) reserved[y*W+x]=1; }
@@ -507,10 +548,14 @@ for (let i=0;i<W*H;i++) if (tiles[i]===WATER || tiles[i]===RAIL) solid[i]=1;
 const fences = [];
 for (let x=11;x<=29;x++){ if (x!==21 && x!==22) fences.push({x,y:40,h:true}); fences.push({x,y:53,h:true}); }
 for (let y=41;y<=52;y++){ fences.push({x:11,y,h:false}); fences.push({x:29,y,h:false}); }
+// fence around the engine shed yard (gate at 83-84 south, culvert grate at 78,9 west)
+for (let x=78;x<=89;x++){ fences.push({x,y:3,h:true}); if (x!==83 && x!==84) fences.push({x,y:14,h:true}); }
+for (let y=4;y<=13;y++){ if (y!==9) fences.push({x:78,y,h:false}); fences.push({x:89,y,h:false}); }
+reserveRect(75,2,16,15);
 for (const f of fences){ solid[f.y*W+f.x]=1; reserved[f.y*W+f.x]=1; }
 
 // props
-const lamps = [[40,26],[53,26],[40,35],[53,35],[45,15],[48,43],[82,25],[82,36],[64,32]];
+const lamps = [[40,26],[53,26],[40,35],[53,35],[45,15],[48,43],[82,25],[82,36],[64,32],[80,16]];
 for (const [x,y] of lamps){ solid[y*W+x]=1; reserve(x,y); }
 const graves = [];
 for (const gx of [52,54,56,58]) for (const gy of [6,8,10]) { graves.push({x:gx,y:gy,mara:gx===56&&gy===8}); solid[gy*W+gx]=1; }
@@ -520,6 +565,7 @@ const props = [
   { kind:'sign',  x:64, y:29 },
   { kind:'scarecrow', x:16, y:46 },
   { kind:'well', x:46, y:32 },
+  { kind:'gate', x:83, y:14 }, { kind:'gate', x:84, y:14 }, { kind:'grate', x:78, y:9 }, { kind:'postbox', x:62, y:27 },
 ];
 for (const p of props){ solid[p.y*W+p.x]=1; reserve(p.x,p.y); }
 
@@ -626,7 +672,29 @@ function makePine(v){
 }
 const roundTrees=[0,1,2].map(makeRoundTree), pines=[0,1,2].map(makePine);
 
+function makeShed(h){
+  const extra=12, w=h.w*T, ht=h.h*T+extra, c=mk(w,ht), g=c.getContext('2d');
+  const R=(x,y,ww,hh,col)=>{ g.fillStyle=col; g.fillRect(x,y,ww,hh); };
+  // blackened brick walls
+  R(0,18,w,ht-18,'#5a4038');
+  for (let y=18;y<ht;y+=4){ R(0,y,w,1,'#3e2a24'); for (let x=((y/4)%2)*4;x<w;x+=8) R(x,y,1,4,'#3e2a24'); }
+  for (let i=0;i<70;i++){ R(Math.floor(rng()*w), 18+Math.floor(rng()*(ht-20)), 2+Math.floor(rng()*4), 1, rng()<.5?'#2a1c18':'#1e1412'); }
+  // collapsed roof: charred trusses with open sky gaps
+  R(0,4,w,16,'#2a2624');
+  for (let x=2;x<w;x+=10){ R(x,0,3,20,'#1a1614'); R(x+1,0,1,20,'#3a302a'); }
+  for (let x=6;x<w-6;x+=18){ R(x,6,8,10,'#0f1218'); R(x+1,7,6,8,'#16202c'); }
+  R(0,18,w,2,'#1a1614');
+  // big arched engine doorway
+  const dx=Math.floor(w/2-12); R(dx,ht-30,24,30,'#120d0b'); R(dx-2,ht-32,28,3,'#3e2a24'); R(dx,ht-30,24,2,'#2a1c18');
+  R(dx+3,ht-6,18,6,'#1e1614'); R(dx+5,ht-4,14,1,'#6f6a66'); R(dx+5,ht-2,14,1,'#6f6a66');
+  // faded sign
+  R(6,22,30,7,'#2a2420'); for (let i=0;i<8;i++) R(8+i*3,24,2,3,'#8a7a5a');
+  // weeds
+  for (let i=0;i<30;i++){ R(Math.floor(rng()*w), ht-2-Math.floor(rng()*6), 1, 2+Math.floor(rng()*3), rng()<.5?'#3f6630':'#2a4a2a'); }
+  h.glows=[]; h.spr=c; h.extra=extra; h.door={x:w/2,y:ht};
+}
 function makeHouse(h){
+  if (h.shed) return makeShed(h);
   const extra = h.church ? 30 : 10;
   const w=h.w*T, ht=h.h*T+extra, c=mk(w,ht), g=c.getContext('2d');
   const roofCol = h.workshop ? '#3b3530' : h.church ? '#4a4e66' : h.roof;
@@ -658,6 +726,7 @@ function makeHouse(h){
     h.glows.push([wx+4,wy+4]);
   }
   if (h.sign){ g.fillStyle='#2b2f4a'; g.fillRect(dx-8,dy-10,dw+16,7); g.fillStyle='#f2c27a'; for(let i=0;i<7;i++) g.fillRect(dx-5+i*3,dy-8,2,3); }
+  if (h.post){ g.fillStyle='#7a2e2e'; g.fillRect(dx-8,dy-10,dw+16,7); g.fillStyle='#f2c27a'; g.fillRect(dx-5,dy-8,4,3); for(let i=0;i<4;i++) g.fillRect(dx+1+i*3,dy-8,2,3); g.fillStyle='#efe3c8'; g.fillRect(dx-5,dy-8,4,1); }
   if (h.awning){ for(let x=dx-12;x<dx+dw+12;x++){ g.fillStyle=(Math.floor(x/4)%2)?'#e8e0cc':'#a04a3a'; g.fillRect(x,dy-6,1,4);} g.fillStyle='#6b2e24'; g.fillRect(dx-12,dy-2,dw+24,1); }
   if (h.station){ g.fillStyle='#1d2a2e'; g.fillRect(dx-16,dy-12,dw+32,8); g.fillStyle='#efe3c8'; for(let i=0;i<10;i++) if(i!==4&&i!==5) g.fillRect(dx-12+i*4,dy-10,2,4); g.fillStyle='#efe3c8'; g.fillRect(w/2-4,bodyTop+3,8,8); g.fillStyle='#1d2a2e'; g.fillRect(w/2,bodyTop+4,1,4); g.fillRect(w/2,bodyTop+7,3,1); }
   if (h.barn){ g.fillStyle='#7a3a2a'; g.fillRect(dx-3,dy-1,dw+6,dh+1); g.fillStyle='#e3d3b0'; g.fillRect(dx-3,dy-1,dw+6,1); g.fillRect(dx-3,dy-1,1,dh+1); g.fillRect(dx+dw+2,dy-1,1,dh+1); for(let i=0;i<dh;i++){ g.fillRect(dx-2+Math.floor(i*(dw+4)/dh),dy+i,1,1); g.fillRect(dx+dw+1-Math.floor(i*(dw+4)/dh),dy+i,1,1);} }
@@ -684,6 +753,10 @@ const CH = {
   tom:   { name:'Tom Barrow', skin:'#c48a62', skin2:'#a26c48', hair:'#9c958a', style:'short', hat:{c:'#d9b35e',s:'straw'}, beard:'#a39c90', top:'#3d5a8a', top2:'#2e466e', shirt:'#b84a3a', pants:'#3d5a8a', pants2:'#2e466e', pitch:160 },
   silas: { name:'Silas Voss', skin:'#b88264', skin2:'#966447', hair:'#2a201c', style:'short', hat:{c:'#1d1a1c',s:'brim'}, stubble:'#4a3a32', top:'#2b2826', top2:'#1f1c1b', pants:'#1f1d1f', pants2:'#171517', pitch:140 },
   june:  { name:'June', skin:'#a86b4f', skin2:'#8a5238', hair:'#2a1a14', style:'bun', top:'#b0574a', top2:'#8e4237', apron:'#efe6d4', pants:'#3a2f2a', pants2:'#2c231f', pitch:380 },
+  ashcombe: { name:'Victor Ashcombe', role:'landowner', skin:'#e2b896', skin2:'#c4967a', hair:'#cfcac2', style:'short', top:'#2e3346', top2:'#232838', shirt:'#e8e4dc', pants:'#2a2e3e', pants2:'#20232f', mustache:'#bdb8b0', pitch:175 },
+  rosa:  { name:'Rosa Marsh', role:'postmistress', skin:'#d9a07c', skin2:'#b8805e', hair:'#b9a27a', style:'bun', glasses:true, top:'#8a2e2e', top2:'#6e2424', scarf:'#e8c46a', pants:'#2f3446', pants2:'#252a38', pitch:400 },
+  bennet: { name:'Reverend Bennet', role:'vicar', skin:'#e8c0a0', skin2:'#c99e80', hair:'#8a8478', style:'bald', glasses:true, top:'#1d1d24', top2:'#141418', shirt:'#f2f2f2', pants:'#1d1d24', pants2:'#141418', pitch:205 },
+  elias: { name:'Elias Vale', role:'your father', skin:'#c48a66', skin2:'#a26e4e', hair:'#77727c', style:'curly', beard:'#6a656e', top:'#6e6a66', top2:'#555150', pants:'#3a3a44', pants2:'#2c2c34', pitch:250 },
   pip:   { name:'Pip', skin:'#e8b896', skin2:'#c99474', hair:'#c46a2a', style:'short', hat:{c:'#c0392b',s:'cap'}, top:'#e0a040', top2:'#b88030', pants:'#4a5a7a', pants2:'#3a4862', kid:true, pitch:520 },
 };
 
@@ -792,9 +865,12 @@ function drawPortrait(g, c){
 }
 
 // ================= state =================
-const NEW_STATE = () => ({ f:{ phase:0 }, clues:[], mems:[], met:[], x:86*T+8, y:30*T+10, dir:'left' });
+const NEW_STATE = () => ({ f:{ phase:0, chap:1 }, clues:[], mems:[], met:[], x:86*T+8, y:30*T+10, dir:'left', tut:1, dlgCount:0 });
 let S0 = NEW_STATE();
 const F = () => S0.f;
+const chap = () => F().chap || 1;
+const PHASE_NAMES = ['Late afternoon','Dusk','Night','Dawn','Morning','Evening','Night'];
+const LOOK = () => [0,1,2,3,0,1,2][F().phase] || 0;
 const SAVE_KEY = 'the-letter-ch1-v1';
 function save(){ try { S0.x=P.x; S0.y=P.y; S0.dir=P.dir; S0.cat={x:cat.x,y:cat.y,follow:cat.follow}; localStorage.setItem(SAVE_KEY, JSON.stringify(S0)); } catch(e){} }
 function loadSave(){ try { const s=localStorage.getItem(SAVE_KEY); return s?JSON.parse(s):null; } catch(e){ return null; } }
@@ -811,6 +887,13 @@ const CLUES = {
   silas:   { t:'Silas Voss', d:'Mara’s brother. He waits in Ashwood at night, watching the old trail. He believes Dad let Mara die and ran — and he wants answers. He’s not dangerous, just grieving.' },
   watch:   { t:'Mara’s pocket watch', d:'Half-buried in the forest moss. Engraved: “E — keep time for me. M.” Mara gave this to Dad. Silas said it was never found in the fire’s ashes — because it was never in the building.' },
   postcard:{ t:'Postcard, 2009', d:'Hidden behind June’s café counter for years. Postmarked Harlow Cross, three years after Dad vanished: “Still keeping left. — E.” He was alive, and he was writing to people in Ashbourne.' },
+  note:    { t:'Dad’s note at dawn', d:'He didn’t come. Walt passed on a note from “a man in a grey coat”: they’re watching the platform. Get the ledger first — old engine shed, north along the tracks, under the inspection pit.' },
+  ashcombe:{ t:'Victor Ashcombe', d:'Owns the old branch line and the engine shed — Ashcombe Holdings bought it in 2007, right after the fire. Keeps the shed gate locked and knew exactly who I was.' },
+  ledger:  { t:'Mara’s ledger', d:'Hidden in the inspection pit. The branch-line land was undervalued from £410,000 to £38,000. Ashcombe Holdings paid £27,000 to someone signed “W.P.” — who was told to “clear the office records” two days before the fire.' },
+  staff:   { t:'Railway staff list, 2006', d:'From Clara’s archive. Signal box keeper, 2006: Walter Pryce. W.P. is Walt — the friendly railway worker who greeted me on day one.' },
+  letters: { t:'Walt’s monthly letters', d:'Rosa at the post office: for twenty years Walt has posted a letter every month to Ashcombe Holdings, Harlow Cross. He’s been reporting to them all along.' },
+  confession:{ t:'Walt’s confession', d:'Walt set the fire to destroy the records for Ashcombe’s money. He was told the office was empty. Mara had come back for her copy of the books. He let them blame Dad — and told Ashcombe the moment Dad came back.' },
+  reunion: { t:'The end of the platform', d:'Twenty years, three days, one letter. Dad was waiting where he said he would be.' },
   workshop:{ t:'Dad’s second letter — the truth', d:'Mara discovered the railway’s financial records had been falsified — money was being moved and land was being sold illegally. Someone killed her to keep it quiet, then framed Dad because he asked too many questions. Dad fled to protect me. The evidence ledger is hidden “where the trains used to sleep” — the old engine shed. Meet him at the old platform at dawn.' },
 };
 const MEMS = {
@@ -827,6 +910,10 @@ const PEOPLE = {
   tom:   () => F().lantern ? 'Dad’s oldest friend. Signed a false statement against him in 2006 and has regretted it since.' : 'Farmer at Hollow Farm. Unfriendly. Watches the road.',
   june:  () => F().catHome ? 'Runs the café. Gave me Dad’s old postcard for bringing Biscuit home.' : 'Runs the café on the square. Hears every rumour first.',
   pip:   () => 'Kid who fishes by the river. Believes in the ghost light in Ashwood.',
+  rosa:  () => F().letters ? 'Postmistress. Told me about Walt’s monthly letters to Ashcombe Holdings.' : 'Runs the post office east of the square. Remembers every postmark.',
+  bennet:() => 'Vicar of St. Aldric’s. Buried Mara Voss in 2006 and still tends her grave.',
+  ashcombe:() => 'Owner of the old branch line. Polite, careful, and very interested in my father.',
+  elias: () => 'My father. He waited twenty years to write, and three days for me to find him.',
   silas: () => F().kindSilas ? 'Mara’s brother. Angry, grieving. Softened when I said her name.' : 'Mara’s brother. Angry. Blames Dad for her death.',
 };
 
@@ -834,14 +921,20 @@ const PEOPLE = {
 const P = { x:86*T+8, y:30*T+10, dir:'left', moving:false, anim:0 };
 const tpos = (tx,ty) => ({ x:tx*T+8, y:ty*T+12 });
 const npcs = [
-  { id:'walt',  ...tpos(86,27), dir:'down', talk: talkWalt },
-  { id:'hale',  ...tpos(52,25), dir:'down', talk: talkHale },
-  { id:'june',  ...tpos(43,25), dir:'down', talk: talkJune },
-  { id:'clara', ...tpos(44,36), dir:'down', talk: talkClara },
-  { id:'tom',   ...tpos(27,38), dir:'left', talk: talkTom },
-  { id:'pip',   ...tpos(riverX(46)-2,46), dir:'right', talk: talkPip },
-  { id:'silas', ...tpos(11,13), dir:'right', talk: talkSilas, when: () => F().lantern && !F().silasGone },
+  { id:'walt',  ...tpos(86,27), dir:'down', talk: () => chap()>=2 ? talkWalt2() : talkWalt(), when: () => !(chap()===3 && F().confess && !F().gameEnd) },
+  { id:'hale',  ...tpos(52,25), dir:'down', talk: () => chap()>=2 ? talkHale2() : talkHale() },
+  { id:'june',  ...tpos(43,25), dir:'down', talk: () => chap()>=2 ? talkJune2() : talkJune() },
+  { id:'clara', ...tpos(44,36), dir:'down', talk: () => chap()>=2 ? talkClara2() : talkClara() },
+  { id:'tom',   ...tpos(27,38), dir:'left', talk: () => chap()>=2 ? talkTom2() : talkTom() },
+  { id:'pip',   ...tpos(riverX(46)-2,46), dir:'right', talk: () => chap()>=2 ? talkPip2() : talkPip() },
+  { id:'rosa',  ...tpos(61,28), dir:'down', talk: talkRosa },
+  { id:'bennet',...tpos(48,13), dir:'down', talk: talkBennet },
+  { id:'silas', ...tpos(11,13), dir:'right', talk: () => chap()>=2 ? talkSilas2() : talkSilas(), when: () => (F().lantern && !F().silasGone) || chap()>=2 },
+  { id:'ashcombe', ...tpos(86,15), dir:'down', talk: talkAshcombe, when: () => chap()===2 && !F().ch2end },
+  { id:'elias', ...tpos(88,36), dir:'left', talk: talkElias, when: () => F().eliasHere },
 ];
+const SILAS_POS = [tpos(11,13), tpos(57,9)];
+reserve(57,9);
 for (const n of npcs){ const tx=Math.floor(n.x/T), ty=Math.floor(n.y/T); reserve(tx,ty); n.home=n.dir; n.turnT=2+rng()*4; }
 const cat = { x:78*T, y:47*T, tx:78*T, ty:47*T, follow:false, dir:1, wait:0, anim:0 };
 
@@ -857,6 +950,11 @@ const objects = [
   { id:'booksDoor', x:52, y:23, label:'Bookshop window', act: () => dialog([{s:'narr', t:'Spines faded by sun. A hand-lettered card: “Railway histories — ask Edmund.”'}]) },
   { id:'records', x:41, y:40, label:'Records office', act: () => dialog([{s:'narr', t: F().news ? 'The archive is locked for the night. Clara has the key.' : 'Locked. A note: “Archive by appointment. Ask Clara — usually by the square.”'}]) },
   { id:'stationDoor', x:86, y:23, label:'Ticket office', act: () => dialog([{s:'narr', t:'Timetable: one train in, one train out. The last one leaves at nine.'}]) },
+  { id:'waitBench', x:87, y:34, label:'Sit and wait for Dad', when: () => chap()===2 && !F().note, act: actWait },
+  { id:'shedGate', x:83, y:14, label:'Engine shed gate', when: () => chap()>=2, act: actGate },
+  { id:'culvert', x:78, y:9, label:'Rusty grate', when: () => chap()>=2 && !F().culvert, act: actGrate },
+  { id:'pit', x:83, y:10, label:'Climb into the engine shed', when: () => chap()>=2 && F().culvert, act: actPit },
+  { id:'postbox', x:62, y:27, label:'Post box', act: () => dialog([{s:'narr', t:'A red pillar box. Last collection 5:30 pm. Someone has polished the brass plate until it shines.'}]) },
   { id:'m_ticket', x:84, y:34, mem:'ticket', label:'Look under the bench' },
   { id:'m_stones', x:riverX(52)-2, y:52, mem:'stones', label:'Flat stones' },
   { id:'m_train',  x:58, y:11, mem:'train', label:'Something small and red' },
@@ -910,13 +1008,15 @@ const MAP_LABELS = [
   { t:'Cemetery', x:55.5, y:4.2 },
   { t:'River Ash', x:66, y:6 },
   { t:'Station', x:86.5, y:17 },
+  { t:'Engine shed', x:84, y:1.6, when: () => chap()>=2, unk:'???' },
+  { t:'Post office', x:59.5, y:21.6 },
   { t:'Meadows', x:79, y:50 },
 ];
 function openMap(){
   if (mode!=='play') return;
   mode='map'; for (const k in keys) keys[k]=false; joyReset();
   const c=$('#mapc'); c.width=W*MS; c.height=H*MS; const g=c.getContext('2d'); g.imageSmoothingEnabled=false; g.drawImage(mapBase,0,0);
-  if (F().phase>0){ g.fillStyle = F().phase===1 ? 'rgba(120,60,90,.18)' : 'rgba(20,25,70,.32)'; g.fillRect(0,0,c.width,c.height); }
+  if (LOOK()>0){ g.fillStyle = LOOK()===1 ? 'rgba(120,60,90,.18)' : LOOK()===3 ? 'rgba(170,110,150,.16)' : 'rgba(20,25,70,.32)'; g.fillRect(0,0,c.width,c.height); }
   const marks=$('#mapmarks'); marks.innerHTML='';
   const place=(el,x,y)=>{ el.style.left=(x/W*100)+'%'; el.style.top=(y/H*100)+'%'; marks.appendChild(el); };
   for (const L of MAP_LABELS){ const el=document.createElement('div'); el.className='mlabel'+(L.big?' big':''); const known = !L.when || L.when(); el.textContent = known ? L.t : L.unk; if (!known) el.classList.add('unk'); place(el,L.x,L.y); }
@@ -946,7 +1046,7 @@ function drawMini(){
   sx=Math.max(0,Math.min(W*MS-S,sx)); sy=Math.max(0,Math.min(H*MS-S,sy));
   g.fillStyle='#0e1322'; g.fillRect(0,0,S,S);
   g.drawImage(mapBase, sx, sy, S, S, 0, 0, S, S);
-  if (F().phase>0){ g.fillStyle = F().phase===1 ? 'rgba(120,60,90,.18)' : 'rgba(20,25,70,.35)'; g.fillRect(0,0,S,S); }
+  if (LOOK()>0){ g.fillStyle = LOOK()===1 ? 'rgba(120,60,90,.18)' : LOOK()===3 ? 'rgba(170,110,150,.16)' : 'rgba(20,25,70,.35)'; g.fillRect(0,0,S,S); }
   // people met
   for (const n of npcs){ if (!S0.met.includes(n.id) || (n.when && !n.when())) continue; const x=n.x/T*MS-sx, y=n.y/T*MS-sy; if (x<0||y<0||x>S||y>S) continue; g.fillStyle='#070a12'; g.fillRect(x-2,y-2,5,5); g.fillStyle='#e9dcbc'; g.fillRect(x-1,y-1,3,3); }
   // objective
@@ -1000,6 +1100,7 @@ addEventListener('keydown', e => {
     if (act){ advance(); e.preventDefault(); } return;
   }
   if (mode==='cut'){ if (act){ cutNext(); e.preventDefault(); } return; }
+  if (mode==='card'){ if (act){ closeCard(); e.preventDefault(); } return; }
   if (mode==='journal'){ if (e.code==='KeyJ'||e.code==='Escape') closeJournal(); return; }
   if (mode==='map'){ if (e.code==='KeyM') closeMap(); return; }
   if (mode==='inv'){ if (e.code==='KeyI'||e.code==='Escape') closeInv(); return; }
@@ -1015,7 +1116,7 @@ addEventListener('blur', () => { for (const k in keys) keys[k]=false; });
 document.querySelectorAll('#touch button').forEach(b => {
   const k=b.dataset.k;
   const on = e => { e.preventDefault(); b.classList.add('on');
-    if (k==='act'){ if (mode==='dialog'){ if (!D.choices) advance(); } else if (mode==='cut') cutNext(); else if (mode==='play') interact(); }
+    if (k==='act'){ if (mode==='dialog'){ if (!D.choices) advance(); } else if (mode==='cut') cutNext(); else if (mode==='card') closeCard(); else if (mode==='play') interact(); }
     else keys[k]=true; };
   const off = e => { e.preventDefault(); b.classList.remove('on'); if (k!=='act') keys[k]=false; };
   b.addEventListener('pointerdown',on); b.addEventListener('pointerup',off); b.addEventListener('pointercancel',off); b.addEventListener('pointerleave',off);
@@ -1035,6 +1136,7 @@ const Music = (() => {
   const BPM=64, beat=60/BPM;
   const hz = n => 440*Math.pow(2,(n-69)/12);
   const MOODS = {
+    dawn:   { chords:[[43,55,59,62,66],[40,55,59,64,67],[36,55,60,64,67],[38,57,62,66,69]], scale:[67,69,71,74,76,79,81], p:.34, bright:1300, amb:'birds' },
     title:  { chords:[[45,57,60,64,67],[41,53,57,60,64],[36,55,60,64,67],[40,55,59,62,67]], scale:[69,72,74,76,79,81,84], p:.38, bright:1500, amb:'none' },
     day:    { chords:[[36,55,60,64,71],[45,57,60,64,67],[41,57,60,64,69],[43,55,59,62,67]], scale:[72,74,76,79,81,84,86], p:.46, bright:2100, amb:'birds' },
     dusk:   { chords:[[45,57,60,64,71],[41,57,60,65,69],[36,55,60,64,67],[40,55,59,62,67]], scale:[69,72,74,76,79,81,84], p:.36, bright:1400, amb:'birds' },
@@ -1120,6 +1222,7 @@ $('#sBtn').addEventListener('click', () => { SETTINGS.muted=!SETTINGS.muted; sav
 syncMute();
 
 // ================= dialogue engine =================
+const IS_TOUCH = matchMedia('(hover: none) and (pointer: coarse)').matches;
 const D = { queue:[], cur:null, shown:0, full:'', typing:false, choices:null, sel:0, done:null, speaker:null };
 const dlg=$('#dialog'), pctx=$('#portrait').getContext('2d');
 function dialog(lines, done){
@@ -1135,11 +1238,18 @@ function next(){
   if (item.choice){ showChoices(item.choice, item.s); return; }
   D.choices=null; $('#choices').innerHTML='';
   const c = CH[item.s];
-  dlg.classList.toggle('noport', !c); dlg.classList.toggle('narr', item.s==='narr');
-  dlg.querySelector('.who').textContent = c ? c.name : (item.s==='narr' ? '' : item.s);
-  dlg.querySelector('.who').style.display = c ? '' : 'none';
+  let text = item.t;
+  const think = item.s==='noah' && /^\(.*\)$/.test(text.trim());
+  if (think) text = text.trim().slice(1,-1);
+  dlg.classList.toggle('noport', !c); dlg.classList.toggle('narr', item.s==='narr'); dlg.classList.toggle('think', think);
+  const who = dlg.querySelector('.who');
+  who.textContent = c ? c.name : '';
+  if (c && (think || c.role)){ const r=document.createElement('span'); r.className='role'; r.textContent = think ? '(thinking)' : c.role; who.appendChild(r); }
+  who.style.display = c ? '' : 'none';
   if (c) drawPortrait(pctx, c);
-  D.speaker=c; D.full=item.t; D.shown=0; D.typing=true;
+  S0.dlgCount = (S0.dlgCount||0) + 1;
+  dlg.querySelector('.more .tip').textContent = S0.dlgCount <= 6 ? (IS_TOUCH ? 'Tap here or E to continue' : 'Press E or click to continue') : '';
+  D.speaker=c; D.full=text; D.shown=0; D.typing=true;
   dlg.querySelector('.line').textContent=''; dlg.querySelector('.more').style.visibility='hidden';
 }
 function advance(){
@@ -1156,6 +1266,7 @@ function showChoices(opts, s){
 }
 function renderChoices(){
   const box=$('#choices'); box.innerHTML='';
+  const ask=document.createElement('div'); ask.className='ask'; ask.textContent = IS_TOUCH ? 'Choose what to say:' : 'Choose what to say — press 1, 2, 3 or click:'; box.appendChild(ask);
   D.choices.forEach((o,i) => { const b=document.createElement('button'); b.innerHTML=`<span class="n">${i+1}</span>`; b.appendChild(document.createTextNode(o.t));
     if (i===D.sel) b.classList.add('sel'); b.addEventListener('click', ev => { ev.stopPropagation(); choose(i); }); box.appendChild(b); });
 }
@@ -1194,7 +1305,7 @@ function takeMemory(id){
 const has = id => S0.clues.includes(id);
 
 // ================= story: dialogue scripts =================
-function setPhase(p){ if (F().phase>=p) return; F().phase=p; const lbl=['Late afternoon','Dusk','Night'][p]; showZone(lbl, p===1?'The sun is going down':'The forest will be dark now'); refreshHUD(); }
+function setPhase(p){ if (F().phase>=p) return; F().phase=p; const lbl=PHASE_NAMES[p]; showZone(lbl, p===1?'The sun is going down':p===2?'The forest will be dark now':'Ashbourne after dark'); refreshHUD(); }
 
 function talkWalt(){
   meet('walt');
@@ -1459,6 +1570,306 @@ function actDoor(){
   dialog([{s:'noah', t:'The key fits. It turns like it’s been oiled recently.'}], () => runEnding());
 }
 
+// ================= story: new characters =================
+function talkRosa(){
+  meet('rosa');
+  const c=chap(), f=F();
+  if (c===3 && f.wp && !f.letters){
+    dialog([
+      {s:'rosa', t:'Walter Pryce? Walt from the station? Oh, he’s my most regular customer.'},
+      {s:'rosa', t:'One letter, first Monday of every month, for twenty years. Always the same address.'},
+      {s:'noah', t:'Which address?'},
+      {s:'rosa', t:'Ashcombe Holdings, Harlow Cross. I always thought he had a sweetheart in the office there.'},
+      {s:'noah', t:'(Harlow Cross. Walt has been reporting to Ashcombe this whole time.)'},
+      () => { f.letters=1; addClue('letters'); },
+    ]); return;
+  }
+  if (c===3) { dialog([{s:'rosa', t: f.confess ? 'Walt rang the police from my counter. Hands shaking so badly I had to dial for him.' : 'Clara’s records will tell you who “W.P.” is. My postmarks might tell you who he writes to.'}]); return; }
+  if (c===2) { dialog([{s:'rosa', t: has('postcard') ? 'Harlow Cross — that postmark on your father’s card. Funny. Ashcombe Holdings has its office in Harlow Cross too.' : 'Up at dawn, are we? Mr. Ashcombe was in at six sending a telegram. He never sends telegrams.'}]); return; }
+  if (!f.rosa1){
+    dialog([
+      {s:'rosa', t:'Rosa Marsh, post office. If you need a stamp, a parcel, or the name of everyone who’s written to anyone in Ashbourne — I’m your woman.'},
+      {choice:[
+        {t:'Has anyone named Vale ever sent post here?', then:[ {s:'rosa', t:'Vale… there were postcards, years back. No return address. June at the café might still have one pinned up.'} ]},
+        {t:'Where would I find the bookseller?', then:[ {s:'rosa', t:'Edmund Hale? West, in the square. Purple roof. He’ll pretend he’s closed. He isn’t.'} ]},
+      ]},
+      () => { f.rosa1=1; },
+    ]);
+  } else dialog([{s:'rosa', t:'Postmarks don’t lie, love. People do. Postmarks just sit there being right.'}]);
+}
+
+function talkBennet(){
+  meet('bennet');
+  const c=chap(), f=F();
+  if (c===3) { dialog([{s:'bennet', t: f.confess ? 'Confession is the easy part, Noah. It’s the living with it afterwards that takes courage. Pray Walt finds some.' : 'Whatever you’re carrying tonight, son, set it down before it sets you down.'}]); return; }
+  if (c===2) { dialog([{s:'bennet', t: f.ash1 && !f.culvertKnown ? 'Silas Voss is at Mara’s grave — he comes every sunrise. If anyone knows a way into that shed, it’s him. He’s spent twenty years looking.' : 'Morning, Noah. The graves are quiet at dawn. The living less so.'}]); return; }
+  if (!f.bennet1){
+    dialog([
+      {s:'bennet', t:'Welcome to St. Aldric’s. I’m Reverend Bennet. You have a face I feel I should know.'},
+      {s:'noah', t:'People keep saying that. My father was Elias Vale.'},
+      {s:'bennet', t:'Ah. Then you’ll want to see Mara Voss’s grave, behind the church, before anyone tells you their version of it.'},
+      {s:'bennet', t:'I buried her in 2006. Every week since, someone leaves wildflowers tied with railway twine. I’ve never once seen who.'},
+      () => { f.bennet1=1; },
+    ]);
+  } else dialog([{s:'bennet', t:'Mara’s grave is behind the church, to the east. Mind the toy train by the far stones — someone left it years ago.'}]);
+}
+
+// ================= Chapter Two: The Ledger =================
+function actWait(){
+  dialog([
+    {s:'narr', t:'You sit on the cold bench. The sky turns from grey to pink. The six o’clock train comes and goes.'},
+    {s:'narr', t:'Nobody gets off.'},
+    {s:'noah', t:'(Half past six. Seven. He isn’t coming.)'},
+    {s:'narr', t:'Footsteps on the platform. Walt, the railway worker, holding a folded scrap of paper.'},
+    {s:'walt', t:'Man in a grey coat came by before sunrise. Asked me to give you this. Didn’t leave a name.'},
+    {s:'walt', t:'Didn’t need to. I’d know that walk anywhere, even after twenty years.'},
+    {choice:[
+      {t:'You saw him? Where did he go?', then:[ {s:'walt', t:'North, along the tracks. Then gone. Like he always was.'} ]},
+      {t:'Why didn’t he wait for me?', then:[ {s:'walt', t:'Looked over his shoulder the whole time, lad. Like someone was watching the platform.'} ]},
+    ]},
+    {s:'narr', t:'The note, in the same handwriting as the letter:'},
+    {s:'narr', t:'“They’re watching the platform. I couldn’t risk it. Get the ledger first — the old engine shed, north along the tracks. It’s under the inspection pit. Then I’ll find you. — E”'},
+    () => { meet('walt'); F().note=1; addClue('note'); },
+    {s:'noah', t:'(The engine shed. North of the station, following the railway line.)'},
+  ]);
+}
+function talkWalt2(){
+  meet('walt');
+  const f=F(), c=chap();
+  if (c===2){
+    if (!f.note){ dialog([{s:'walt', t:'Early for a train, lad. Unless you’re waiting for someone.'}, {s:'noah', t:'(I should sit on the bench and wait, like Dad asked.)'}]); return; }
+    dialog([{s:'walt', t: f.ch2end ? 'You look like you’ve seen a ghost. Or a ledger.' : 'Shed’s north along the tracks. Ashcombe’s men keep the gate chained. Mind yourself.'}]); return;
+  }
+  // Chapter Three
+  if (!f.wp){ dialog([{s:'walt', t:'Evening, lad. Quiet day? You look like you didn’t sleep.'}, {s:'noah', t:'(“Ask your friends at the station,” Ashcombe said. I need to know who W.P. is before I say anything. Clara has the old records.)'}]); return; }
+  if (f.confess){ dialog([{s:'walt', t:'Go on. He’s waiting.'}]); return; }
+  dialog([
+    {s:'walt', t:'You’ve got that look again. Your father’s look. Like the world owes you an explanation.'},
+    {s:'noah', t:'W.P. Walter Pryce. Signal keeper, 2006. Paid twenty-seven thousand pounds by Ashcombe Holdings to “clear the office records.”'},
+    {s:'narr', t:'For a long moment Walt says nothing. Then he sits down on the bench, very slowly, like a much older man.'},
+    {s:'walt', t:'They told me the office would be empty. Burn the files, take the money, nobody hurt. Mara was meant to be on the evening train.'},
+    {s:'walt', t:'She came back for her copy of the books. I didn’t know she was in there. I swear on my life I didn’t know, not until the roof came down.'},
+    {s:'walt', t:'Then Ashcombe’s men put it all on Elias. And I let them. I stood on this platform for twenty years watching that track, like he’d come back down it.'},
+    {s:'walt', t:'This morning he did. And I wrote to Ashcombe and told him. Like I always do.'},
+    {s:'noah', t:'You told them Dad was here.'},
+    {s:'walt', t:'He’s at the end of the platform now. Told me to tell you that too. I’m tired of being the man who passes notes.'},
+    {choice:[
+      {t:'You’re going to tell the police everything. Tonight.', then:[ () => { F().waltChoice='police'; }, {s:'walt', t:'Aye. I’ll ring them myself. Should have done it before the ashes were cold.'} ]},
+      {t:'Tell Silas. He deserves to hear it from you.', then:[ () => { F().waltChoice='silas'; }, {s:'walt', t:'…God help me. All right. Then the police. In that order.'} ]},
+      {t:'I don’t know what to do with you, Walt.', then:[ () => { F().waltChoice='unsure'; }, {s:'walt', t:'Neither do I, lad. Neither do I. I’ll start with the truth and see where it gets me.'} ]},
+    ]},
+    () => { f.confess=1; f.eliasHere=1; addClue('confession'); },
+    {s:'noah', t:'(The end of the platform. He’s here.)'},
+  ]);
+}
+function actGate(){
+  if (chap()===2 && !F().ash1){ dialog([{s:'narr', t:'A tall iron gate, chained and padlocked. The chain is new. Beyond it: the burned shell of the old engine shed.'}, {s:'noah', t:'(There’s a man in a good suit standing by the gate. Maybe I should talk to him.)'}]); return; }
+  dialog([{s:'narr', t:'Chained shut. Through the bars you can see the shed’s black, broken roof.'}, {s:'noah', t: F().culvertKnown ? '(Silas said there’s a culvert under the west fence, by the river.)' : '(There has to be another way into that yard. Someone in town might know.)'}]);
+}
+function talkAshcombe(){
+  meet('ashcombe');
+  const f=F();
+  if (!f.ash1){
+    dialog([
+      {s:'ashcombe', t:'An early riser. Admirable. You’re standing on private land, though.'},
+      {s:'noah', t:'Is this the old engine shed?'},
+      {s:'ashcombe', t:'It was. Now it’s mine. Ashcombe Holdings bought the whole branch line in 2007 — after the fire, the railway couldn’t sell it fast enough.'},
+      {s:'ashcombe', t:'Victor Ashcombe. And you’re Elias Vale’s boy. You have his habit of staring at things you shouldn’t.'},
+      {choice:[
+        {t:'I’m just looking around.', then:[ {s:'ashcombe', t:'Then look around somewhere else. That shed is unsafe. Burned roof, rotten floor. People get hurt.'} ]},
+        {t:'What do you know about my father?', then:[ {s:'ashcombe', t:'I know he cost this town a great deal. And I know men who dig in old ashes usually find something they wish they hadn’t.'} ]},
+        {t:'Why would a property company want a burned shed?', then:[ {s:'ashcombe', t:'Land, Mr. Vale. Ashbourne will grow one day, and I like to be early. As you can see.'} ]},
+      ]},
+      {s:'ashcombe', t:'The gate stays locked. Good morning.'},
+      () => { f.ash1=1; addClue('ashcombe'); },
+      {s:'noah', t:'(How did he know who I am? There has to be another way into that yard. Someone in town might know one.)'},
+    ]);
+  } else dialog([{s:'ashcombe', t:'Still here? The gate is still locked, Mr. Vale. It will be locked tomorrow, too.'}]);
+}
+function talkSilas2(){
+  meet('silas');
+  const f=F();
+  if (chap()===3){ dialog([{s:'silas', t: f.confess && f.waltChoice==='silas' ? 'Walt came to me. Told me everything. I don’t know what I feel yet. But it isn’t hate for your father anymore.' : 'Twenty years of flowers. Maybe now someone will tell her what really happened.'}]); return; }
+  if (f.culvertKnown){ dialog([{s:'silas', t:'West fence of the shed yard, by the river. The grate’s only tied with wire. Go.'}]); return; }
+  dialog([
+    {s:'narr', t:'Silas kneels at Mara’s grave, tying fresh wildflowers with a length of railway twine.'},
+    {s:'silas', t:'So it’s you who’s been asking. I’m the one who leaves the flowers. Every week, twenty years.'},
+    {s:'silas', t:'He didn’t come, did he? Elias. I saw you on that bench from the hill.'},
+    ...(f.ash1 ? [{s:'noah', t:'He left a note. He wants me to get into the old engine shed. Ashcombe has it chained shut.'}] : [{s:'noah', t:'He left a note. He wants me to get into the old engine shed, north of the station.'}]),
+    {s:'silas', t:'Then we want the same thing. I’ve been trying to get into that shed since the fire. Ashcombe guards it like a dog with a bone.'},
+    {s:'silas', t:'There’s a storm culvert under the west fence, down by the river. I cut the grate years ago and tied it back with wire. Never had the nerve to crawl through.'},
+    {choice:[
+      {t:'Mara gave Dad her watch. I found it — it should be yours.', when: () => has('watch'), then:[
+        () => { F().gaveWatch=1; },
+        {s:'narr', t:'You hold out the watch. Silas takes it like it might break. His thumb finds the engraving.'},
+        {s:'silas', t:'…“Keep time for me.” She always did. Even for him.'},
+        {s:'silas', t:'Thank you, Noah. Go. Whatever’s in there, she wanted it found.'} ]},
+      {t:'Why help me, if you blame my father?', then:[
+        {s:'silas', t:'Because if the truth is in that shed, I want it more than you do.'},
+        ...(f.kindSilas ? [{s:'silas', t:'And because you said her name, that night in the woods. Nobody else had in years.'}] : [{s:'silas', t:'And whatever you find, I see it next. That’s the price.'}]) ]},
+    ]},
+    () => { f.culvertKnown=1; },
+    {s:'noah', t:'(A rusty grate under the west fence of the shed yard, by the river. Let’s go.)'},
+  ]);
+}
+function actGrate(){
+  if (!F().culvertKnown){ dialog([{s:'narr', t:'A rusted iron grate under the fence, tied shut with fresh-looking wire. Behind it, a dark culvert leads into the shed yard.'}, {s:'noah', t:'(Somebody tied this shut on purpose. I wonder who.)'}]); return; }
+  dialog([
+    {s:'narr', t:'You unwind the wire. It takes a while — Silas tied it like a man who didn’t trust himself.'},
+    {s:'narr', t:'The grate swings open with a shriek of rust. The way into the shed yard is clear.'},
+    () => { F().culvert=1; applyWorldState(); },
+  ]);
+}
+const LEDGER = `BRANCH LINE ACCOUNTS — 2006
+(copied by M. Voss)
+
+March    Land valuation changed:
+         £410,000 → £38,000
+         Signed: H. Crane, Manager
+
+April    Ashcombe Holdings → “signal
+         maintenance”: £12,000.  Rec’d: W.P.
+
+May      Ashcombe Holdings: £15,000.
+         Rec’d: W.P.
+
+12 June  Office records to be “cleared”
+         before the audit. W.P. to see to it.
+
+In the margin, in Mara’s hand:
+“Told E. tonight. W.P. knows I have
+a copy. Keeping it where the trains sleep.”`;
+function actPit(){
+  if (has('ledger')){ dialog([{s:'noah', t:'(The pit is empty now. The ledger is in my bag.)'}]); return; }
+  dialog([
+    {s:'narr', t:'Inside, the engine shed is a ruin: black beams, a roof full of sky, the smell of very old smoke.'},
+    {s:'narr', t:'The inspection pit runs down the middle of the floor. At the bottom, under a loose plank, something wrapped in oilcloth.'},
+  ], () => cutscene([{paper:true, t:LEDGER}], () => {
+    addClue('ledger');
+    dialog([
+      {s:'noah', t:'(W.P. Somebody was paid to “clear the records” two days before the fire. Not Dad. Someone called W.P.)'},
+      {s:'narr', t:'A torch beam swings across the yard. Footsteps on gravel.'},
+      {s:'ashcombe', t:'I did warn you about the floor, Mr. Vale.'},
+      {s:'ashcombe', t:'That book is twenty years of nothing. A dead clerk’s scribbles. But I’m a generous man. Give it to me, take the nine o’clock train, and forget Ashbourne.'},
+      {choice:[
+        {t:'This proves what you did.', then:[ {s:'ashcombe', t:'It proves numbers were written down. Numbers can mean anything, in the right lawyer’s hands.'} ]},
+        {t:'Who is W.P.?', then:[ {s:'ashcombe', t:'You’re the detective.'}, {s:'narr', t:'He smiles, very slightly.'}, {s:'ashcombe', t:'Try asking your friends at the station.'} ]},
+        {t:'(Say nothing. Hold the ledger tighter.)', then:[ {s:'ashcombe', t:'Your father had that same silence. It didn’t help him either.'} ]},
+      ]},
+      {s:'ashcombe', t:'Keep it, then. I’ve survived worse than a notebook. Your father learned that the hard way.'},
+      {s:'narr', t:'He walks away without hurrying. That frightens you more than if he’d run.'},
+      () => { F().ch2end=1; save(); },
+    ], () => setTimeout(() => showEnding(2), 400));
+  }));
+}
+
+// chapter-two / three lines for existing characters
+function talkHale2(){ meet('hale'); const f=F(), c=chap();
+  if (c===2) dialog([{s:'hale', t: f.ash1 && !f.culvertKnown ? 'Ashcombe turned you away? Then talk to Silas Voss. He’s spent twenty years trying to get into that shed. He’s at Mara’s grave at sunrise — behind the church.' : f.ch2end ? 'You found her ledger. Mara would have liked you.' : 'The engine shed is north of the station, along the tracks. Ashcombe owns it now. Of course he does.'}]);
+  else dialog([{s:'hale', t: f.confess ? 'Walt. I sold that man a newspaper every morning for twenty years.' : 'W.P.? Clara has the old railway staff lists. Start there.'}]);
+}
+function talkClara2(){ meet('clara'); const f=F(), c=chap();
+  if (c===2){ dialog([{s:'clara', t: f.ash1 && !f.culvertKnown ? 'Locked out by Ashcombe? Silas Voss knows that yard better than anyone. Try Mara’s grave — he’s there every dawn.' : 'The engine shed burned the same week as the office. And every railway record from that month went missing. Every single one.'}]); return; }
+  if (!f.wp){
+    dialog([
+      {s:'noah', t:'Clara — the ledger mentions someone called “W.P.” who was paid by Ashcombe. Do your records go back to 2006?'},
+      {s:'clara', t:'Railway staff lists? I have every one since 1952. Give me a moment.'},
+      {s:'narr', t:'She runs a finger down a brittle typed page, then stops.'},
+      {s:'clara', t:'Signal box, 2006. Keeper: Walter Pryce.'},
+      {s:'noah', t:'Walt. Walt from the station. The first person I spoke to in Ashbourne.'},
+      {s:'clara', t:'After the fire, the railway let every other worker go. But they kept Walt on. Alone, at a station nobody uses. I always wondered who was paying for that.'},
+      () => { f.wp=1; addClue('staff'); setPhase(6); },
+      {s:'noah', t:'(It’s getting dark. I need to talk to Walt at the station. Rosa at the post office might know something too.)'},
+    ]); return;
+  }
+  dialog([{s:'clara', t: f.confess ? 'I’m going to write it all down, Noah. Properly, this time. Mara deserves an accurate record.' : 'Be careful with Walt. Frightened men do frightened things.'}]);
+}
+function talkTom2(){ meet('tom'); const c=chap(), f=F();
+  dialog([{s:'tom', t: c===2 ? 'Engine shed’s Ashcombe’s now. Don’t let him catch you near it, lad. He’s got a way of making men sign things.' : f.confess ? 'When they ask, I’ll stand up in front of the whole town and say what I didn’t see. Should have done it twenty years ago.' : 'Whatever you find, lad — I’ll back you. This time I will.'}]);
+}
+function talkJune2(){ meet('june'); const c=chap(), f=F();
+  if (cat.follow && !f.catHome) return talkJune();
+  dialog([{s:'june', t: c===2 ? 'Up at dawn? Tea’s still free. Mr. Ashcombe came in at five for a coffee. He never comes in. Something’s got him rattled.' : f.confess ? 'They say Walt’s confessed to something. In all my years I never once saw that man eat a slice of pie.' : 'Walt hasn’t come in for his supper tonight. First time in twenty years.'}]);
+}
+function talkPip2(){ meet('pip'); const c=chap();
+  dialog([{s:'pip', t: c===2 ? 'I saw him! The ghost! A man in a grey coat walking the tracks at sunrise. He had a lantern just like yours!' : 'Mum says I can stay up and watch the night train. Is the ghost going to be on the platform? I bet he is.'}]);
+}
+
+// ================= Chapter Three finale =================
+function talkElias(){
+  meet('elias');
+  const f=F();
+  if (f.gameEnd){ dialog([{s:'elias', t:'Keep left, Noah. It always gets you home in the end.'}]); return; }
+  dialog([
+    {s:'narr', t:'At the very end of the platform, a man in a grey coat lifts a dented brass lantern. It’s the twin of yours.'},
+    {s:'elias', t:'Noah.'},
+    {s:'narr', t:'Twenty years of words you’ve practised. None of them come.'},
+    {choice:[
+      {t:'Why didn’t you come back?', then:[ {s:'elias', t:'Because they told me what would happen to you if I did. And every year I stayed away, it got harder to imagine you’d want me to.'} ]},
+      {t:'You’re smaller than I remember.', then:[ {s:'elias', t:'You were six. Everyone was taller then. Except me — I was a coward of exactly average height.'} ]},
+      {t:'Do you know what it was like, growing up without you?', then:[ {s:'elias', t:'No. And I won’t pretend I do. That’s yours, and I took it from you.'} ]},
+    ]},
+    {s:'noah', t:'I found Mara’s ledger. Walt confessed. It was never you.'},
+    {s:'elias', t:'I know. I watched from the trees all day. Hale, Tom, Silas — you did in three days what I couldn’t do in twenty years.'},
+    ...(f.gaveWatch ? [{s:'elias', t:'You gave Mara’s watch to Silas. Good. It was never really mine to keep.'}] : []),
+    ...(f.toldWalt ? [{s:'elias', t:'You told Walt my name on your first day, didn’t you? He’s been writing to Ashcombe ever since. Don’t carry that. I trusted him too.'}] : []),
+    {s:'elias', t:'I won’t ask you to forgive me. I don’t think I would, in your place.'},
+    {choice:[
+      {t:'Come home, Dad.', then:[ () => { F().ending='home'; }, {s:'narr', t:'He tries to answer. Instead he just nods, again and again, like a man who has forgotten how to stop.'} ]},
+      {t:'I need time. But don’t you dare disappear again.', then:[ () => { F().ending='time'; }, {s:'elias', t:'Never again. You have my word — and this time, you know where to find me.'} ]},
+      {t:'Tell me everything. From the very beginning.', then:[ () => { F().ending='story'; }, {s:'elias', t:'Then we’ll need a pot of tea. June’s café opens at seven.'} ]},
+    ]},
+    () => { f.gameEnd=1; addClue('reunion'); save(); },
+  ], () => runFinale());
+}
+function runFinale(){
+  const f=F(), pages=[];
+  pages.push({html:true, t: f.ending==='home' ? 'You walk him home along the dark road, two lanterns side by side. *Neither of you says much. Neither of you needs to.*'
+    : f.ending==='time' ? 'You shake his hand on the platform, which is strange, and right. *Next week, you’ll write to him. He’ll write back.*'
+    : 'At seven, June unlocks the café to find two men already waiting at the door. *They stay until closing.*'});
+  pages.push({html:true, t: f.waltChoice==='police' ? 'Walt Pryce rang the county police that night and told them everything. *He pleaded guilty to every charge.*'
+    : f.waltChoice==='silas' ? 'Walt went to Silas first, and then to the police. *Silas walked into the station beside him.*'
+    : 'Walt sat on the bench until morning. *Then he caught the first train to the county police station, and told them everything.*'});
+  pages.push({html:true, t:'Mara’s ledger reached the county council two weeks later. *The sale of the branch line was reopened, and Ashcombe Holdings’ offices in Harlow Cross were searched.*'});
+  pages.push({html:true, t: (f.gaveWatch || f.kindSilas) ? 'Silas Voss stopped walking Ashwood at night. *Some mornings, he and your father leave the flowers at Mara’s grave together.*' : 'Silas never quite forgave your father. *But he stopped calling him a murderer, and in Ashbourne that counts for a great deal.*'});
+  pages.push({html:true, t:'Tom Barrow testified at the inquiry. Edmund Hale finally sold a book — a history of the branch line, written by Clara Wynn.' + (f.catHome ? ' *Biscuit the cat attended every hearing from June’s windowsill.*' : '')});
+  pages.push({html:true, t:'*Some letters take twenty years to arrive.*\n\nThe End.'});
+  cutscene(pages, () => { save(); showEnding(3); });
+}
+
+function applyWorldState(){
+  solid[9*W+78] = F().culvert ? 0 : 1;
+  const sp = SILAS_POS[chap()>=2 ? 1 : 0], si = npcs.find(n=>n.id==='silas'); si.x=sp.x; si.y=sp.y; si.home = chap()>=2 ? 'down' : 'right';
+}
+
+// ================= chapter flow & cards =================
+let CARD = null;
+function showCard(num, ttl, sub, done){
+  CARD = done; mode='card';
+  $('#chapcard .num').textContent=num; $('#chapcard .ttl').textContent=ttl; $('#chapcard .sub').textContent=sub;
+  const el=$('#chapcard'); el.classList.remove('on'); void el.offsetWidth; el.classList.add('on'); chime();
+}
+function closeCard(){ if (mode!=='card') return; $('#chapcard').classList.remove('on'); mode='play'; const d=CARD; CARD=null; if (d) d(); }
+$('#chapcard').addEventListener('click', closeCard);
+function startChapter(n){
+  $('#ending').classList.remove('on'); S0.tut=0; $('#tut').classList.remove('on');
+  F().chap=n; applyWorldState();
+  if (n===2){
+    F().phase=3; P.x=86*T+8; P.y=35*T+10; P.dir='up'; camX=P.x-VW/2; camY=P.y-VH/2;
+    beginPlay(); refreshHUD(); save();
+    showCard('Chapter Two', 'The Ledger', 'Dawn. The old platform, where he promised he would be.', () => dialog([
+      {s:'noah', t:'(Dawn. The old platform. He said he would be here.)'},
+      {s:'noah', t:'(I’ll sit on the bench and wait for him.)'},
+    ]));
+  } else {
+    F().phase=5; beginPlay(); refreshHUD(); save();
+    showCard('Chapter Three', 'Keeping Left', 'The same day. The sun is going down over Ashbourne.', () => dialog([
+      {s:'noah', t:'(I have Mara’s ledger. Someone called “W.P.” was paid to clear the records before the fire.)'},
+      {s:'noah', t:'(Ashcombe said to ask my “friends at the station.” But first I need to know who W.P. really is. Clara keeps the old railway records.)'},
+    ]));
+  }
+}
+
 // ================= cutscenes =================
 let CUT = { pages:[], i:0, done:null, typing:false, shown:0 };
 function cutscene(pages, done){ CUT={pages, i:0, done, shown:0}; mode='cut'; $('#cut').classList.add('on'); showCut(); }
@@ -1512,25 +1923,26 @@ Come to the old platform at dawn. I will be there.
 — Dad`;
 
 function startNew(){
-  S0 = NEW_STATE(); P.x=S0.x; P.y=S0.y; P.dir=S0.dir; cat.follow=false; cat.x=78*T; cat.y=47*T; cat.tx=cat.x; cat.ty=cat.y;
+  S0 = NEW_STATE(); S0.tut=0; P.x=S0.x; P.y=S0.y; P.dir=S0.dir; cat.follow=false; cat.x=78*T; cat.y=47*T; cat.tx=cat.x; cat.ty=cat.y;
   try { localStorage.removeItem(SAVE_KEY); } catch(e){}
+  applyWorldState(); lastObj='';
   $('#title').classList.remove('on');
   cutscene([
-    {narr:true, t:'Your name is Noah Vale. Your father, Elias, left when you were six years old.\n\nYou were told he ran. You were told not to ask why.'},
-    {narr:true, t:'This morning, a letter arrived. The first thing he has ever sent you.'},
+    {html:true, t:'You are *Noah Vale*, 22.\n\nWhen you were six, your father *Elias* disappeared. Everyone said he ran away after a fire in a small town called Ashbourne.'},
+    {html:true, t:'Three days ago, a letter arrived. *From him.*'},
     {paper:true, t:LETTER1},
-    {html:true, t:'The letter was dated *three days ago*. There was no return address.'},
-    {html:true, t:'On the train south, a stranger left a photograph on the seat beside you and walked away.\n\nYour father, smiling, beside three people you don\'t recognise — outside a brick building in a town you\'ve never been to.'},
-    {html:true, t:'On the back, in pencil:\n\n*"Ashbourne, spring 2009."*\n\nYour father disappeared in 2006.\n\nSomebody took a photograph of him *three years after he vanished.*'},
+    {html:true, t:'On the train, a stranger left a photo of your father on the seat beside you. On the back: *“Ashbourne, spring 2009”* — three years after he vanished.\n\nSo you bought a ticket.'},
+    {html:true, t:'*Your goal:* find out what really happened to your father.\n\nTalk to people. Collect clues. Follow the pink arrow.'},
   ], () => {
     beginPlay();
-    showZone('Ashbourne Station', 'Chapter One');
-    setTimeout(() => dialog([
-      {s:'noah', t:'Ashbourne. Smaller than I pictured. I\'ve had twenty years to picture it.'},
-      {s:'noah', t:'He\'s alive. Or he was, three days ago. Somebody here knows where he went — and why he finally decided to write.'},
-      {s:'noah', t:'The letter says to find the bookseller near the station. The railway worker might know where that is.'},
-      () => { addClue('letter'); setTimeout(()=>addClue('photo'), 1800); },
-    ]), 900);
+    showCard('Chapter One', 'The Letter', 'Ashbourne Station, late afternoon.', () => {
+      dialog([
+        {s:'noah', t:'(Ashbourne. Smaller than I pictured.)'},
+        {s:'noah', t:'(The letter says to find a bookseller called Edmund Hale. I don’t know where his shop is.)'},
+        {s:'noah', t:'(That railway worker on the platform might know. I’ll ask him.)'},
+        () => { addClue('letter'); setTimeout(()=>addClue('photo'), 2200); },
+      ], () => { S0.tut=1; tutT=0; });
+    });
   });
 }
 function beginPlay(){ mode='play'; document.body.classList.add('playing'); $('#hud').style.display='block'; $('#topbtns').style.display='flex'; refreshHUD(); }
@@ -1541,50 +1953,105 @@ function runEnding(){
     fd.classList.remove('on');
     const pages = [
       {html:true, t:'Inside: dust on everything except the workbench. Fresh candle stubs. Someone has been here, and not long ago.'},
-      {html:true, t:'On the wall, a hand-drawn map of Ashbourne. The old branch railway line is circled in pencil. And beside it, written small:\n\n*"Engine shed. South of the old platform. That\'s where she hid it."*'},
+      {html:true, t:'On the wall, a hand-drawn map of Ashbourne. The old branch railway line is circled in pencil. And beside it, written small:\n\n*"Engine shed. North of the old platform, along the tracks. That\'s where she hid it."*'},
       {paper:true, t:LETTER2},
     ];
     if (F().watch) pages.push({html:true, t:'You set Mara’s watch on the workbench beside the letter. *2:14.* The hands still haven’t moved.'});
     if (F().toldWalt || F().toldTom) pages.push({html:true, t:'Outside, a whistle carries through the trees from the direction of the station. *Someone already knows you’re here.*'});
     else pages.push({html:true, t:'You kept the letter to yourself, as he asked. For tonight, at least, *nobody knows you’re here.*'});
-    cutscene(pages, () => { F().end=1; addClue('workshop'); save(); showEnding(); });
+    cutscene(pages, () => { F().end=1; addClue('workshop'); save(); showEnding(1); });
   }, 900);
 }
-function showEnding(){
+let endingNext = 0;
+$('#roamBtn').addEventListener('click', () => { $('#ending').classList.remove('on'); if (endingNext) startChapter(endingNext); else { mode='play'; refreshHUD(); } });
+$('#againBtn').addEventListener('click', () => { $('#ending').classList.remove('on'); startNew(); });
+function showEnding(ch){
   mode='ending'; $('#ending').classList.add('on');
-  const nClues=S0.clues.length, total=Object.keys(CLUES).length;
-  $('#stats').innerHTML = `<div><b>${nClues}/${total}</b>Clues found</div><div><b>${S0.mems.length}/5</b>Memories</div><div><b>${S0.met.length}/7</b>People met</div><div><b>${F().kindSilas?'Mercy':'Distrust'}</b>With Silas</div>`;
+  const nClues=S0.clues.length, total=Object.keys(CLUES).length, people=Object.keys(PEOPLE).length;
+  const T_ = { 1:['Chapter One complete','Next: Chapter Two — The Ledger','Continue to Chapter Two'],
+               2:['Chapter Two complete','Next: Chapter Three — Keeping Left','Continue to Chapter Three'],
+               3:['The End','The Letter — the complete story','Keep exploring'] }[ch];
+  $('#endTitle').textContent=T_[0]; $('#endSub').textContent=T_[1]; $('#roamBtn').textContent=T_[2];
+  endingNext = ch<3 ? ch+1 : 0;
+  const tie = ch===3 ? ({home:'Came home', time:'Needs time', story:'The whole story'}[F().ending]||'—') : (F().kindSilas?'Mercy':'Distrust');
+  $('#stats').innerHTML = `<div><b>${nClues}/${total}</b>Clues found</div><div><b>${S0.mems.length}/5</b>Memories</div><div><b>${S0.met.length}/${people}</b>People met</div><div><b>${tie}</b>${ch===3?'Your ending':'With Silas'}</div>`;
   const notes=[];
   if (!has('postcard')) notes.push('June’s missing cat may know something about 2009.');
   if (!F().watch) notes.push('Something in Ashwood still glints, waiting to be found.');
   if (!has('grave')) notes.push('Mara Voss is buried behind the church.');
-  $('#endNote').textContent = notes.length ? 'Still hidden in Ashbourne: ' + notes.join(' ') : 'You found every secret Ashbourne was willing to give up — for now.';
+  if (ch===3 && !has('letters')) notes.push('Rosa at the post office knew Walt’s secret too.');
+  $('#endNote').textContent = ch===3 ? (notes.length ? 'Thank you for playing. Still hidden in Ashbourne: ' + notes.join(' ') : 'Thank you for playing. You found every secret Ashbourne had.') :
+    (notes.length ? 'Still hidden in Ashbourne: ' + notes.join(' ') : 'You found every secret Ashbourne was willing to give up — for now.');
 }
-$('#roamBtn').addEventListener('click', () => { $('#ending').classList.remove('on'); mode='play'; refreshHUD(); });
-$('#againBtn').addEventListener('click', () => { $('#ending').classList.remove('on'); startNew(); });
-
 // ================= objectives & HUD =================
 function objective(){
-  const f=F();
-  if (!f.walt) return { t:'Ask the railway worker where to find the bookseller', at:npcPos('walt') };
-  if (!f.hale1) return { t:'Find Edmund Hale’s bookshop — west over the bridge, purple roof', at:npcPos('hale') };
-  if (!f.key){
-    if (has('carving')) return { t:'Return to Hale — you found the carved word: LANTERN', at:npcPos('hale') };
-    if (!f.news) return { t:'Talk to Clara Wynn in the square — she has newspaper records', at:npcPos('clara') };
-    return { t:'Find the fence post carving at Hollow Farm (east fence, south road)', at:{x:29*T+8,y:46*T+6} };
+  const f=F(), c=chap();
+  const N = id => ({ ...npcPos(id), npc:id });
+  if (c===1){
+    if (!f.walt) return { t:'Ask the railway worker (Walt) where the bookseller is', at:N('walt') };
+    if (!f.hale1) return { t:'Find Edmund Hale’s bookshop — west over the bridge, purple roof', at:N('hale') };
+    if (!f.key){
+      if (has('carving')) return { t:'Go back to Hale and tell him the word: LANTERN', at:N('hale') };
+      if (!f.news) return { t:'Talk to Clara Wynn in the square — she has the old newspapers', at:N('clara') };
+      return { t:'Find the carved fence post at Hollow Farm (east fence, south of the road)', at:{x:29*T+8,y:46*T+6} };
+    }
+    if (!f.lantern) return { t:'Get Dad’s lantern from Tom Barrow at Hollow Farm', at:N('tom') };
+    if (!f.end) return { t:'Follow the forest trail north to Dad’s workshop — keep left', at: P.y>27*T ? {x:30*T+16,y:28*T} : {x:7*T+8,y:8*T} };
+    return { t:'Continue to Chapter Two', at:null };
   }
-  if (!f.lantern) return { t:'Get Dad’s lantern from Tom Barrow — you’ll need it for the forest', at:npcPos('tom') };
-  if (!f.end) return { t:'Follow the forest trail north into Ashwood — keep left at every fork', at: P.y>27*T ? {x:30*T+16,y:28*T} : {x:7*T+8,y:8*T} };
-  return { t:'Explore freely — Chapter Two coming soon', at:null };
+  if (c===2){
+    if (!f.note) return { t:'Sit on the platform bench and wait for Dad', at:{x:87*T+8,y:34*T-6} };
+    if (!f.ash1) return { t:'Find the old engine shed — north of the station, along the tracks', at:N('ashcombe') };
+    if (!f.culvertKnown) return { t:'Find another way into the shed yard — ask Silas at Mara’s grave', at:N('silas') };
+    if (!f.culvert) return { t:'Open the rusty grate under the shed yard’s west fence (by the river)', at:{x:78*T+8,y:9*T-4} };
+    if (!has('ledger')) return { t:'Search the engine shed’s inspection pit for the ledger', at:{x:83*T+8,y:10*T} };
+    return { t:'Continue to Chapter Three', at:null };
+  }
+  if (!f.wp) return { t:'Ask Clara who “W.P.” was — she has the 2006 railway staff records', at:N('clara') };
+  if (!f.confess) return { t:'Confront Walt at the station' + (f.letters ? '' : ' (Rosa at the post office may know more)'), at:N('walt') };
+  if (!f.gameEnd) return { t:'Meet your father at the far end of the platform', at:N('elias') };
+  return { t:'The story is complete. Explore Ashbourne freely', at:null };
 }
 function npcPos(id){ const n=npcs.find(n=>n.id===id); return {x:n.x,y:n.y-28}; }
+let lastObj='';
 function refreshHUD(){
   const o=objective(); $('#objLbl').textContent=o.t; $('#jObj').textContent=o.t;
-  $('#timeLbl').textContent=['Late afternoon','Dusk','Night'][F().phase] + (F().lantern?' · lantern lit':'');
+  $('#timeLbl').textContent=PHASE_NAMES[F().phase] + (F().lantern && LOOK()===2 ? ' · lantern lit' : '');
+  $('#chapLbl').textContent = ['','Chapter One · The Letter','Chapter Two · The Ledger','Chapter Three · Keeping Left'][chap()];
+  if (o.t !== lastObj){ if (lastObj && mode!=='title'){ const h=$('#hud'); h.classList.remove('flash'); void h.offsetWidth; h.classList.add('flash'); } lastObj=o.t; }
 }
 
 // ================= journal =================
-let jTab='clues';
+function storySoFar(){
+  const f=F(), out=[];
+  const c1=['My father, Elias Vale, vanished when I was six. Three days ago he wrote to me and told me to come to Ashbourne and find Edmund Hale, the bookseller.'];
+  if (f.hale1) c1.push('Hale recognised Dad’s handwriting, but wanted proof I’m his son: the word Dad carved into everything he built.');
+  if (f.news) c1.push('Clara showed me the 2006 newspaper: a fire at the railway office killed a clerk, Mara Voss. Dad vanished that night, and the town blamed him.');
+  if (has('carving')) c1.push('The word was LANTERN, carved into Tom Barrow’s fence beside Dad’s initials.');
+  if (f.key) c1.push('Hale gave me the key to Dad’s workshop, hidden beyond Ashwood forest.');
+  if (f.lantern) c1.push('Tom admitted he was frightened into lying about Dad after the fire, and gave me Dad’s lantern.');
+  if (f.end) c1.push('In the workshop, Dad’s letter said Mara had found the railway’s books were falsified. She was killed to keep it quiet, and Dad was framed. The proof, her ledger, is in the old engine shed.');
+  out.push(['Chapter One — The Letter', c1]);
+  if (chap()>=2){
+    const c2=['At dawn I waited on the platform. Dad didn’t come.'];
+    if (f.note) c2.push('Walt gave me a note from Dad: the platform is being watched. Get the ledger from the engine shed first.');
+    if (f.ash1) c2.push('Victor Ashcombe, who bought the railway land after the fire, keeps the shed locked.');
+    if (f.culvertKnown) c2.push('Silas showed me a hidden way in: a culvert under the west fence.');
+    if (has('ledger')) c2.push('Mara’s ledger shows Ashcombe paid someone called “W.P.” to clear the office records two days before the fire.');
+    out.push(['Chapter Two — The Ledger', c2]);
+  }
+  if (chap()>=3){
+    const c3=['I need to find out who “W.P.” was.'];
+    if (f.wp) c3.push('Clara’s staff records: W.P. is Walter Pryce. Walt, the railway worker.');
+    if (f.letters) c3.push('Rosa says Walt has written to Ashcombe Holdings every month for twenty years.');
+    if (f.confess) c3.push('Walt confessed: he set the fire for Ashcombe’s money, not knowing Mara was inside, and let Dad take the blame.');
+    if (f.gameEnd) c3.push('Dad was waiting at the end of the platform.');
+    out.push(['Chapter Three — Keeping Left', c3]);
+  }
+  return out;
+}
+
+let jTab='story';
 function openJournal(){ mode='journal'; $('#journal').classList.add('on'); renderJournal(); for (const k in keys) keys[k]=false; }
 function closeJournal(){ $('#journal').classList.remove('on'); mode='play'; }
 $('#jBtn').addEventListener('click', () => { if (mode==='play') openJournal(); else if (mode==='journal') closeJournal(); $('#jBtn').blur(); });
@@ -1592,13 +2059,18 @@ $('#jClose').addEventListener('click', closeJournal);
 $('#journal').addEventListener('click', e => { if (e.target.id==='journal') closeJournal(); });
 document.querySelectorAll('#journal .tabs button[data-tab]').forEach(b => b.addEventListener('click', () => {
   jTab=b.dataset.tab; document.querySelectorAll('#journal .tabs button[data-tab]').forEach(x=>x.classList.toggle('on',x===b)); renderJournal(); }));
-const CLUE_ICON = { letter:'✉', photo:'▣', hand:'✎', news:'▤', carving:'⌗', grave:'✝', key:'⚷', lantern:'♨', silas:'☗', watch:'◷', postcard:'▭', workshop:'✉' };
+const CLUE_ICON = { note:'✉', ashcombe:'☗', ledger:'▤', staff:'▦', letters:'✉', confession:'✝', reunion:'♥', letter:'✉', photo:'▣', hand:'✎', news:'▤', carving:'⌗', grave:'✝', key:'⚷', lantern:'♨', silas:'☗', watch:'◷', postcard:'▭', workshop:'✉' };
 function renderJournal(){
   const body=$('#jbody'); body.innerHTML=''; refreshHUD();
   const entry=(icon,title,text,locked)=>{ const e=document.createElement('div'); e.className='entry'+(locked?' locked':'');
     const ic = typeof icon==='string' ? Object.assign(document.createElement('div'),{className:'ic',textContent:icon}) : icon;
     e.appendChild(ic); const t=document.createElement('div'); t.innerHTML=`<h3></h3><p></p>`; t.querySelector('h3').textContent=title; t.querySelector('p').textContent=text; e.appendChild(t); body.appendChild(e); };
-  if (jTab==='clues'){
+  if (jTab==='story'){
+    const box=document.createElement('div'); box.className='story'; body.appendChild(box);
+    for (const [h,lines] of storySoFar()){ const h4=document.createElement('h4'); h4.textContent=h; box.appendChild(h4); for (const l of lines){ const p=document.createElement('p'); p.textContent=l; box.appendChild(p);} }
+    const n=document.createElement('p'); n.className='next'; n.textContent='What to do next: '+objective().t; box.appendChild(n);
+    const tip=document.createElement('p'); tip.textContent = IS_TOUCH ? 'Tip: tap E next to people and sparkles. The ⌖ button shows the map.' : 'Tip: press E next to people and sparkles. Press M for the map, I for your items.'; tip.style.color='var(--dim)'; box.appendChild(tip);
+  } else if (jTab==='clues'){
     const ids=Object.keys(CLUES); const c=document.createElement('div'); c.className='count'; c.textContent=`${S0.clues.length} of ${ids.length} clues`; body.appendChild(c);
     for (const id of S0.clues.slice().reverse()) entry(CLUE_ICON[id]||'?', CLUES[id].t, CLUES[id].d);
     const left=ids.length-S0.clues.length; if (left) entry('?', `${left} more to find`, 'Talk to everyone. Examine anything that looks out of place.', true);
@@ -1710,6 +2182,8 @@ function renderInv(){
 
 // ================= zones =================
 const zones = [
+  { n:'Old engine shed', x0:76, y0:2, x1:90, y1:15 },
+  { n:'Post office', x0:56, y0:22, x1:64, y1:30 },
   { n:'Father’s workshop', x0:2, y0:1, x1:13, y1:10 },
   { n:'Ashwood forest', x0:0, y0:0, x1:36, y1:27 },
   { n:'St. Aldric’s churchyard', x0:43, y0:2, x1:60, y1:12 },
@@ -1772,12 +2246,30 @@ const smoke=[];
 const flies=Array.from({length:70},()=>({x:(2+rng()*33)*T, y:(1+rng()*25)*T, p:rng()*6.28, s:.5+rng()}));
 const rflies=Array.from({length:25},()=>({x:(60+rng()*20)*T, y:rng()*H*T, p:rng()*6.28, s:.5+rng()}));
 
+// ================= tutorial =================
+let tutT=0, tutMoved=0;
+const TUT = [
+  null,
+  { t: () => IS_TOUCH ? 'Drag your thumb on the <b>left side</b> of the screen to walk.' : 'Walk with <b>WASD</b> or the <b>arrow keys</b>. Hold <b>Shift</b> to run.', s:'Step 1 of 4 · Getting started', done: () => tutMoved > 50 },
+  { t: () => 'See the yellow <b>!</b> above Walt? Walk next to him and ' + (IS_TOUCH ? 'tap <b>E</b>' : 'press <b>E</b>') + ' to talk.', s:'Step 2 of 4 · A yellow ! always marks who to talk to next', done: () => F().walt },
+  { t: () => 'Your current goal is always in the <b>top-left box</b>. The <b>pink arrow</b> points the way.', s:'Step 3 of 4 · Follow it to Hale’s bookshop', done: () => tutT > 8 },
+  { t: () => IS_TOUCH ? 'Stuck? Tap <b>✎</b> for your journal — it has the story so far — or <b>⌖</b> for the map.' : 'Stuck? Press <b>J</b> for your journal — it has the story so far — and <b>M</b> for the map.', s:'Step 4 of 4 · That’s everything. Good luck, Noah.', done: () => tutT > 9 },
+];
+function tickTut(dt){
+  const el=$('#tut'), st=S0.tut||0;
+  if (!st || st>=TUT.length || mode!=='play'){ el.classList.remove('on'); return; }
+  tutT += dt;
+  const step=TUT[st];
+  if (!el.classList.contains('on') || el.dataset.step!==String(st)){ el.dataset.step=String(st); $('#tut .n').textContent=st; $('#tut .t').innerHTML=step.t(); $('#tut .s').textContent=step.s; el.classList.add('on'); }
+  if (step.done()){ S0.tut = st+1>=TUT.length ? 0 : st+1; tutT=0; el.classList.remove('on'); }
+}
+
 // ================= main loop =================
 let last=performance.now(), time=0, titlePan=0;
 function step(now){
   const dt=Math.min(.05,(now-last)/1000); last=now; time+=dt;
-  tickDialog(dt); tickCut(dt);
-  Music.setMood(mode==='title' ? 'title' : forestF>.5 ? 'forest' : ['day','dusk','night'][F().phase]);
+  tickDialog(dt); tickCut(dt); tickTut(dt);
+  Music.setMood(mode==='title' ? 'title' : forestF>.5 ? 'forest' : ['day','dusk','night','dawn'][LOOK()]);
 
   if (mode==='play'){
     let dx=0, dy=0; if(keys.left)dx--; if(keys.right)dx++; if(keys.up)dy--; if(keys.down)dy++;
@@ -1796,7 +2288,7 @@ function step(now){
       if (!F().lantern && isForest(Math.floor(P.x/T), Math.floor((P.y-4)/T))){
         P.y = 27*T+6; if (gateCool<=0){ gateCool=3; dialog([{s:'noah', t:'It’s already pitch dark under those trees. I’m not going in there without a light.'}]); }
       }
-      P.anim += dt*(run?11:7);
+      P.anim += dt*(run?11:7); tutMoved += sp*dt;
     } else P.anim=0;
     gateCool-=dt;
     // Silas encounter
@@ -1829,7 +2321,7 @@ function step(now){
 }
 
 function render(cx,cy,dt){
-  const phase=F().phase;
+  const phase=LOOK();
   ctx.fillStyle='#1d3320'; ctx.fillRect(0,0,VW,VH);
   ctx.drawImage(ground,-cx,-cy);
 
@@ -1866,6 +2358,13 @@ function render(cx,cy,dt){
   if (mode!=='title') items.push({k:P.y, d:()=>drawCharAt(ctx, P.x-cx, P.y-cy, P.dir, frame, CH.noah, F().lantern)});
   items.sort((a,b)=>a.k-b.k);
   for (const it of items) it.d();
+  if (mode==='play' || mode==='dialog'){
+    const ob=objective(), tgt=ob.at && ob.at.npc;
+    for (const n of npcs){ if (n.when && !n.when()) continue;
+      const x=Math.round(n.x-cx), y=Math.round(n.y-cy-36+(reduceMotion?0:Math.sin(time*4+n.x)*1.5));
+      if (x<-12||y<-12||x>VW+12||y>VH+12) continue;
+      if (n.id===tgt) bubble(x,y,true); else if (!S0.met.includes(n.id)) bubble(x,y,false); }
+  }
 
   // sparkles for memories and the watch
   const tw = reduceMotion?1:(Math.sin(time*4)+1)/2;
@@ -1885,19 +2384,20 @@ function render(cx,cy,dt){
   const g=ctx.createLinearGradient(0,0,0,VH);
   if (phase===0){ g.addColorStop(0,'rgba(255,150,90,.16)'); g.addColorStop(.6,'rgba(255,170,110,.05)'); g.addColorStop(1,'rgba(70,50,120,.14)'); }
   else if (phase===1){ g.addColorStop(0,'rgba(255,110,80,.24)'); g.addColorStop(.5,'rgba(190,80,130,.14)'); g.addColorStop(1,'rgba(50,40,120,.26)'); }
+  else if (phase===3){ g.addColorStop(0,'rgba(255,140,170,.32)'); g.addColorStop(.5,'rgba(190,150,225,.18)'); g.addColorStop(1,'rgba(70,100,175,.32)'); }
   else { g.addColorStop(0,'rgba(40,50,130,.22)'); g.addColorStop(1,'rgba(20,20,70,.28)'); }
   ctx.fillStyle=g; ctx.fillRect(0,0,VW,VH);
 
   // darkness with light cut-outs
   const inF = mode!=='title' && isForest(Math.floor(P.x/T), Math.floor(P.y/T)) ? 1 : 0;
   forestF += (inF-forestF)*Math.min(1,dt*2);
-  const base=[0,.24,.58][phase] + forestF*[.4,.42,.32][phase];
+  const base=[0,.24,.58,.26][phase] + forestF*[.4,.42,.32,.38][phase];
   if (base>.01){
     dctx.globalCompositeOperation='source-over'; dctx.clearRect(0,0,VW,VH);
     dctx.fillStyle=`rgba(8,10,30,${Math.min(.93,base)})`; dctx.fillRect(0,0,VW,VH);
     dctx.globalCompositeOperation='destination-out';
     const cut=(x,y,r,a)=>{ if (x<-r||y<-r||x>VW+r||y>VH+r) return; const gg=dctx.createRadialGradient(x,y,0,x,y,r); gg.addColorStop(0,`rgba(0,0,0,${a})`); gg.addColorStop(.6,`rgba(0,0,0,${a*.5})`); gg.addColorStop(1,'rgba(0,0,0,0)'); dctx.fillStyle=gg; dctx.fillRect(x-r,y-r,r*2,r*2); };
-    for (const h of houses) for (const [gx,gy] of h.glows){ if (h.workshop && phase<2) continue; cut(h.x*T+gx-cx, h.y*T-h.extra+gy-cy+6, 26, .9); }
+    for (const h of houses) for (const [gx,gy] of h.glows){ if (h.workshop && phase!==2) continue; cut(h.x*T+gx-cx, h.y*T-h.extra+gy-cy+6, 26, .9); }
     if (phase>0) for (const [lx,ly] of lamps) cut(lx*T+8-cx, ly*T-6-cy, 46, .95);
     if (F().lantern && mode!=='title'){ const fl=reduceMotion?0:Math.sin(time*9)*2+Math.sin(time*23); cut(P.x-cx, P.y-10-cy, 78+fl, 1); }
     dctx.globalCompositeOperation='source-over';
@@ -1907,11 +2407,11 @@ function render(cx,cy,dt){
   // warm glows
   ctx.globalCompositeOperation='lighter';
   const glow=(x,y,r,a,col='255,190,100')=>{ if (x<-r||y<-r||x>VW+r||y>VH+r) return; const gg=ctx.createRadialGradient(x,y,0,x,y,r); gg.addColorStop(0,`rgba(${col},${a})`); gg.addColorStop(1,`rgba(${col},0)`); ctx.fillStyle=gg; ctx.fillRect(x-r,y-r,r*2,r*2); };
-  for (const h of houses) for (const [gx,gy] of h.glows){ if (h.workshop && phase<2) continue; glow(h.x*T+gx-cx, h.y*T-h.extra+gy-cy, 14, phase===2?.32:.2); }
+  for (const h of houses) for (const [gx,gy] of h.glows){ if (h.workshop && phase!==2) continue; glow(h.x*T+gx-cx, h.y*T-h.extra+gy-cy, 14, phase===2?.32:.2); }
   const flick=reduceMotion?0:Math.sin(time*7)*.02;
   if (phase>0) for (const [lx,ly] of lamps) glow(lx*T+8-cx, ly*T-12-cy, 30, .22+flick);
   if (F().lantern && mode!=='title') glow(P.x-cx+(P.dir==='left'?-4:4), P.y-8-cy, 34, .22+flick);
-  if (!reduceMotion && (phase>0 || forestF>.3)){
+  if (!reduceMotion && (phase===1 || phase===2 || forestF>.3)){
     for (const list of [flies, rflies]) for (const f of list){ f.p+=dt*f.s; const x=f.x+Math.sin(f.p)*10-cx, y=f.y+Math.cos(f.p*.7)*8-cy; if (x<0||y<0||x>VW||y>VH) continue;
       const a=.5+.5*Math.sin(f.p*3); ctx.fillStyle=`rgba(230,255,150,${a*.9})`; ctx.fillRect(Math.round(x),Math.round(y),1,1); glow(x,y,4,a*.25,'200,255,120'); }
   }
@@ -1921,7 +2421,7 @@ function render(cx,cy,dt){
   if (mode==='play' && SETTINGS.marker){
     const o=objective(); if (o.at){ const x=o.at.x-cx, y=o.at.y-cy, bob=reduceMotion?0:Math.sin(time*4)*2;
       const onScreen = x>8&&y>8&&x<VW-8&&y<VH-8;
-      if (onScreen){ ctx.fillStyle='#070a12'; ctx.fillRect(x-4,y-6+bob,9,6); ctx.fillStyle='#e98c7a'; ctx.fillRect(x-3,y-5+bob,7,2); ctx.fillRect(x-2,y-3+bob,5,1); ctx.fillRect(x-1,y-2+bob,3,1); ctx.fillRect(x,y-1+bob,1,1); }
+      if (onScreen && o.at.npc){ /* the ! bubble marks it */ } else if (onScreen){ ctx.fillStyle='#070a12'; ctx.fillRect(x-4,y-6+bob,9,6); ctx.fillStyle='#e98c7a'; ctx.fillRect(x-3,y-5+bob,7,2); ctx.fillRect(x-2,y-3+bob,5,1); ctx.fillRect(x-1,y-2+bob,3,1); ctx.fillRect(x,y-1+bob,1,1); }
       else { const ang=Math.atan2(y-VH/2, x-VW/2); const rx=VW/2-14, ry=VH/2-14; const k=Math.min(Math.abs(rx/Math.cos(ang)), Math.abs(ry/Math.sin(ang)));
         const ax=VW/2+Math.cos(ang)*k, ay=VH/2+Math.sin(ang)*k;
         ctx.save(); ctx.translate(Math.round(ax),Math.round(ay)); ctx.rotate(ang);
@@ -1931,7 +2431,24 @@ function render(cx,cy,dt){
   }
 }
 
+function bubble(x,y,main){
+  if (main){
+    ctx.fillStyle='#070a12'; ctx.fillRect(x-5,y-6,11,13); ctx.fillRect(x-1,y+7,3,2);
+    ctx.fillStyle='#f6c56a'; ctx.fillRect(x-4,y-5,9,11); ctx.fillRect(x,y+6,1,2);
+    ctx.fillStyle='#fff3c4'; ctx.fillRect(x-4,y-5,9,1);
+    ctx.fillStyle='#3a2416'; ctx.fillRect(x-1,y-3,3,5); ctx.fillRect(x-1,y+3,3,2);
+  } else {
+    ctx.fillStyle='#070a12'; ctx.fillRect(x-6,y-1,13,8); ctx.fillStyle='#c9cfe3'; ctx.fillRect(x-5,y,11,6); ctx.fillRect(x-1,y+6,2,2);
+    ctx.fillStyle='#3a4872'; ctx.fillRect(x-3,y+2,2,2); ctx.fillRect(x,y+2,2,2); ctx.fillRect(x+3,y+2,2,2);
+  }
+}
 function drawProp(p,x,y){
+  if (p.kind==='gate'){ ctx.fillStyle='#22252f'; ctx.fillRect(x,y-6,16,2); ctx.fillRect(x,y+8,16,2); for (let i=1;i<16;i+=3) ctx.fillRect(x+i,y-6,1,16);
+    if (p.x===83){ ctx.fillStyle='#8a8478'; ctx.fillRect(x+12,y+1,8,2); ctx.fillStyle='#c9b46a'; ctx.fillRect(x+14,y+2,4,4); } return; }
+  if (p.kind==='grate'){ const open=F().culvert; ctx.fillStyle='#1d2a3a'; ctx.fillRect(x+3,y+2,10,10);
+    if (open){ ctx.fillStyle='#6b4a2f'; ctx.fillRect(x-2,y+3,4,9); for (let i=0;i<4;i++) ctx.fillRect(x-3+i,y+3+i*2,1,1); ctx.fillStyle='#3a2a1a'; ctx.fillRect(x+3,y+2,10,1); }
+    else { ctx.fillStyle='#6b4a2f'; for (let i=4;i<14;i+=3) ctx.fillRect(x+i,y+2,1,10); ctx.fillRect(x+3,y+6,10,1); ctx.fillStyle='#a7aab4'; ctx.fillRect(x+7,y+5,3,3); ctx.fillStyle='#2f5a2a'; ctx.fillRect(x+1,y,4,3); ctx.fillRect(x+11,y+9,4,3); } return; }
+  if (p.kind==='postbox'){ ctx.fillStyle='rgba(20,15,40,.3)'; ctx.fillRect(x+3,y+12,10,2); ctx.fillStyle='#a3241e'; ctx.fillRect(x+4,y-4,8,16); ctx.fillStyle='#c83a2e'; ctx.fillRect(x+4,y-6,8,3); ctx.fillRect(x+5,y-4,2,15); ctx.fillStyle='#1a1418'; ctx.fillRect(x+5,y,6,1); ctx.fillStyle='#e8c46a'; ctx.fillRect(x+7,y+3,2,2); return; }
   ctx.fillStyle='rgba(20,15,40,.3)'; ctx.fillRect(x+1,y+12,14,2);
   if (p.kind==='bench'){ ctx.fillStyle='#4a321f'; ctx.fillRect(x-6,y+4,2,8); ctx.fillRect(x+20,y+4,2,8); ctx.fillStyle='#8a6240'; ctx.fillRect(x-7,y+2,30,3); ctx.fillRect(x-7,y+7,30,2); ctx.fillStyle='#a77d55'; ctx.fillRect(x-7,y+2,30,1); }
   else if (p.kind==='sign'){ ctx.fillStyle='#4a321f'; ctx.fillRect(x+7,y+2,2,11); ctx.fillStyle='#3a2416'; ctx.fillRect(x,y-4,16,8); ctx.fillStyle='#8a6240'; ctx.fillRect(x+1,y-3,14,6); ctx.fillStyle='#3a2416'; for(let i=0;i<5;i++) ctx.fillRect(x+3+i*2,y-1,1,2); }
@@ -1968,9 +2485,12 @@ function continueGame(){
   S0=s; P.x=s.x; P.y=s.y; P.dir=s.dir||'down';
   if (s.cat){ cat.x=s.cat.x; cat.y=s.cat.y; cat.follow=s.cat.follow; cat.tx=cat.x; cat.ty=cat.y; }
   if (F().catHome){ cat.x=40*T; cat.y=25*T; cat.tx=cat.x; cat.ty=cat.y; }
-  for (const n of npcs) if (n.id==='silas') {}
+  applyWorldState(); lastObj=''; S0.tut=0;
   camX=P.x-VW/2; camY=P.y-VH/2; curZone='';
-  $('#title').classList.remove('on'); beginPlay(); showZone('Welcome back', ['Late afternoon','Dusk','Night'][F().phase]);
+  $('#title').classList.remove('on');
+  if (F().end && chap()===1) return startChapter(2);
+  if (F().ch2end && chap()===2) return startChapter(3);
+  beginPlay(); showZone('Welcome back', PHASE_NAMES[F().phase]);
 }
 $('#playBtn').addEventListener('click', () => { ensureAudio(); hasSave() ? continueGame() : startNew(); });
 $('#newBtn').addEventListener('click', () => {

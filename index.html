@@ -208,6 +208,12 @@
   .inv-item .iname { font-family: var(--display); font-size: 20px; color: var(--amber); line-height: 1.1; }
   .inv-item .idesc { font-size: 17px; color: #a8b0cc; line-height: 1.2; }
   .inv-item .ibadge { font-size: 14px; color: var(--rose); border: 1px solid rgba(233,140,122,.4); padding: 1px 7px; letter-spacing: .06em; }
+  #inv header { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px 8px 16px; border-bottom: 3px solid var(--edge); }
+  #inv h2 { font-family: var(--display); font-weight: 400; font-size: 34px; margin: 0; color: var(--amber); line-height: 1; }
+  #inv .tabs { display: flex; }
+  .xbtn { font-family: var(--display); font-size: 22px; color: var(--ink); background: var(--panel-2); border: 3px solid var(--edge);
+    box-shadow: 0 0 0 2px #070a12; min-width: 48px; height: 44px; padding: 0 12px; cursor: pointer; border-radius: 2px; display: inline-flex; align-items: center; gap: 6px; }
+  .xbtn:hover, .xbtn:active { border-color: var(--amber); color: #fff; }
   .inv-empty { grid-column: 1 / -1; text-align: center; color: var(--dim); font-size: 21px; padding: 32px 0; }
 
   #ending { background: rgba(5,6,14,.92); }
@@ -400,6 +406,12 @@
     #pause h2, #settings h2 { font-size: 34px; margin-bottom: 6px; } .srow { padding: 5px 0; font-size: 19px; }
     #journal .book, #mapov .book, #inv .book { max-height: 100%; }
   }
+
+  /* full-screen windows always sit above the joystick / touch layer */
+  #title, #cut, #journal, #inv, #mapov, #pause, #ending, #chapcard { z-index: 10; }
+  #settings { z-index: 12; }
+  #rotate { z-index: 30; }
+  body.inmenu #touch { display: none !important; }
 </style>
 </head>
 <body>
@@ -489,7 +501,7 @@
     <header>
       <h2>Noah's pockets</h2>
       <div class="tabs">
-        <button id="invClose" aria-label="Close inventory">✕</button>
+        <button id="invClose" class="xbtn" aria-label="Close inventory">✕ Close</button>
       </div>
     </header>
     <div id="invbody"></div>
@@ -2254,6 +2266,7 @@ function openInv(){ mode='inv'; $('#inv').classList.add('on'); renderInv(); for 
 function closeInv(){ $('#inv').classList.remove('on'); mode='play'; }
 $('#invBtn').addEventListener('click', () => { if (mode==='play') openInv(); else if (mode==='inv') closeInv(); $('#invBtn').blur(); });
 $('#invClose').addEventListener('click', closeInv);
+$('#inv').addEventListener('click', e => { if (e.target.id==='inv') closeInv(); });
 
 function renderInv(){
   const body=$('#invbody'); body.innerHTML='';
@@ -2410,6 +2423,7 @@ function tickTut(dt){
 // ================= main loop =================
 let last=performance.now(), time=0, titlePan=0;
 function step(now){
+  document.body.classList.toggle('inmenu', ['inv','journal','map','pause','settings','ending'].includes(mode));
   const dt=Math.min(.05,(now-last)/1000); last=now; time+=dt;
   tickDialog(dt); tickCut(dt); tickTut(dt);
   Music.setMood(mode==='title' ? 'title' : forestF>.5 ? 'forest' : ['day','dusk','night','dawn'][LOOK()]);

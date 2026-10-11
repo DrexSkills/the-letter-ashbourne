@@ -19,6 +19,7 @@ const mapBase = mk(W*MS, H*MS);
   for (const tr of trees){ const x=Math.round(tr.x/T*MS)-2, y=Math.round(tr.y/T*MS)-3; const fr=isForest(Math.floor(tr.x/T),Math.floor(tr.y/T));
     R(x,y,4,4, tr.pine?'#1a3322':(fr?'#20402a':'#2f5a2a')); R(x+1,y,2,1, tr.pine?'#2e5a3a':'#4f8a3e'); }
   for (const f of fences) R(f.x*MS+(f.h?0:1), f.y*MS+(f.h?1:0), f.h?MS:1, f.h?1:MS, '#5a3d26');
+  for (const p of props){ if (p.kind==='ruin'||p.kind==='ruincol') R(p.x*MS, p.y*MS, MS, MS, '#9a948a'); if (p.kind==='altar') R(p.x*MS, p.y*MS, MS, MS, '#e8e0cc'); if (p.kind==='wheel') R(p.x*MS, p.y*MS, MS, MS, '#6b4a2f'); }
   for (const gv of graves) R(gv.x*MS+1, gv.y*MS, 2, 3, gv.mara?'#d0cbd8':'#8a8794');
   for (const h of houses){ const x=h.x*MS, y=h.y*MS, w=h.w*MS, hh=h.h*MS;
     const roof = h.workshop?'#3b3530':h.church?'#4a4e66':h.roof;
@@ -33,6 +34,10 @@ const mapBase = mk(W*MS, H*MS);
 })();
 
 const MAP_LABELS = [
+  { t:'Willow Lake', x:24, y:92.6, big:true },
+  { t:'Old Mill', x:63.5, y:59.6 },
+  { t:'Abbey ruins', x:82, y:76.4 },
+  { t:'Southern meadows', x:50, y:80, big:true },
   { t:'Ashwood Forest', x:20, y:21, big:true },
   { t:'Father’s workshop', x:7.5, y:1.2, unk:'???', when: () => F().key },
   { t:'Hollow Farm', x:20, y:55, big:true },
@@ -67,7 +72,7 @@ function openMap(){
   $('#mapObj').textContent = o.t;
   $('#mapov').classList.add('on');
   // scroll so the player is visible on narrow screens
-  requestAnimationFrame(() => { const sc=$('#mapscroll'), wr=$('#mapwrap'); sc.scrollLeft = Math.max(0, wr.offsetWidth*(P.x/(W*T)) - sc.clientWidth/2); });
+  requestAnimationFrame(() => { const sc=$('#mapscroll'), wr=$('#mapwrap'); sc.scrollTop = Math.max(0, wr.offsetHeight*(P.y/(H*T)) - sc.clientHeight/2); sc.scrollLeft = Math.max(0, wr.offsetWidth*(P.x/(W*T)) - sc.clientWidth/2); });
 }
 function closeMap(){ $('#mapov').classList.remove('on'); mode='play'; }
 $('#mapBtn').addEventListener('click', () => { if (mode==='play') openMap(); else if (mode==='map') closeMap(); $('#mapBtn').blur(); });

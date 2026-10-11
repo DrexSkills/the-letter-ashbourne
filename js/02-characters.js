@@ -17,6 +17,8 @@ const CH = {
   greta: { name:'Greta Holloway', role:'blacksmith', skin:'#c48a62', skin2:'#a26c48', hair:'#7a3a1a', style:'bun', top:'#5a4a42', top2:'#463a34', apron:'#3a2a22', pants:'#2f2a2a', pants2:'#241f1f', pitch:240 },
   marlowe: { name:'Inspector Marlowe', role:'county police', skin:'#d9a27e', skin2:'#b8815f', hair:'#5a5450', style:'short', hat:{c:'#3a3a40',s:'brim'}, mustache:'#6a6460', top:'#4a4440', top2:'#3a3430', pants:'#2a2a30', pants2:'#202026', pitch:180 },
   nell:  { name:'Nell Crane', role:'night clerk', skin:'#f0c8a8', skin2:'#d0a888', hair:'#b84a2a', style:'short', glasses:true, top:'#2f5a5a', top2:'#244848', scarf:'#d8d0c0', pants:'#2f3446', pants2:'#252a38', pitch:430 },
+  agnes: { name:'Agnes Mott', role:'the miller', skin:'#e2b896', skin2:'#c4967a', hair:'#d8d0c0', style:'bun', top:'#6a7a4a', top2:'#55623a', apron:'#efe6d4', pants:'#4a3f36', pants2:'#3a3029', pitch:330 },
+  ned:   { name:'Old Ned', role:'the fisherman', skin:'#c48a62', skin2:'#a26c48', hair:'#b8b2aa', style:'short', hat:{c:'#d9b35e',s:'brim'}, beard:'#c9c4bc', top:'#d9a03a', top2:'#b8822a', pants:'#3a4a5a', pants2:'#2c3846', pitch:150 },
   pip:   { name:'Pip', skin:'#e8b896', skin2:'#c99474', hair:'#c46a2a', style:'short', hat:{c:'#c0392b',s:'cap'}, top:'#e0a040', top2:'#b88030', pants:'#4a5a7a', pants2:'#3a4862', kid:true, pitch:520 },
 };
 

@@ -718,3 +718,55 @@ function showEnding(ch){
   $('#endNote').textContent = ch===4 ? (notes.length ? 'Thank you for playing. Still hidden in Ashbourne: ' + notes.join(' ') : 'Thank you for playing. You found every secret Ashbourne had.') :
     (notes.length ? 'Still hidden in Ashbourne: ' + notes.join(' ') : 'You found every secret Ashbourne was willing to give up — for now.');
 }
+
+
+// ================= the southern lands =================
+function talkAgnes(){
+  meet('agnes'); const f=F();
+  if (!f.agnes1){
+    dialog([
+      {s:'agnes', t:'Well, look at you — a visitor who walked all the way to the Old Mill! I’m Agnes Mott. My family has ground Ashbourne’s flour for two hundred years.'},
+      {s:'agnes', t:'You’ll want to be careful out here after dark. The Ashen came the summer of the fire — rose up out of the burned fields. They’re worst at the old Abbey across the river.'},
+      {s:'agnes', t:'Here — take a warm loaf. Come back any day and I’ll have another for you.'},
+      () => { f.agnes1=1; f.loafDay=S0.day; S0.hp=S0.maxhp; refreshHearts(); toast('Fresh bread', 'Fully healed'); },
+      {s:'key', t:'Agnes the miller will heal you with fresh bread once a day. The Abbey ruins across the river are dangerous at night.'},
+    ]); return;
+  }
+  if (f.loafDay !== S0.day){ dialog([{s:'agnes', t:'Fresh out of the oven. Eat it while it’s warm, love.'}], () => { f.loafDay=S0.day; S0.hp=S0.maxhp; refreshHearts(); toast('Fresh bread', 'Fully healed'); chime(); }); return; }
+  dialog([{s:'agnes', t: LOOK()===2 ? 'Stay by the lamps tonight. The Ashen don’t like the mill wheel’s noise, but they don’t mind much else.' : 'That’s today’s loaf eaten! Come back tomorrow, and I’ll have another.'}]);
+}
+function talkNed(){
+  meet('ned'); const f=F();
+  if (!f.lureQuest){
+    dialog([
+      {s:'ned', t:'Shh — you’ll scare the fish. I’m Old Ned. Been fishing Willow Lake since before your grandad wore short trousers.'},
+      {s:'ned', t:'Haven’t caught a thing in a week, mind. Lost my lucky lure up at the Abbey ruins — those shadow-dogs chased me clean out of there.'},
+      {choice:[
+        {t:'I’ll find it for you.', then:[ {s:'ned', t:'Would you? It’s a little brass fish, shiny as a new penny. Somewhere in the grass inside the old walls.'} ]},
+        {t:'What’s at the Abbey?', then:[ {s:'ned', t:'Broken walls, an old altar, and Ashen after dark. Go in daylight if you’ve any sense. And while you’re there — find my lure?'} ]},
+      ]},
+      () => { f.lureQuest=1; },
+      {s:'key', t:'Side quest: find Old Ned’s lucky brass lure in the Abbey ruins, across the river to the south-east. Go by day — it’s dangerous at night.'},
+    ]); return;
+  }
+  if (f.lureFound && !f.lureDone){
+    dialog([
+      {s:'ned', t:'Is that — my lure! Ha! Look at her shine!'},
+      {s:'ned', t:'Here, take these shards — the Ashen leave ’em all over the shore, and I’ve no use for ’em. You’ve made an old man very happy.'},
+      () => { f.lureDone=1; addShards(20, P.x, P.y-24); chime(); },
+    ]); return;
+  }
+  dialog([{s:'ned', t: f.lureDone ? 'Three trout this morning! The lure never fails. Neither do you, it seems.' : 'A little brass fish, inside the abbey walls. Mind the shadow-dogs.'}]);
+}
+function actLure(){ dialog([{s:'narr', t:'In the long grass by the old wall: a little brass fishing lure, shining like a new penny.'}, {s:'noah', t:'(Old Ned’s lucky lure. I should take it back to him at Willow Lake.)'}], () => { F().lureFound=1; toast('Found', 'Ned’s lucky lure'); chime(); }); }
+function actChest(){
+  if (F().abbeyChest){ dialog([{s:'narr', t:'The old chest is empty now.'}]); return; }
+  dialog([{s:'narr', t:'An iron-bound chest, half sunk into the abbey floor. The lid groans open.'}, {s:'narr', t:'Inside: a pouch of ember shards, left by someone who never came back for them.'}], () => { F().abbeyChest=1; addShards(15, P.x, P.y-24); chime(); });
+}
+function actAltar(){
+  dialog([
+    {s:'narr', t:'A cracked stone altar. Carved into it, worn almost smooth: a lantern, and the words “Light carried is light shared.”'},
+    {s:'narr', t:'Scratched underneath, much newer: “THE ASH REMEMBERS. 2006.”'},
+    {s:'noah', t:'(Dad’s word was Lantern, too. And 2006 — the year of the fire. Somebody here knew.)'},
+  ]);
+}

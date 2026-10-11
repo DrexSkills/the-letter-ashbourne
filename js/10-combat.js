@@ -34,6 +34,8 @@ function tryMove(e, dx, dy){ if (!eBlocked(e, e.x+dx, e.y)) e.x+=dx; if (!eBlock
 function pickSpawnType(tx,ty){
   const look=LOOK(), r=Math.random();
   if (IN==='harlow') return r<.45?'crow':r<.75?'crawler':'wisp';
+  if (tx>=72 && ty>=74) return r<.5?'wolf':r<.8?'wisp':'crow';          // the Abbey ruins are the most dangerous place
+  if (ty>=OLD_H) return r<.35?'crawler':r<.6?'wisp':r<.8?'crow':'wolf';  // the southern lands
   if (isForest(tx,ty)) return look===2 ? (r<.45?'wolf':r<.8?'wisp':'crawler') : (r<.25?'wolf':r<.6?'wisp':'crawler');
   if (look===0 || look===4) return r<.85?'crawler':'wisp';
   if (look===2) return r<.35?'crawler':r<.7?'wisp':'wolf';

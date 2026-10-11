@@ -212,6 +212,17 @@ function bubble(x,y,main){
   }
 }
 function drawProp(p,x,y){
+  if (p.kind==='ruin'){ const hgt=[10,16,6][p.v]; ctx.fillStyle='rgba(20,15,40,.3)'; ctx.fillRect(x,y+12,16,3);
+    ctx.fillStyle='#6f6a62'; ctx.fillRect(x,y+14-hgt,16,hgt+2); ctx.fillStyle='#8d877d'; ctx.fillRect(x,y+14-hgt,16,3);
+    ctx.fillStyle='#5a554e'; for (let j=y+17-hgt;j<y+16;j+=4) ctx.fillRect(x,j,16,1); ctx.fillRect(x+7,y+14-hgt,1,hgt);
+    ctx.fillStyle='#3f6630'; if (p.v!==2) ctx.fillRect(x+2+p.v*5,y+14-hgt,4,2); return; }
+  if (p.kind==='ruincol'){ ctx.fillStyle='rgba(20,15,40,.3)'; ctx.fillRect(x+2,y+12,12,3); ctx.fillStyle='#7d776d'; ctx.fillRect(x+4,y-14,8,28); ctx.fillStyle='#9a948a'; ctx.fillRect(x+4,y-14,2,28); ctx.fillRect(x+2,y-16,12,3); ctx.fillStyle='#5a554e'; ctx.fillRect(x+3,y-12,10,1); ctx.fillStyle='#3f6630'; ctx.fillRect(x+9,y-3,3,6); return; }
+  if (p.kind==='altar'){ ctx.fillStyle='rgba(20,15,40,.3)'; ctx.fillRect(x,y+12,16,3); ctx.fillStyle='#8d877d'; ctx.fillRect(x,y+2,16,12); ctx.fillStyle='#b8b2a6'; ctx.fillRect(x,y+2,16,3); ctx.fillStyle='#5a554e'; ctx.fillRect(x+5,y+7,6,1); ctx.fillRect(x+7,y+5,2,5); ctx.fillStyle='#ffcf6a'; ctx.fillRect(x+7,y,2,2); return; }
+  if (p.kind==='chest'){ const open=F().abbeyChest; ctx.fillStyle='rgba(20,15,40,.3)'; ctx.fillRect(x+1,y+12,14,3); ctx.fillStyle='#5a3a24'; ctx.fillRect(x+2,y+4,12,10); ctx.fillStyle='#8a8478'; ctx.fillRect(x+2,y+7,12,1); ctx.fillRect(x+7,y+6,2,3);
+    if (open){ ctx.fillStyle='#3a2416'; ctx.fillRect(x+2,y,12,4); } else { ctx.fillStyle='#6b4a2f'; ctx.fillRect(x+2,y+2,12,3); } return; }
+  if (p.kind==='wheel'){ const a=reduceMotion?0:time*1.2; ctx.fillStyle='#4a321f'; ctx.fillRect(x+6,y-8,4,22);
+    for (let k=0;k<8;k++){ const an=a+k*Math.PI/4; ctx.fillStyle='#6b4a2f'; for (let r=2;r<12;r+=2) ctx.fillRect(Math.round(x+8+Math.cos(an)*r), Math.round(y+2+Math.sin(an)*r), 2, 2); }
+    ctx.fillStyle='#8a6240'; ctx.fillRect(x+6,y,4,4); ctx.fillStyle='rgba(180,210,235,.5)'; if (!reduceMotion && Math.floor(time*6)%2) ctx.fillRect(x+12,y+12,3,2); return; }
   if (p.kind==='gate'){ ctx.fillStyle='#22252f'; ctx.fillRect(x,y-6,16,2); ctx.fillRect(x,y+8,16,2); for (let i=1;i<16;i+=3) ctx.fillRect(x+i,y-6,1,16);
     if (p.x===83){ ctx.fillStyle='#8a8478'; ctx.fillRect(x+12,y+1,8,2); ctx.fillStyle='#c9b46a'; ctx.fillRect(x+14,y+2,4,4); } return; }
   if (p.kind==='grate'){ const open=F().culvert; ctx.fillStyle='#1d2a3a'; ctx.fillRect(x+3,y+2,10,10);

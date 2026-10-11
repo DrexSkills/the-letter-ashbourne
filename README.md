@@ -19,12 +19,14 @@ New players get a short guided tutorial, yellow **!** markers above whoever move
 
 ## The world
 
+- **The southern lands:** take the road south out of town to **Willow Lake** (Old Ned's fishing pier and a side quest), **the Old Mill** (Agnes bakes a loaf that heals you once a day) and the **Abbey ruins** across the river — dangerous after dark.
+
 - **Atmosphere:** drifting cloud shadows, falling leaves, birds, golden sun rays at dawn and dusk, forest fog, and passing rain showers with their own sound (turn weather off in Settings).
 
 - **Go inside:** Hale's Books, June's Café, the post office, Greta's forge, St. Aldric's church, Dad's workshop and the engine shed — each with things to find.
 - **Daily routines:** townsfolk move around through the day and go indoors at night (you can visit them inside). Whoever your goal needs always waits for you.
 - **Sound:** footsteps that change on grass, paths, stone and wood; creaking doors; the train whistle; the church bell.
-- **Achievements:** 21 to unlock, from finishing chapters to bonking every townsperson.
+- **Achievements:** 23 to unlock, from finishing chapters to bonking every townsperson.
 
 ## Play
 

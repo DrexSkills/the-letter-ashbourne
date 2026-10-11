@@ -52,6 +52,8 @@ const PEOPLE = {
   june:  () => F().catHome ? 'Runs the café. Gave me Dad’s old postcard for bringing Biscuit home.' : 'Runs the café on the square. Hears every rumour first.',
   pip:   () => 'Kid who fishes by the river. Believes in the ghost light in Ashwood.',
   greta: () => 'Blacksmith south-east of the square. Trades ember shards for weapons.',
+  agnes: () => 'Runs the Old Mill on the river. Bakes a loaf that heals you, once a day.',
+  ned:   () => F().lureDone ? 'Fishes off the pier at Willow Lake. Got his lucky lure back, thanks to me.' : 'Fishes off the pier at Willow Lake. Lost his lucky lure at the Abbey ruins.',
   marlowe: () => 'County police inspector in Harlow Cross. Needs the original ledger to arrest Ashcombe.',
   nell:  () => 'Ashcombe’s night clerk, and Hugh Crane’s daughter. She chose to help.',
   rosa:  () => F().letters ? 'Postmistress. Told me about Walt’s monthly letters to Ashcombe Holdings.' : 'Runs the post office east of the square. Remembers every postmark.',
@@ -73,6 +75,8 @@ const npcs = [
   { id:'pip',   ...tpos(riverX(46)-2,46), dir:'right', talk: () => chap()>=2 ? talkPip2() : talkPip() },
   { id:'rosa',  ...tpos(61,28), dir:'down', talk: () => talkRosa() },
   { id:'bennet',...tpos(48,13), dir:'down', talk: () => talkBennet() },
+  { id:'agnes', ...tpos(66,67), dir:'down', talk: () => talkAgnes() },
+  { id:'ned',   ...tpos(24,78), dir:'down', talk: () => talkNed() },
   { id:'greta', ...tpos(59,41), dir:'down', talk: () => talkGreta() },
   { id:'silas', ...tpos(11,13), dir:'right', talk: () => chap()>=2 ? talkSilas2() : talkSilas(), when: () => (F().lantern && !F().silasGone) || chap()>=2 },
   { id:'ashcombe', ...tpos(86,15), dir:'down', talk: () => talkAshcombe(), when: () => chap()===2 && !F().ch2end },
@@ -80,7 +84,7 @@ const npcs = [
 ];
 const SILAS_POS = [tpos(11,13), tpos(57,9)];
 reserve(57,9);
-for (const n of npcs){ const tx=Math.floor(n.x/T), ty=Math.floor(n.y/T); reserve(tx,ty); n.home=n.dir; n.turnT=2+rng()*4; }
+for (const n of npcs){ const tx=Math.floor(n.x/T), ty=Math.floor(n.y/T); reserve(tx,ty); n.home=n.dir; n.turnT=2+((n.id==='agnes'||n.id==='ned') ? Math.random() : rng())*4; }   // newer characters don't touch the map's random sequence
 const cat = { x:78*T, y:47*T, tx:78*T, ty:47*T, follow:false, dir:1, wait:0, anim:0 };
 
 // ================= interactables =================
@@ -103,6 +107,11 @@ const objects = [
   { id:'culvert', x:78, y:9, label:'Rusty grate', when: () => chap()>=2 && !F().culvert, act: () => actGrate() },
   { id:'pit', x:83, y:8, label:'Enter the engine shed', when: () => chap()>=2 && F().culvert && F().bossDown, act: () => enterScene('shed') },
   { id:'postbox', x:62, y:27, label:'Post box', act: () => dialog([{s:'narr', t:'A red pillar box. Last collection 5:30 pm. Someone has polished the brass plate until it shines.'}]) },
+  { id:'altar', x:82, y:81, label:'The broken altar', act: () => actAltar() },
+  { id:'chest', x:86, y:88, label:'An old chest', act: () => actChest() },
+  { id:'lure',  x:78, y:88, label:'Something shiny in the grass', when: () => F().lureQuest && !F().lureFound, sparkle:true, act: () => actLure() },
+  { id:'wheel', x:68, y:63, label:'The water wheel', act: () => dialog([{s:'narr', t:'The old wheel turns slowly, creaking with every turn, the way it has for two hundred years.'}]) },
+  { id:'lakebench', x:20, y:73, label:'A bench by the lake', act: () => dialog([{s:'noah', t:'(Willow Lake. Dad used to bring me fishing somewhere like this. I think. Or maybe I just wish he had.)'}]) },
   { id:'m_ticket', x:84, y:34, mem:'ticket', label:'Look under the bench' },
   { id:'m_stones', x:riverX(52)-2, y:52, mem:'stones', label:'Flat stones' },
   { id:'m_train',  x:58, y:11, mem:'train', label:'Something small and red' },

@@ -3,6 +3,9 @@
 
 // ================= zones =================
 const zones = [
+  { n:'Willow Lake', x0:6, y0:73, x1:42, y1:94 },
+  { n:'The Old Mill', x0:58, y0:58, x1:69, y1:71 },
+  { n:'Abbey ruins', x0:74, y0:74, x1:90, y1:94 },
   { n:'Old engine shed', x0:76, y0:2, x1:90, y1:15 },
   { n:'Post office', x0:56, y0:22, x1:64, y1:30 },
   { n:'Father’s workshop', x0:2, y0:1, x1:13, y1:10 },
@@ -16,10 +19,11 @@ const zones = [
 let curZone='', zoneT=0;
 function showZone(n, sub){ const z=$('#zone'); z.innerHTML=''; z.appendChild(document.createTextNode(n)); if (sub){ const s=document.createElement('small'); s.textContent=sub; z.appendChild(s);} z.classList.add('show'); zoneT=2.6; }
 function updateZone(dt){
-  const tx=P.x/T, ty=P.y/T; let z='Ashbourne meadows';
+  const tx=P.x/T, ty=P.y/T; let z = ty>=OLD_H-2 ? 'Southern meadows' : 'Ashbourne meadows';
   for (const q of zones) if (tx>=q.x0&&tx<q.x1&&ty>=q.y0&&ty<q.y1){ z=q.n; break; }
   if (IN) z=SCN[IN].name;
   else if (z==='Ashbourne Station' && curZone && curZone!==z && whistleT<=0){ sfxWhistle(); whistleT=45; }
+  if (['Willow Lake','The Old Mill','Abbey ruins'].includes(z)){ S0.zonesSeen=S0.zonesSeen||[]; if (!S0.zonesSeen.includes(z)) S0.zonesSeen.push(z); }
   if (z!==curZone){ if (curZone) showZone(z); curZone=z; }
   if (zoneT>0){ zoneT-=dt; if (zoneT<=0) $('#zone').classList.remove('show'); }
   if (toastT>0){ toastT-=dt; if (toastT<=0) $('#toast').classList.remove('show'); }

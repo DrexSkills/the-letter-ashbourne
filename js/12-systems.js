@@ -98,7 +98,7 @@ const ACH = [
   ['heart','Heartbreaker','Defeat the Ashen Heart.'], ['lvl5','Seasoned','Reach level 5.'], ['lvl10','Ember-forged','Reach level 10.'],
   ['arsenal','Full arsenal','Own all four weapons.'], ['goodboy','Good boy','Befriend Scout.'], ['biscuit','Cat herder','Bring Biscuit home to June.'],
   ['ash50','Night watch','Defeat 50 Ashen.'], ['ash200','Ashbreaker','Defeat 200 Ashen.'], ['rest','Well rested','Sleep at June’s café.'],
-  ['candle','For Mara','Light a candle in St. Aldric’s.'], ['openhouse','Open house','Visit every building in Ashbourne.'], ['mercy','Mercy','Show Silas kindness.'],
+  ['candle','For Mara','Light a candle in St. Aldric’s.'], ['openhouse','Open house','Visit every building in Ashbourne.'], ['mercy','Mercy','Show Silas kindness.'], ['explorer','Explorer','Visit Willow Lake, the Old Mill and the Abbey ruins.'], ['angler','Lucky lure','Return Old Ned’s lucky lure.'],
 ];
 const ACH_KEY='the-letter-ach-v1';
 let ACHS = (() => { try { return JSON.parse(localStorage.getItem(ACH_KEY))||[]; } catch(e){ return []; } })();
@@ -129,6 +129,8 @@ function checkAchs(dt){
   if (S0.weapons.length>=4) unlockAch('arsenal'); if (f.pet) unlockAch('goodboy'); if (f.catHome) unlockAch('biscuit');
   if ((S0.kills||0)>=50) unlockAch('ash50'); if ((S0.kills||0)>=200) unlockAch('ash200');
   if (f.candle) unlockAch('candle'); if (f.kindSilas) unlockAch('mercy');
+  if (['Willow Lake','The Old Mill','Abbey ruins'].every(z => (S0.zonesSeen||[]).includes(z))) unlockAch('explorer');
+  if (f.lureDone) unlockAch('angler');
   if (['books','cafe','post','forge','church'].every(id => (S0.visited||[]).includes(id))) unlockAch('openhouse');
 }
 function openAch(from){

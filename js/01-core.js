@@ -1,14 +1,19 @@
 // The Letter — Core constants, helpers, the Ashbourne world map, ground drawing, houses and trees.
 'use strict';
 
-const T = 16, W = 96, H = 60;
+const T = 16, W = 96, H = 96;
+const OLD_H = 60;   // the original map was 60 rows tall; rows below are the southern lands
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const $ = s => document.querySelector(s);
 
 // ================= utilities =================
 function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;}}
-const rng = mulberry32(2006);
+// the south has its own random sequence, so Ashbourne's trees and ground look exactly as before
+const _rngMain = mulberry32(2006), _rngSouth = mulberry32(7777);
+let _rngCur = _rngMain;
+const rng = () => _rngCur();
+const useSouthRng = on => { _rngCur = on ? _rngSouth : _rngMain; };
 const pick = a => a[Math.floor(rng()*a.length)];
 const hash = (a,b,c) => { let h = a*374761393 + b*668265263 + c*2147483647; h = (h^(h>>>13))*1274126177; return (h^(h>>>16))>>>0; };
 const mk = (w,h) => { const c=document.createElement('canvas'); c.width=w; c.height=h; return c; };
@@ -42,6 +47,17 @@ rect(12,41,17,12,FIELD);
 rect(81,15,2,9,PATH); rect(81,15,5,1,PATH);   // track-side path to the engine shed
 rect(79,9,10,5,PATH);                          // shed yard (boss arena)
 
+// ---- the southern lands: Willow Lake, the Old Mill and the Abbey ruins ----
+rect(46,OLD_H,2,72-OLD_H,PATH);                // south road (the part through old Ashbourne is carved later, see carveSouthRoad)
+const SOUTH_ROAD = { x:46, y:46, w:2, h:OLD_H-46 };
+rect(6,72,84,2,PATH);                          // the long southern road
+{ const a=Math.min(riverX(72),riverX(73))-1, b=Math.max(riverX(72),riverX(73))+2; rect(a,72,b-a+1,2,BRIDGE); }
+for (let y=74;y<=91;y++) for (let x=8;x<=40;x++){ const dx=(x-24)/13.5, dy=(y-83)/7.6; if (dx*dx+dy*dy<=1) set(x,y,WATER); }   // Willow Lake
+for (let y=84;y<=86;y++) for (let x=29;x<=31;x++) set(x,y,GRASS);  // a little island
+rect(23,74,2,6,BRIDGE);                        // fishing pier
+rect(63,66,2,6,PATH);                          // lane to the Old Mill
+rect(77,79,11,11,PLAZA); rect(81,74,2,5,PATH); // the abbey's old floor and its path
+
 // forest trail
 const trail = [[30,29],[30,22],[25,22],[25,17],[28,17],[28,12],[20,12],[20,9],[14,9],[14,15],[9,15],[9,10],[7,10],[7,8]];
 for (let i=0;i<trail.length-1;i++){
@@ -68,6 +84,7 @@ const houses = [
   { id:'farm',     x:19, y:34, w:6, h:4, roof:'#7a3a2a', wall:'#c4a782', barn:true },
   { id:'station',  x:83, y:19, w:7, h:5, roof:'#2f5d63', wall:'#a8644a', brick:true, station:true },
   { id:'workshop', x:4,  y:3,  w:7, h:5, workshop:true },
+  { id:'mill', x:61, y:61, w:6, h:5, roof:'#5a4a3a', wall:'#c9b28a', mill:true },
   { id:'shed', x:80, y:4, w:8, h:5, shed:true, roof:'#2a2624', wall:'#5a4038' },
 ];
 for (const h of houses){ for (let y=h.y;y<h.y+h.h;y++) for (let x=h.x;x<h.x+h.w;x++){ solid[y*W+x]=1; if(at(x,y)!==PATH) set(x,y,GRASS);} reserveRect(h.x-1,h.y-1,h.w+2,h.h+3); }
@@ -97,6 +114,12 @@ const props = [
   { kind:'well', x:46, y:32 },
   { kind:'gate', x:83, y:14 }, { kind:'gate', x:84, y:14 }, { kind:'grate', x:78, y:9 }, { kind:'postbox', x:62, y:27 }, { kind:'anvil', x:61, y:41 },
 ];
+// the abbey ruins: broken walls, columns, an altar and an old chest
+for (let x=76;x<=88;x++) for (const y of [78,90]){ if (y===78 && (x===81||x===82)) continue; if ((hash(x,y,3)%5)===0) continue; props.push({ kind:'ruin', x, y, v:hash(x,y,1)%3 }); }
+for (let y=79;y<=89;y++) for (const x of [76,88]){ if (y===84||y===85) continue; if ((hash(x,y,4)%4)===0) continue; props.push({ kind:'ruin', x, y, v:hash(x,y,2)%3 }); }
+for (const [x,y] of [[79,82],[85,82],[79,86],[85,86]]) props.push({ kind:'ruincol', x, y });
+props.push({ kind:'altar', x:82, y:81 }, { kind:'chest', x:86, y:88 }, { kind:'wheel', x:68, y:63 }, { kind:'bench', x:20, y:73 });
+reserveRect(75,77,15,15); reserveRect(60,60,10,12); reserveRect(21,73,6,8);
 for (const p of props){ solid[p.y*W+p.x]=1; reserve(p.x,p.y); }
 
 // trees (generated after NPCs and objects reserve their tiles)
@@ -106,20 +129,37 @@ function addTree(x,y,pine,force){ treeAt[y*W+x]=1; solid[y*W+x]=1; trees.push({ 
 function genTrees(){
 addTree(22, 11, false, 'mark');
 addTree(31,44,false);
+useSouthRng(true); addTree(30,85,false); useSouthRng(false);   // the island's willow
 function nearNon(x,y,r){ for(let j=-r;j<=r;j++)for(let i=-r;i<=r;i++){ const t=at(x+i,y+j); if(t!==GRASS || (t!==-1 && solid[(y+j)*W+x+i] && !treeAt[(y+j)*W+x+i])) return true; } return false; }
 for (let y=0;y<H;y++) for (let x=0;x<W;x++){
+  if (x===0 && y===OLD_H) useSouthRng(true);
   const i=y*W+x;
   if (at(x,y)!==GRASS || treeAt[i] || reserved[i] || solid[i]) continue;
   const forest = isForest(x,y);
   if (forest){ if (rng()<.9) addTree(x,y, rng()<.7); continue; }
   if (nearNon(x,y,1)) continue;
-  const border = x<3||y<2||x>W-4||y>H-4 || (x>=36 && y<4);
+  const border = x<3||y<2||x>W-4||y>H-4 || (y>OLD_H-4 && y<OLD_H) || (x>=36 && y<4);
   const p = border ? .6 : (x<11 && y>27) ? .2 : .03;
   if (rng()<p){
     let crowded=false; if (!border) for(let j=-2;j<=2;j++)for(let k=-2;k<=2;k++) if(treeAt[(y+j)*W+(x+k)]) crowded=true;
     if (!crowded) addTree(x,y, rng()<.25);
   }
 }
+useSouthRng(false);
+carveSouthRoad();
+}
+// The road south is cut through the old treeline after everything else is generated,
+// so the rest of Ashbourne keeps exactly the same trees and ground as before.
+function carveSouthRoad(){
+  const R=SOUTH_ROAD, onRoad=(tx,ty)=> tx>=R.x-1 && tx<R.x+R.w+1 && ty>=R.y && ty<R.y+R.h;
+  for (let y=R.y;y<R.y+R.h;y++) for (let x=R.x;x<R.x+R.w;x++) set(x,y,PATH);
+  for (let i=trees.length-1;i>=0;i--){ const tx=Math.floor(trees[i].x/T), ty=Math.floor((trees[i].y-13)/T); if (onRoad(tx,ty)){ treeAt[ty*W+tx]=0; solid[ty*W+tx]=0; trees.splice(i,1); } }
+  const g=ground.getContext('2d'), sr=_rngSouth, cols=['#b08a5a','#a8814f','#b9946a','#a17a4c'], grass=['#4f7a3a','#56833f','#4b7437','#5a8842','#527d3c'];
+  for (let ty=R.y;ty<R.y+R.h;ty++) for (let tx=R.x;tx<R.x+R.w;tx++) for (let y=0;y<T;y++) for (let x=0;x<T;x++){
+    const edge=(x<2 && at(tx-1,ty)===GRASS)||(x>13 && at(tx+1,ty)===GRASS);
+    g.fillStyle = edge && sr()<.55 ? grass[Math.floor(sr()*grass.length)] : cols[Math.floor(sr()*cols.length)];
+    g.fillRect(tx*T+x, ty*T+y, 1, 1);
+  }
 }
 
 // ================= ground prerender =================
@@ -140,6 +180,7 @@ const ground = mk(W*T, H*T);
   };
   const put = (x,y,c) => { const o=(y*W*T+x)*4; d[o]=c[0]; d[o+1]=c[1]; d[o+2]=c[2]; d[o+3]=255; };
   for (let ty=0;ty<H;ty++) for (let tx=0;tx<W;tx++){
+    if (tx===0 && ty===OLD_H) useSouthRng(true);
     const t=at(tx,ty), ox=tx*T, oy=ty*T, fr=isForest(tx,ty);
     for (let y=0;y<T;y++) for (let x=0;x<T;x++){
       let c;
@@ -158,8 +199,10 @@ const ground = mk(W*T, H*T);
       put(ox+x,oy+y,c);
     }
   }
+  useSouthRng(false);
   g.putImageData(img,0,0);
   for (let ty=0;ty<H;ty++) for (let tx=0;tx<W;tx++){
+    if (tx===0 && ty===OLD_H) useSouthRng(true);
     const t=at(tx,ty), ox=tx*T, oy=ty*T, fr=isForest(tx,ty);
     if (t===GRASS){
       for (let k=0;k<3;k++) if (rng()<.5){ const x=ox+1+Math.floor(rng()*13), y=oy+2+Math.floor(rng()*12); g.fillStyle=fr?'#24402a':'#3f6630'; g.fillRect(x,y,1,2); g.fillRect(x+2,y,1,2); g.fillStyle=fr?'#3e6a3a':'#6e9c4f'; g.fillRect(x+1,y-1,1,3); }
@@ -174,6 +217,7 @@ const ground = mk(W*T, H*T);
       if (at(tx,ty+1)!==BRIDGE){ g.fillStyle='#4a321f'; g.fillRect(ox,oy+T-2,T,2); }
     }
   }
+  useSouthRng(false);
   g.fillStyle='rgba(20,15,40,.28)';
   for (const h of houses) g.fillRect(h.x*T+3,(h.y+h.h)*T,h.w*T,4);
   // platform edge

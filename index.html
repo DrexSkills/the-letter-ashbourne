@@ -440,8 +440,6 @@
   .act button.swap { display: none; }
   body.multiw .act button.swap { display: block; }
   /* skip buttons */
-  .dskip { position: absolute; right: 10px; top: -16px; font-family: var(--body); font-size: 17px; color: var(--ink); background: var(--panel-2); border: 2px solid var(--edge); padding: 1px 10px; cursor: pointer; box-shadow: 0 0 0 2px #070a12; }
-  .dskip:hover { border-color: var(--amber); }
   .cskip { position: fixed; right: calc(16px + env(safe-area-inset-right, 0px)); top: calc(14px + env(safe-area-inset-top, 0px)); }
   /* how to play */
   #howto, #modepick { background: rgba(5,6,14,.86); z-index: 11; }
@@ -517,6 +515,24 @@
     #mini { top: calc(48px + env(safe-area-inset-top, 0px)); width: 80px; height: 80px; }
     #hud { max-width: min(250px, 36%); }
   }
+
+  /* modern skip button */
+  .skipbtn { display: inline-flex; align-items: center; gap: 7px; font-family: var(--body); font-size: 18px; line-height: 1; color: var(--ink);
+    padding: 5px 8px 5px 13px; border-radius: 999px; cursor: pointer;
+    background: linear-gradient(180deg, rgba(38,48,77,.92), rgba(18,24,41,.92));
+    border: 1.5px solid rgba(242,194,122,.55); box-shadow: 0 2px 10px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.08);
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); transition: border-color .2s, box-shadow .2s, transform .15s, background .2s; }
+  .skipbtn .ff { width: 17px; height: 13px; fill: var(--amber); transition: transform .2s; }
+  .skipbtn kbd { font-size: 14px; padding: 0 5px; border-width: 1.5px; border-radius: 4px; color: var(--dim); background: rgba(8,10,18,.6); }
+  .skipbtn:hover, .skipbtn:focus-visible { border-color: var(--amber); background: linear-gradient(180deg, rgba(60,52,50,.95), rgba(30,26,34,.95)); box-shadow: 0 2px 14px rgba(242,194,122,.28), inset 0 1px 0 rgba(255,255,255,.1); }
+  .skipbtn:hover .ff, .skipbtn:focus-visible .ff { transform: translateX(2px); }
+  .skipbtn:active { transform: scale(.96); }
+  .dskip { position: absolute; right: 12px; top: 10px; z-index: 2; }
+  #dialog .who { padding-right: 120px; }
+  body.touch #dialog .who { padding-right: 84px; }
+  .cskip { position: fixed; right: calc(16px + env(safe-area-inset-right, 0px)); top: calc(14px + env(safe-area-inset-top, 0px)); }
+  @media (pointer: coarse) and (max-height: 520px) { .dskip { top: 5px; right: 6px; font-size: 15px; padding: 3px 6px 3px 10px; } .skipbtn .ff { width: 14px; height: 11px; } }
+  @media (prefers-reduced-motion: reduce) { .skipbtn, .skipbtn .ff { transition: none; } }
 </style>
 </head>
 <body>
@@ -551,7 +567,7 @@
 <div id="dialog" class="panel">
   <canvas id="portrait" width="24" height="24"></canvas>
   <div class="txt">
-    <button id="dSkip" class="dskip" aria-label="Skip this conversation" title="Skip this conversation (Esc). The story is recommended!">Skip ⏭</button>
+    <button id="dSkip" class="skipbtn dskip" aria-label="Skip this conversation" title="Skip this conversation (Esc). The story is recommended!"><span>Skip</span><svg class="ff" viewBox="0 0 16 12" aria-hidden="true" shape-rendering="crispEdges"><path d="M1 1h2v1h1v1h1v1h1v1h1v2H6v1H5v1H4v1H3v1H1z"/><path d="M8 1h2v1h1v1h1v1h1v1h1v2h-1v1h-1v1h-1v1h-1v1H8z"/><rect x="14" y="1" width="1.6" height="10"/></svg><kbd class="kb">Esc</kbd></button>
     <div class="who"></div>
     <div class="line"></div>
     <div id="choices"></div>
@@ -590,7 +606,7 @@
 <div id="cut" class="overlay">
   <div class="card"></div>
   <div class="cont">Click or press E to continue</div>
-  <button id="cSkip" class="btn small cskip">Skip ⏭</button>
+  <button id="cSkip" class="skipbtn cskip" aria-label="Skip this scene"><span>Skip scene</span><svg class="ff" viewBox="0 0 16 12" aria-hidden="true" shape-rendering="crispEdges"><path d="M1 1h2v1h1v1h1v1h1v1h1v2H6v1H5v1H4v1H3v1H1z"/><path d="M8 1h2v1h1v1h1v1h1v1h1v2h-1v1h-1v1h-1v1h-1v1H8z"/><rect x="14" y="1" width="1.6" height="10"/></svg><kbd class="kb">Esc</kbd></button>
 </div>
 
 <div id="journal" class="overlay">

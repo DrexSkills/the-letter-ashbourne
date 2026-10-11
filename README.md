@@ -11,9 +11,18 @@ Twenty years ago Noah's father, Elias Vale, vanished. Three days ago, he wrote t
 
 **Chapter Two — The Ledger.** Dawn on the old platform. His father doesn't come, but a note does. A locked engine shed, a landowner with too many answers, and the ledger Mara Voss died protecting.
 
-**Chapter Three — Keeping Left.** Who was "W.P."? The answer was at the station all along. Ends with a full finale and an epilogue shaped by your choices.
+**Chapter Three — Keeping Left.** Who was "W.P."? The answer was at the station all along.
+
+**Chapter Four — Harlow Cross.** The night train to a smoky canal town. Find the original ledger in Ashcombe's safe, face the Ashen Heart, and end it — with an epilogue shaped by your choices.
 
 New players get a short guided tutorial, yellow **!** markers above whoever moves the story forward, and a **Story so far** tab in the journal.
+
+## The world
+
+- **Go inside:** Hale's Books, June's Café, the post office, Greta's forge, St. Aldric's church, Dad's workshop and the engine shed — each with things to find.
+- **Daily routines:** townsfolk move around through the day and go indoors at night (you can visit them inside). Whoever your goal needs always waits for you.
+- **Sound:** footsteps that change on grass, paths, stone and wood; creaking doors; the train whistle; the church bell.
+- **Achievements:** 21 to unlock, from finishing chapters to bonking every townsperson.
 
 ## Play
 

@@ -41,7 +41,7 @@ function drawChar(g, px, py, dir, frame, c, holdLight){
     if (dir==='down'){
       if (c.pack){ rh(5,9,1,5,'#6b4a2f'); rh(10,9,1,5,'#6b4a2f'); }
       rh(5,3,6,6,c.skin); rh(5,8,6,1,c.skin2);
-      rh(6,6,1,1,E); rh(9,6,1,1,E);
+      if (blinkNow(c)){ rh(6,6,1,1,c.skin2); rh(9,6,1,1,c.skin2); } else { rh(6,6,1,1,E); rh(9,6,1,1,E); }
       const hh=c.hair;
       if (c.style==='curly'){ rh(4,1,8,3,hh); rh(3,2,1,4,hh); rh(12,2,1,4,hh); rh(5,0,6,1,hh); rh(5,4,2,1,hh); rh(8,4,3,1,hh); rh(6,1,2,1,'#2a2430'); }
       else if (c.style==='short'||c.style==='bun'){ rh(5,1,6,3,hh); rh(4,2,1,4,hh); rh(11,2,1,4,hh); if (c.style==='bun') rh(6,-1,4,2,hh); }
@@ -80,7 +80,7 @@ function drawChar(g, px, py, dir, frame, c, holdLight){
     else if (c.style==='long'){ rh(5,1,6,3,hh); rh(4,2,4,9,hh); rh(3,4,1,6,hh); }
     else if (c.style==='bald'){ rh(5,4,2,3,hh); }
     else { rh(5,1,6,3,hh); rh(4,2,3,4,hh); if (c.style==='bun') rh(2,2,3,3,hh); }
-    rh(9,6,1,1,E);
+    rh(9,6,1,1, blinkNow(c) ? c.skin2 : E);
     if (c.beard){ rh(7,7,5,2,c.beard); rh(8,9,3,1,c.beard); }
     if (c.mustache) rh(9,7,3,1,c.mustache);
     if (c.stubble) rh(8,8,4,1,c.stubble);
@@ -88,6 +88,8 @@ function drawChar(g, px, py, dir, frame, c, holdLight){
     if (c.hat){ if (c.hat.s==='cap'){ rh(4,0,8,3,hc); rh(10,3,4,1,hc2);} else if (c.hat.s==='straw'){ rh(4,-1,8,3,hc); rh(2,2,12,1,hc2);} else { rh(5,-1,6,3,hc); rh(3,2,10,1,hc2);} }
   }
 }
+// characters blink now and then, each on their own rhythm
+function blinkNow(c){ if (typeof time==='undefined' || reduceMotion) return false; const t=time*0.8 + (c.pitch||300)*0.0137; return (t % 3.7) < 0.12; }
 function drawCharAt(g, sx, sy, dir, frame, c, holdLight){
   const kid = c.kid ? 3 : 0;
   const px=Math.round(sx-8), py=Math.round(sy-23+kid);
@@ -98,7 +100,7 @@ function drawCharAt(g, sx, sy, dir, frame, c, holdLight){
 function drawPortrait(g, c){
   g.clearRect(0,0,24,24);
   const r=(x,y,w,h,col)=>{ g.fillStyle=col; g.fillRect(x,y,w,h); };
-  r(0,0,24,24,'#1f2840'); r(0,16,24,8,'#26304d');
+  r(0,0,24,24, shade(c.top,.5)); r(0,0,24,8, shade(c.top,.62)); r(0,16,24,8, shade(c.top,.38));
   r(3,19,18,5,c.top); r(3,19,18,1,shade(c.top,1.2));
   if (c.shirt) r(10,19,4,5,c.shirt);
   if (c.scarf) r(6,18,12,3,c.scarf);

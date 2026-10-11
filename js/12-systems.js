@@ -180,6 +180,7 @@ function renderScene(cx,cy,dt){
   ctx.globalCompositeOperation='lighter';
   for (const [x,y,col] of sc.lights){ const gx=x*T+8-cx, gy=y*T-cy-(sc.outdoor?12:0); const gg=ctx.createRadialGradient(gx,gy,0,gx,gy,30); gg.addColorStop(0,`rgba(${col},.28)`); gg.addColorStop(1,`rgba(${col},0)`); ctx.fillStyle=gg; ctx.fillRect(gx-30,gy-30,60,60); }
   ctx.globalCompositeOperation='source-over';
+  if (sc.outdoor) drawSkyAtmos(cx,cy,dt);
   drawCombatFX(cx,cy);
   if (mode==='play' && SETTINGS.marker && ob.at && ob.at.scene===IN && !ob.at.npc){
     const x=ob.at.x-cx, y=ob.at.y-cy, bob=reduceMotion?0:Math.sin(time*4)*2;

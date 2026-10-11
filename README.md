@@ -19,6 +19,8 @@ New players get a short guided tutorial, yellow **!** markers above whoever move
 
 ## The world
 
+- **Atmosphere:** drifting cloud shadows, falling leaves, birds, golden sun rays at dawn and dusk, forest fog, and passing rain showers with their own sound (turn weather off in Settings).
+
 - **Go inside:** Hale's Books, June's Café, the post office, Greta's forge, St. Aldric's church, Dad's workshop and the engine shed — each with things to find.
 - **Daily routines:** townsfolk move around through the day and go indoors at night (you can visit them inside). Whoever your goal needs always waits for you.
 - **Sound:** footsteps that change on grass, paths, stone and wood; creaking doors; the train whistle; the church bell.
@@ -72,7 +74,7 @@ Since the fire, ash creatures called **the Ashen** crawl out of the fields — *
 ```
 index.html        the page: layout, menus and the order the scripts load in
 css/style.css     all the styling
-js/               the game code, split by topic — files load in number order
+js/               the game code, split by topic — files load in number order (14 files)
   01-core.js         constants, helpers, the Ashbourne world map, houses and trees
   02-characters.js   character looks, the sprite drawer and portraits
   03-state.js        save state, clues, memories, people, townsfolk, things to examine
@@ -85,7 +87,8 @@ js/               the game code, split by topic — files load in number order
   10-combat.js       the Ashen, fighting, bosses, weapons, levels, day/night, Scout, Greta
   11-scenes.js       building interiors and Chapter Four (Harlow Cross)
   12-systems.js      sound effects, daily routines, achievements, drawing interiors
-  13-main.js         tutorial, main loop, drawing the world, menus and start-up
+  13-atmosphere.js   cloud shadows, leaves, birds, sun rays, fog, rain and dust
+  14-main.js         tutorial, main loop, drawing the world, menus and start-up
 build.py          optional: bundles everything into one file, dist/the-letter.html
 sw.js, manifest.webmanifest, icons   for "Add to Home Screen"
 ```

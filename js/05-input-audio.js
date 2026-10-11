@@ -162,6 +162,6 @@ function beep(f, d=.04, type='square', vol=.03, when=0){
   } catch(e){}
 }
 const chime = () => { beep(660,.18,'triangle',.06); beep(880,.25,'triangle',.06,.12); beep(1320,.35,'triangle',.04,.24); };
-const syncMute = () => { $('#sBtn').textContent = SETTINGS.muted ? '✕' : '♪'; };
+const syncMute = () => { $('#sBtn').classList.toggle('muted', !!SETTINGS.muted); };
 $('#sBtn').addEventListener('click', () => { SETTINGS.muted=!SETTINGS.muted; saveSettings(); Music.apply(); syncMute(); $('#sBtn').blur(); });
 syncMute();

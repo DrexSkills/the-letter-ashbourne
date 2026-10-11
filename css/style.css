@@ -565,3 +565,54 @@
   .story .bq b { font-weight: 400; color: var(--ink); }
   .story .bq .ans { color: #8a93b0; flex-basis: 100%; padding-left: 30px; margin-top: -2px; }
   .story .bq.done .ans { color: #cfe8c0; }
+
+/* ===================== design upgrade ===================== */
+/* pixel icons on buttons */
+.pxi { width: 22px; height: 22px; fill: currentColor; display: inline-block; vertical-align: -5px; margin-right: 7px; image-rendering: pixelated; }
+#topbtns .btn { display: inline-flex; align-items: center; }
+#topbtns .btn .sm, #topbtns .btn .hidetxt { display: none !important; }
+#sBtn .pxi { margin-right: 0; } #sBtn .off-snd { display: none; } #sBtn.muted .on-snd { display: none; } #sBtn.muted .off-snd { display: inline-block; }
+#topbtns .btn:hover .pxi { color: var(--amber); }
+@media (max-width: 560px), (pointer: coarse) and (max-height: 520px) {
+  #topbtns .btn .lg { display: none; } #topbtns .btn .pxi { margin-right: 0; width: 20px; height: 20px; }
+}
+/* richer panels: brass corner rivets and a soft inner glow */
+.panel {
+  background:
+    radial-gradient(circle at 5px 5px, #c9a046 1.5px, transparent 2px) top left / 50% 50% no-repeat,
+    radial-gradient(circle at calc(100% - 5px) 5px, #c9a046 1.5px, transparent 2px) top right / 50% 50% no-repeat,
+    radial-gradient(circle at 5px calc(100% - 5px), #8a6a2a 1.5px, transparent 2px) bottom left / 50% 50% no-repeat,
+    radial-gradient(circle at calc(100% - 5px) calc(100% - 5px), #8a6a2a 1.5px, transparent 2px) bottom right / 50% 50% no-repeat,
+    linear-gradient(180deg, rgba(30,39,64,.96) 0%, rgba(14,19,34,.97) 55%, rgba(11,15,27,.98) 100%);
+  border: 2px solid #46558a;
+  box-shadow: 0 0 0 2px #070a12, inset 0 1px 0 rgba(140,160,220,.25), inset 0 0 0 1px rgba(10,14,26,.8), 0 8px 26px rgba(0,0,0,.55);
+}
+/* goal box */
+#hud .chap { letter-spacing: .02em; }
+#hud .obj::before { content: ""; display: inline-block; width: 9px; height: 9px; margin-right: 7px; background: var(--rose); transform: rotate(45deg) translateY(-2px); box-shadow: 0 0 6px rgba(233,140,122,.7); }
+/* dialogue: name plate, coloured portrait frame, bouncing arrow */
+#dialog .who { display: inline-block; background: linear-gradient(180deg, #2c3658, #1c2440); border: 2px solid #46558a; padding: 2px 10px 3px; border-radius: 3px; box-shadow: 0 0 0 2px #070a12; margin-bottom: 7px; }
+#dialog.keypt .who { background: linear-gradient(180deg, #4a3a18, #2a2010); border-color: #c9a046; }
+#portrait { border: 3px solid #c9a046 !important; box-shadow: 0 0 0 2px #070a12, inset 0 0 0 2px rgba(0,0,0,.35), 0 0 14px rgba(242,194,122,.18) !important; border-radius: 3px; }
+#dialog .more span { display: inline-block; animation: arrowBob .9s ease-in-out infinite; color: var(--amber); }
+@keyframes arrowBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
+/* title screen */
+.tenv { width: 88px; height: 88px; margin: 0 auto 6px; animation: envFloat 4s ease-in-out infinite; filter: drop-shadow(0 0 18px rgba(242,194,122,.45)); }
+.tenv img { width: 100%; height: 100%; image-rendering: pixelated; border-radius: 16px; border: 3px solid #c9a046; box-shadow: 0 0 0 3px #070a12; }
+@keyframes envFloat { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-6px) rotate(2deg); } }
+#title h1 { animation: titleGlow 5s ease-in-out infinite; }
+@keyframes titleGlow { 0%,100% { text-shadow: 5px 5px 0 #070a12, 0 0 30px rgba(242,194,122,.25); } 50% { text-shadow: 5px 5px 0 #070a12, 0 0 48px rgba(242,194,122,.5); } }
+#title .menu .btn { transition: transform .12s, border-color .2s, box-shadow .2s; }
+#title .menu .btn:hover { transform: translateY(-2px); box-shadow: 0 0 0 3px #070a12, 0 6px 18px rgba(242,194,122,.25); }
+#title .btn.big { background: linear-gradient(180deg, #3a4a7a, #222c4a); border-color: #c9a046; }
+@media (pointer: coarse) and (max-height: 520px) { .tenv { width: 46px; height: 46px; margin-bottom: 2px; } .tenv img { border-width: 2px; border-radius: 9px; } }
+@media (max-width: 560px) { .tenv { width: 64px; height: 64px; } }
+/* quick fade when walking through a door */
+#fade.blink { animation: doorFade .42s ease-out; }
+@keyframes doorFade { 0% { opacity: 1; } 100% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .tenv, #title h1, #dialog .more span { animation: none; } #fade.blink { animation: none; } }
+/* keep the top bar compact so it never overlaps the goal box */
+#topbtns .btn .k { display: none; }
+#topbtns { gap: 6px; }
+#topbtns .btn { padding: 4px 11px 6px; font-size: 20px; }
+@media (max-width: 1180px) and (pointer: fine) { #topbtns .btn .lg { display: none; } #topbtns .btn .pxi { margin-right: 0; } }

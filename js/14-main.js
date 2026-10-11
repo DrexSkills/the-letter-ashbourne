@@ -25,7 +25,7 @@ let last=performance.now(), time=0, titlePan=0;
 function step(now){
   document.body.classList.toggle('inmenu', ['inv','journal','map','pause','settings','ending','ach','how'].includes(mode));
   const dt=Math.min(.05,(now-last)/1000); last=now; time+=dt;
-  tickDialog(dt); tickCut(dt); tickTut(dt); updateFX(dt);
+  tickDialog(dt); tickCut(dt); tickTut(dt); updateFX(dt); updateAtmos(dt);
   if (mode!=='title'){ const ct=clockText() + (F().lantern && LOOK()===2 ? ' · lantern lit' : ''); if (ct!==lastClock){ lastClock=ct; $('#timeLbl').textContent=ct; } }
   Music.setMood(mode==='title' ? 'title' : forestF>.5 ? 'forest' : ['day','dusk','night','dawn'][LOOK()]);
 
@@ -47,7 +47,7 @@ function step(now){
         P.y = 27*T+6; if (gateCool<=0){ gateCool=3; dialog([{s:'noah', t:'It’s already pitch dark under those trees. I’m not going in there without a light.'}]); }
       }
       P.anim += dt*(run?11:7); tutMoved += sp*dt;
-      C.stepT=(C.stepT||0)-dt; if (C.stepT<=0){ C.stepT = run ? .24 : .34; sfxStep(surfaceHere()); }
+      C.stepT=(C.stepT||0)-dt; if (C.stepT<=0){ C.stepT = run ? .24 : .34; sfxStep(surfaceHere()); if (run) dustPuff(); }
       checkSceneExit();
     } else P.anim=0;
     gateCool-=dt;
@@ -146,6 +146,7 @@ function render(cx,cy,dt){
   for (let i=smoke.length-1;i>=0;i--){ const p=smoke[i]; p.life+=dt; p.x+=p.vx*dt; p.y-=(p.big?14:9)*dt; if (p.life>p.max){ smoke.splice(i,1); continue; }
     const a=.45*(1-p.life/p.max), r=(p.big?2:1)+Math.floor(p.life*(p.big?2.4:1.4)); ctx.fillStyle=`rgba(200,195,210,${a})`; ctx.fillRect(Math.round(p.x-cx-r/2),Math.round(p.y-cy-r/2),r+1,r+1); }
 
+  drawGroundAtmos(cx,cy);
   // tint
   const g=ctx.createLinearGradient(0,0,0,VH);
   if (phase===0){ g.addColorStop(0,'rgba(255,150,90,.16)'); g.addColorStop(.6,'rgba(255,170,110,.05)'); g.addColorStop(1,'rgba(70,50,120,.14)'); }
@@ -183,6 +184,7 @@ function render(cx,cy,dt){
   }
   ctx.globalCompositeOperation='source-over';
 
+  drawSkyAtmos(cx,cy,dt);
   drawCombatFX(cx,cy);
   // objective marker
   if (mode==='play' && SETTINGS.marker){
@@ -294,7 +296,7 @@ function syncSettings(){
   $('#setMusic').value=Math.round(SETTINGS.music*100); $('#oMusic').textContent=Math.round(SETTINGS.music*100);
   $('#setSfx').value=Math.round(SETTINGS.sfx*100); $('#oSfx').textContent=Math.round(SETTINGS.sfx*100);
   const seg=(id,v)=>document.querySelectorAll(id+' button').forEach(b=>b.classList.toggle('on', b.dataset.v===String(v)));
-  seg('#setText',SETTINGS.text); seg('#setZoom',SETTINGS.zoom); seg('#setMarker',SETTINGS.marker?1:0); seg('#setMini',SETTINGS.minimap?1:0); seg('#setDiff',SETTINGS.diff||'normal');
+  seg('#setText',SETTINGS.text); seg('#setZoom',SETTINGS.zoom); seg('#setMarker',SETTINGS.marker?1:0); seg('#setMini',SETTINGS.minimap?1:0); seg('#setDiff',SETTINGS.diff||'normal'); seg('#setWeather', SETTINGS.weather===false ? 0 : 1);
   $('#resetRow').style.display = settingsFrom==='title' && hasSave() ? '' : 'none';
   $('#resetBtn').textContent='Erase save'; $('#resetBtn').classList.remove('armed'); resetArmed=false;
 }
@@ -307,6 +309,7 @@ $('#setSfx').addEventListener('input', e => { SETTINGS.sfx=e.target.value/100; $
 $('#setSfx').addEventListener('change', () => chime());
 document.querySelectorAll('#setText button').forEach(b => b.addEventListener('click', () => { SETTINGS.text=b.dataset.v; saveSettings(); syncSettings(); }));
 document.querySelectorAll('#setZoom button').forEach(b => b.addEventListener('click', () => { SETTINGS.zoom=+b.dataset.v; saveSettings(); syncSettings(); resize(); }));
+document.querySelectorAll('#setWeather button').forEach(b => b.addEventListener('click', () => { SETTINGS.weather = b.dataset.v==='1'; saveSettings(); syncSettings(); }));
 document.querySelectorAll('#setDiff button').forEach(b => b.addEventListener('click', () => { SETTINGS.diff=b.dataset.v; saveSettings(); syncSettings(); }));
 document.querySelectorAll('#setMini button').forEach(b => b.addEventListener('click', () => { SETTINGS.minimap=b.dataset.v==='1'; saveSettings(); syncSettings(); applyMini(); }));
 document.querySelectorAll('#setMarker button').forEach(b => b.addEventListener('click', () => { SETTINGS.marker=b.dataset.v==='1'; saveSettings(); syncSettings(); }));
@@ -387,5 +390,5 @@ setInterval(() => { if (mode==='play') save(); }, 8000);
   window.addEventListener('resize', () => { resize2(); initParticles(); });
   raf2 = requestAnimationFrame(frame2);
 })();
-window.__game = { bigQuestions: () => bigQuestions(), sceneNPCs: () => sceneNPCs(), cam: () => ({x:Math.round(camX), y:Math.round(camY)}), npcs, nearestT: () => { const t=nearest(); return t ? t.label : null; }, SCN, IN: () => IN, enterScene, leaveScene, ACHS: () => ACHS, CH, scout, greta: () => talkGreta(), C: () => C, killAll: () => C.enemies.slice().forEach(killEnemy), attack: () => attack(), Music, SETTINGS, P, S0: () => S0, F, mode: () => mode, interact, advance, choose, D, objective, teleport:(tx,ty)=>{P.x=tx*T+8;P.y=ty*T+10;}, cutNext };
+window.__game = { ATM, bigQuestions: () => bigQuestions(), sceneNPCs: () => sceneNPCs(), cam: () => ({x:Math.round(camX), y:Math.round(camY)}), npcs, nearestT: () => { const t=nearest(); return t ? t.label : null; }, SCN, IN: () => IN, enterScene, leaveScene, ACHS: () => ACHS, CH, scout, greta: () => talkGreta(), C: () => C, killAll: () => C.enemies.slice().forEach(killEnemy), attack: () => attack(), Music, SETTINGS, P, S0: () => S0, F, mode: () => mode, interact, advance, choose, D, objective, teleport:(tx,ty)=>{P.x=tx*T+8;P.y=ty*T+10;}, cutNext };
 requestAnimationFrame(step);

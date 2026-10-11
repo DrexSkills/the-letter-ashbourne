@@ -277,7 +277,7 @@ function enterScene(id, at, silent){
   P.x = (at && at.px!=null) ? at.px : sx*T+8; P.y = (at && at.py!=null) ? at.py : sy*T+10; P.dir = at && at.dir || 'up';
   if (F().pet){ scout.x=P.x; scout.y=P.y+8; }
   camX=P.x-VW/2; camY=P.y-VH/2; curZone=sc.name;
-  if (!silent){ sfxDoor(); showZone(sc.name); if (id==='church') sfxBell(); }
+  if (!silent){ sfxDoor(); doorBlink(); showZone(sc.name); if (id==='church') sfxBell(); }
   if (sc.public){ S0.visited=S0.visited||[]; if (!S0.visited.includes(id)) S0.visited.push(id); }
   if (id==='office' && !F().officeIn){ F().officeIn=1; setTimeout(() => dialog([{s:'narr', t:'Ashcombe Holdings. Marble floors, mahogany desks, and the smell of money. A staircase leads down to the archive.'}]), 400); }
   save(); refreshHUD();
@@ -290,9 +290,10 @@ function leaveScene(silent){
   const o=sc.out; IN=null; C.enemies=C.enemies.filter(e=>!e.scene); C.arrows=[];
   P.x=o[0]*T+8; P.y=o[1]*T+10; P.dir='down'; if (F().pet){ scout.x=P.x; scout.y=P.y-10; }
   camX=P.x-VW/2; camY=P.y-VH/2; curZone='';
-  if (!silent) sfxDoor();
+  if (!silent){ sfxDoor(); doorBlink(); }
   save(); refreshHUD();
 }
+function doorBlink(){ const f=$('#fade'); f.classList.remove('blink'); void f.offsetWidth; f.classList.add('blink'); }
 function checkSceneExit(){
   if (!IN) return; const sc=SCN[IN]; if (sc.outdoor) return;
   const tx=Math.floor(P.x/T), ty=Math.floor((P.y+2)/T);

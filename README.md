@@ -1,6 +1,6 @@
 # The Letter — Chapter One: Ashbourne
 
-A story-driven, top-down 2D pixel-art mystery adventure that runs entirely in the browser. No build step, no dependencies, no image or audio files: every sprite, building, portrait and piece of music is generated in code inside `index.html`.
+A story-driven, top-down 2D pixel-art mystery adventure that runs entirely in the browser. No build step, no dependencies, no image or audio files: every sprite, building, portrait and piece of music is generated in code.
 
 Twenty years ago Noah's father, Elias Vale, vanished. Three days ago, he wrote to him. The letter sends Noah to the quiet countryside town of Ashbourne, where everyone remembers Elias differently, and the trail leads through the dark of Ashwood forest.
 
@@ -70,8 +70,26 @@ Since the fire, ash creatures called **the Ashen** crawl out of the fields — *
 ## Project structure
 
 ```
-index.html   the whole game: HTML, CSS and JavaScript in one file
-README.md
+index.html        the page: layout, menus and the order the scripts load in
+css/style.css     all the styling
+js/               the game code, split by topic — files load in number order
+  01-core.js         constants, helpers, the Ashbourne world map, houses and trees
+  02-characters.js   character looks, the sprite drawer and portraits
+  03-state.js        save state, clues, memories, people, townsfolk, things to examine
+  04-worldmap.js     world map screen, minimap and the phone joystick
+  05-input-audio.js  keyboard/touch input, settings, music and basic sounds
+  06-dialogue.js     the dialogue box, choices, skipping, clues and memories
+  07-story.js        every conversation in chapters one to three, cutscenes
+  08-hud-journal.js  goals, the goal box, the journal and items
+  09-world.js        area names, collisions, interacting, camera, phone extras
+  10-combat.js       the Ashen, fighting, bosses, weapons, levels, day/night, Scout, Greta
+  11-scenes.js       building interiors and Chapter Four (Harlow Cross)
+  12-systems.js      sound effects, daily routines, achievements, drawing interiors
+  13-main.js         tutorial, main loop, drawing the world, menus and start-up
+build.py          optional: bundles everything into one file, dist/the-letter.html
+sw.js, manifest.webmanifest, icons   for "Add to Home Screen"
 ```
 
-Fonts (Jersey 10 and VT323) load from Google Fonts, with monospace fallbacks.
+**Editing tips:** dialogue lives in `js/07-story.js` (chapters 1–3) and `js/11-scenes.js` (chapter 4). Change the look of the game in `css/style.css`. Edit with a plain code editor like VS Code so quotes don't turn "curly".
+
+To run it locally, serve the folder (for example `python3 -m http.server`) and open http://localhost:8000. To make a single shareable file, run `python3 build.py`.

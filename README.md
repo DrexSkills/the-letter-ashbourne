@@ -28,10 +28,6 @@ Open `index.html` in any modern browser, or enable GitHub Pages for this reposit
 | Journal | J | Journal button |
 | Pause menu | Esc or P | Menu button |
 
-## Your character
-
-- **Character creator:** pick one of four characters or design your own Noah — skin tone, hairstyle, hair colour, top, trousers, backpack, glasses, scarf and cap. Change it any time from Menu → Change look.
-
 ## Combat, levels & night
 
 Since the fire, ash creatures called **the Ashen** crawl out of the fields — **but only at night**. A full day/night cycle runs in real time (about 11 minutes a day). The village and station are always safe and you heal there; sleep at June's café to skip to morning.

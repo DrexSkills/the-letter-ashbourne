@@ -534,69 +534,6 @@
   @media (pointer: coarse) and (max-height: 520px) { .dskip { top: 5px; right: 6px; font-size: 15px; padding: 3px 6px 3px 10px; } .skipbtn .ff { width: 14px; height: 11px; } }
   @media (prefers-reduced-motion: reduce) { .skipbtn, .skipbtn .ff { transition: none; } }
 
-  /* character creator */
-  #creator { background: radial-gradient(ellipse at 50% 40%, rgba(20,24,46,.9), rgba(5,6,14,.97)); z-index: 11; padding: 10px; }
-  .cbox { width: min(940px, 100%); max-height: 100%; display: flex; flex-direction: column; overflow: hidden; }
-  .cbox header { padding: 12px 18px 8px; border-bottom: 3px solid var(--edge); }
-  .cbox h2 { font-family: var(--display); font-weight: 400; font-size: 40px; color: var(--paper); margin: 0; line-height: 1; }
-  .cbox header p { margin: 4px 0 0; font-size: 19px; color: var(--dim); }
-  .cgrid { display: grid; grid-template-columns: 300px 1fr; gap: 0; flex: 1; min-height: 0; }
-  .cprev { padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 14px; border-right: 3px solid var(--edge);
-    background: radial-gradient(ellipse at 50% 35%, rgba(242,194,122,.12), transparent 65%); }
-  #cPrev { width: 266px; height: 105px; image-rendering: pixelated; background: linear-gradient(#1d2a2e 0 70%, #2a3c30 70%); border: 3px solid var(--edge); }
-  .cpr { display: flex; align-items: center; gap: 12px; }
-  #cPort { width: 84px; height: 84px; image-rendering: pixelated; border: 3px solid var(--edge); box-shadow: 0 0 0 2px #070a12; }
-  .cname { font-family: var(--display); font-size: 30px; color: var(--amber); line-height: 1; }
-  .csub { font-size: 17px; color: var(--dim); }
-  .copts { overflow-y: auto; padding: 12px 16px 14px; }
-  .csec h3 { font-family: var(--display); font-weight: 400; font-size: 24px; color: var(--amber); margin: 4px 0 8px; line-height: 1; }
-  .presets { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 10px; }
-  .preset { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 4px 6px; background: var(--panel-2); border: 2px solid #283252; color: var(--ink); font-family: var(--body); font-size: 17px; cursor: pointer; }
-  .preset canvas { width: 56px; height: 56px; image-rendering: pixelated; }
-  .preset.on, .preset:hover { border-color: var(--amber); }
-  .crow { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 2px solid #1f2840; flex-wrap: wrap; }
-  .crow .cl { width: 118px; font-size: 19px; color: var(--ink); flex: none; white-space: nowrap; }
-  .sw { display: flex; flex-wrap: wrap; gap: 7px; flex: 1; }
-  .dot { width: 30px; height: 30px; border-radius: 50%; border: 3px solid #070a12; box-shadow: 0 0 0 2px #283252; cursor: pointer; padding: 0; }
-  .dot.on { box-shadow: 0 0 0 3px var(--amber); transform: scale(1.1); }
-  .chip { font-family: var(--body); font-size: 18px; color: var(--dim); background: #0e1322; border: 2px solid #283252; padding: 3px 10px; cursor: pointer; border-radius: 2px; }
-  .chip.on { color: var(--ink); border-color: var(--amber); background: #26304d; }
-  .cbox footer { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 16px; border-top: 3px solid var(--edge); }
-  @media (max-height: 520px) and (min-width: 561px) {
-    .cbox header { padding: 6px 12px 5px; } .cbox h2 { font-size: 26px; } .cbox header p { display: none; }
-    .cgrid { grid-template-columns: 168px 1fr; }
-    .cprev { padding: 8px; gap: 8px; } #cPrev { width: 152px; height: 60px; } #cPort { width: 48px; height: 48px; }
-    .cpr { gap: 8px; } .cname { font-size: 20px; } .csub { font-size: 13px; } #cRand { font-size: 15px; padding: 2px 8px 4px; }
-    .copts { padding: 6px 10px 8px; } .csec h3 { font-size: 19px; margin: 2px 0 5px; }
-    .presets { gap: 5px; margin-bottom: 4px; } .preset { font-size: 14px; padding: 4px 2px 3px; } .preset canvas { width: 34px; height: 34px; }
-    .crow { padding: 3px 0; gap: 6px; } .crow .cl { width: 92px; font-size: 15px; white-space: nowrap; } .dot { width: 24px; height: 24px; } .chip { font-size: 15px; padding: 1px 7px; } .sw { gap: 5px; }
-    .cbox footer { padding: 5px 10px; } .cbox footer .btn.big { font-size: 20px; padding: 4px 14px 6px; }
-  }
-  @media (max-width: 560px) {
-    .cgrid { grid-template-columns: 1fr; overflow-y: auto; }
-    .cprev { flex-direction: row; flex-wrap: wrap; justify-content: center; border-right: 0; border-bottom: 3px solid var(--edge); padding: 10px; gap: 10px; }
-    #cPrev { width: 190px; height: 75px; } #cPort { width: 60px; height: 60px; } .cname { font-size: 24px; }
-    .copts { overflow: visible; }
-    .cbox h2 { font-size: 30px; } .cbox header p { font-size: 16px; } .cbox header { padding: 8px 12px 6px; }
-    .presets { grid-template-columns: repeat(4, minmax(0,1fr)); gap: 5px; } .preset { font-size: 14px; } .preset canvas { width: 40px; height: 40px; }
-    .crow .cl { width: 84px; font-size: 16px; } .dot { width: 26px; height: 26px; } .chip { font-size: 16px; padding: 2px 8px; }
-    .cbox footer { padding: 7px 12px; } .cbox footer .btn.big { font-size: 22px; padding: 5px 16px 7px; }
-  }
-
-  /* crisp world text: NPC speech bubbles and floating numbers */
-  #worldtext { position: fixed; inset: 0; pointer-events: none; z-index: 3; overflow: hidden; }
-  #worldtext > div { position: absolute; left: 0; top: 0; will-change: transform; white-space: nowrap; }
-  .wsay { font-family: var(--body); font-size: 21px; line-height: 1; color: #2a1c14; background: #f4ead2; padding: 3px 9px 4px;
-    border: 3px solid #070a12; border-radius: 6px; box-shadow: 0 3px 0 rgba(7,10,18,.45); margin-top: -6px; }
-  .wsay::after { content: ""; position: absolute; left: 50%; bottom: -9px; margin-left: -6px; border: 6px solid transparent; border-top-color: #070a12; border-bottom: 0; }
-  .wsay::before { content: ""; position: absolute; left: 50%; bottom: -5px; margin-left: -4px; border: 4px solid transparent; border-top-color: #f4ead2; border-bottom: 0; z-index: 1; }
-  .wsay.angry { background: #ffe1d8; color: #8a2412; border-color: #3a0e08; }
-  .wsay.angry::before { border-top-color: #ffe1d8; }
-  .wsay.hiss { background: #ffe6c8; color: #8a4a12; }
-  .wsay.hiss::before { border-top-color: #ffe6c8; }
-  .wfloat { font-family: var(--display); font-size: 22px; line-height: 1; text-shadow: 2px 2px 0 #070a12, -1px -1px 0 #070a12, 1px -1px 0 #070a12, -1px 1px 0 #070a12; }
-  body.hideui #worldtext .wfloat { opacity: .9; }
-  @media (pointer: coarse) and (max-height: 520px) { .wsay { font-size: 17px; padding: 2px 7px 3px; border-width: 2px; } .wfloat { font-size: 18px; } }
 </style>
 </head>
 <body>
@@ -724,7 +661,6 @@
       <button class="btn" id="pMap">Map</button>
       <button class="btn" id="pJournal">Journal</button>
       <button class="btn" id="pInv">Items</button>
-      <button class="btn" id="pLook">Change look</button>
       <button class="btn" id="pHow">How to play</button>
       <button class="btn" id="pSettings">Settings</button>
       <button class="btn ghost" id="pQuit">Save &amp; quit</button>
@@ -768,7 +704,6 @@
     <div class="hcard"><h3>A pet</h3><p>A stray dog hides near the bridge, east of the village. Win him over with a <b>meat pie from June’s café</b> and he’ll fight the Ashen with you.</p></div>
     <div class="hcard"><h3>Menus</h3><p><span class="kb"><kbd>J</kbd> journal (story so far), <kbd>M</kbd> map, <kbd>I</kbd> items, <kbd>H</kbd> this help, <kbd>Esc</kbd> menu.</span><span class="tc">Buttons in the top-right: map, journal, items, full screen, sound, menu.</span></p></div>
     <div class="hcard"><h3>Story mode (recommended)</h3><p>The Letter is a story game. Just want the action? Tap <b>Skip ⏭</b> on any conversation to jump ahead. Your goal box and the journal’s <b>Story</b> tab keep you on track.</p></div>
-    <div class="hcard"><h3>Your look</h3><p>Choose a character or design your own when you start. Change it any time: <b>Menu → Change look</b>.</p></div>
     <div class="hcard"><h3>See more of the game</h3><p><span class="kb">Press <kbd>U</kbd> or</span> tap <b>Hide</b> to hide the goal box, buttons and minimap. Tap <b>Show UI</b> to bring them back.</p></div>
   </div></div></div>
 <div id="modepick" class="overlay">
@@ -778,20 +713,6 @@
     <button class="panel mpcard" id="mpAction"><h3>Action mode</h3><p>Skip the story scenes and jump straight into exploring and fighting. Your goal box and journal still tell you where to go.</p></button>
   </div>
   <button class="btn ghost small" id="mpBack">Back</button>
-</div>
-<div id="creator" class="overlay">
-  <div class="cbox panel">
-    <header><h2>Who is Noah?</h2><p>Pick a character or design your own. You can change it later from the Menu.</p></header>
-    <div class="cgrid">
-      <div class="cprev">
-        <canvas id="cPrev" width="76" height="30"></canvas>
-        <div class="cpr"><canvas id="cPort" width="24" height="24"></canvas><div><div class="cname">Noah Vale</div><div class="csub">22 · from the city</div></div></div>
-        <button id="cRand" class="btn small">Random look</button>
-      </div>
-      <div id="cOpts" class="copts"></div>
-    </div>
-    <footer><button id="cBack" class="btn ghost">Back</button><button id="cGo" class="btn big">Start the story</button></footer>
-  </div>
 </div>
 <div id="fade"></div>
 
@@ -1421,7 +1342,7 @@ addEventListener('keydown', e => {
   if (e.repeat) return;
   const act = e.code==='KeyE'||e.code==='Space'||e.code==='Enter';
   if (e.code==='Escape' || (e.code==='KeyP' && (mode==='play'||mode==='pause'))){
-    if (mode==='play') openPause(); else if (mode==='creator') $('#cBack').click(); else if (mode==='how') closeHow(); else if (mode==='dialog') skipDialog(); else if (mode==='cut') skipCut(); else if (mode==='pause') closePause(); else if (mode==='settings') closeSettings(); else if (mode==='journal') closeJournal(); else if (mode==='map') closeMap(); else if (mode==='inv') closeInv();
+    if (mode==='play') openPause(); else if (mode==='how') closeHow(); else if (mode==='dialog') skipDialog(); else if (mode==='cut') skipCut(); else if (mode==='pause') closePause(); else if (mode==='settings') closeSettings(); else if (mode==='journal') closeJournal(); else if (mode==='map') closeMap(); else if (mode==='inv') closeInv();
     e.preventDefault(); return;
   }
   if (mode==='dialog'){
@@ -2290,7 +2211,7 @@ Come to the old platform at dawn. I will be there.
 — Dad`;
 
 function startNew(){
-  S0 = NEW_STATE(); S0.tut=0; S0.look = { ...(pendingLook || DEFAULT_LOOK) }; applyLook(S0.look); P.x=S0.x; P.y=S0.y; P.dir=S0.dir; cat.follow=false; cat.x=78*T; cat.y=47*T; cat.tx=cat.x; cat.ty=cat.y;
+  S0 = NEW_STATE(); S0.tut=0; P.x=S0.x; P.y=S0.y; P.dir=S0.dir; cat.follow=false; cat.x=78*T; cat.y=47*T; cat.tx=cat.x; cat.ty=cat.y;
   try { localStorage.removeItem(SAVE_KEY); } catch(e){}
   applyWorldState(); resetCombat(); lastObj='';
   $('#title').classList.remove('on');
@@ -2331,7 +2252,7 @@ function runEnding(){
 }
 let endingNext = 0;
 $('#roamBtn').addEventListener('click', () => { $('#ending').classList.remove('on'); if (endingNext) startChapter(endingNext); else { mode='play'; refreshHUD(); } });
-$('#againBtn').addEventListener('click', () => { $('#ending').classList.remove('on'); openCreator('new'); });
+$('#againBtn').addEventListener('click', () => { $('#ending').classList.remove('on'); startNew(); });
 function showEnding(ch){
   mode='ending'; $('#ending').classList.add('on');
   const nClues=S0.clues.length, total=Object.keys(CLUES).length, people=Object.keys(PEOPLE).length;
@@ -3156,113 +3077,6 @@ $('#howBtn').addEventListener('click', () => openHow('title'));
 $('#pHow').addEventListener('click', () => openHow('pause'));
 $('#wpnBtn').addEventListener('click', () => { if (mode==='play') cycleWeapon(); $('#wpnBtn').blur(); });
 SETTINGS.skipStory = false;   // the game is always story mode; players can still skip single conversations
-// ================= character creator =================
-const LOOK_OPTS = {
-  skin:  ['#f2d0b6','#e8b896','#d9a07c','#c98f6b','#a86b4f','#7a4a32'],
-  style: [['curly','Curly'],['short','Short'],['long','Long'],['bun','Bun'],['bald','Shaved']],
-  hair:  ['#17141a','#4a2c1c','#8a4a22','#c9a050','#b8b2aa','#3a4a8a'],
-  top:   ['#2c2f3a','#8a2e2e','#2f5a3a','#2f3d63','#6a3a6e','#c9a046','#d8d0c0','#5a4a42'],
-  pants: ['#3b4a6b','#2a2a33','#5a4a32','#3a5a3a','#6a6a72'],
-};
-const DEFAULT_LOOK = { skin:'#c98f6b', style:'curly', hair:'#17141a', top:'#2c2f3a', pants:'#3b4a6b', pack:true, glasses:false, scarf:false, cap:false };
-const PRESETS = [
-  { name:'Classic Noah', look:{ ...DEFAULT_LOOK } },
-  { name:'The Wanderer', look:{ skin:'#e8b896', style:'short', hair:'#4a2c1c', top:'#2f5a3a', pants:'#5a4a32', pack:true, glasses:false, scarf:true, cap:false } },
-  { name:'Night Owl',    look:{ skin:'#7a4a32', style:'long',  hair:'#17141a', top:'#6a3a6e', pants:'#2a2a33', pack:false, glasses:true, scarf:false, cap:false } },
-  { name:'Sunny',        look:{ skin:'#d9a07c', style:'bun',   hair:'#8a4a22', top:'#c9a046', pants:'#3b4a6b', pack:true, glasses:false, scarf:false, cap:true } },
-];
-function applyLook(L){
-  L = { ...DEFAULT_LOOK, ...(L||{}) };
-  const c=CH.noah;
-  c.skin=L.skin; c.skin2=shade(L.skin,.84); c.hair=L.hair; c.style=L.style;
-  c.top=L.top; c.top2=shade(L.top,.74); c.pants=L.pants; c.pants2=shade(L.pants,.78);
-  c.pack=!!L.pack; c.glasses=!!L.glasses; c.scarf = L.scarf ? '#c8a24a' : undefined; c.hat = L.cap ? { c:'#a33a2e', s:'cap' } : undefined;
-}
-let CR = { kind:'new', look:{...DEFAULT_LOOK}, timer:null, t:0 }, pendingLook=null;
-function swatchRow(key, label){
-  const vals=LOOK_OPTS[key];
-  const row=document.createElement('div'); row.className='crow'; row.dataset.key=key;
-  row.innerHTML=`<span class="cl">${label}</span><div class="sw"></div>`;
-  for (const v of vals){
-    const b=document.createElement('button');
-    if (Array.isArray(v)){ b.className='chip'; b.textContent=v[1]; b.dataset.v=v[0]; }
-    else { b.className='dot'; b.style.background=v; b.dataset.v=v; b.setAttribute('aria-label', label+' '+v); }
-    b.addEventListener('click', () => { CR.look[key]=b.dataset.v; syncCreator(); beep(520,.04,'square',.025); });
-    row.querySelector('.sw').appendChild(b);
-  }
-  return row;
-}
-function buildCreator(){
-  const box=$('#cOpts'); box.innerHTML='';
-  const ps=document.createElement('div'); ps.className='csec';
-  ps.innerHTML='<h3>Pick a character</h3><div class="presets"></div>';
-  PRESETS.forEach(p => {
-    const b=document.createElement('button'); b.className='preset';
-    const cv=document.createElement('canvas'); cv.width=24; cv.height=24;
-    const keep={...CH.noah}; applyLook(p.look); drawPortrait(cv.getContext('2d'), CH.noah); Object.assign(CH.noah, keep); if (!keep.hat) delete CH.noah.hat; if (!keep.scarf) delete CH.noah.scarf;
-    b.appendChild(cv); const n=document.createElement('span'); n.textContent=p.name; b.appendChild(n);
-    b.addEventListener('click', () => { CR.look={...p.look}; syncCreator(); chime(); });
-    ps.querySelector('.presets').appendChild(b);
-  });
-  box.appendChild(ps);
-  const ds=document.createElement('div'); ds.className='csec'; ds.innerHTML='<h3>Or design your own</h3>';
-  ds.appendChild(swatchRow('skin','Skin tone'));
-  ds.appendChild(swatchRow('style','Hair'));
-  ds.appendChild(swatchRow('hair','Hair colour'));
-  ds.appendChild(swatchRow('top','Top'));
-  ds.appendChild(swatchRow('pants','Trousers'));
-  const ex=document.createElement('div'); ex.className='crow'; ex.innerHTML='<span class="cl">Extras</span><div class="sw"></div>';
-  for (const [k,label] of [['pack','Backpack'],['glasses','Glasses'],['scarf','Scarf'],['cap','Cap']]){
-    const b=document.createElement('button'); b.className='chip tog'; b.dataset.k=k; b.textContent=label;
-    b.addEventListener('click', () => { CR.look[k]=!CR.look[k]; syncCreator(); beep(520,.04,'square',.025); });
-    ex.querySelector('.sw').appendChild(b);
-  }
-  ds.appendChild(ex); box.appendChild(ds);
-}
-function syncCreator(){
-  for (const row of document.querySelectorAll('#cOpts .crow')){
-    for (const b of row.querySelectorAll('button')){
-      if (b.dataset.k) b.classList.toggle('on', !!CR.look[b.dataset.k]);
-      else b.classList.toggle('on', CR.look[row.dataset.key]===b.dataset.v);
-    }
-  }
-  for (const b of document.querySelectorAll('#cOpts .preset')) b.classList.remove('on');
-  PRESETS.forEach((p,i) => { if (JSON.stringify(p.look)===JSON.stringify({...DEFAULT_LOOK, ...CR.look})) document.querySelectorAll('#cOpts .preset')[i].classList.add('on'); });
-  drawCreatorPreview();
-}
-function drawCreatorPreview(){
-  applyLook(CR.look);
-  const g=$('#cPrev').getContext('2d'); g.clearRect(0,0,76,30);
-  const frame=[0,1,0,3][Math.floor(CR.t*6)%4];
-  ['down','left','right','up'].forEach((d,i) => drawCharAt(g, 10+i*19, 27, d, frame, CH.noah));
-  drawPortrait($('#cPort').getContext('2d'), CH.noah);
-}
-function openCreator(kind){
-  CR.kind=kind; CR.look = { ...DEFAULT_LOOK, ...(kind==='edit' && S0.look ? S0.look : (pendingLook||DEFAULT_LOOK)) };
-  $('#title').classList.remove('on'); $('#pause').classList.remove('on'); $('#ending').classList.remove('on');
-  $('#cGo').textContent = kind==='edit' ? 'Save look' : 'Start the story';
-  $('#creator h2').textContent = kind==='edit' ? 'Change your look' : 'Who is Noah?';
-  buildCreator(); syncCreator(); mode='creator'; $('#creator').classList.add('on');
-  clearInterval(CR.timer); CR.timer=setInterval(() => { CR.t+=.12; drawCreatorPreview(); }, 120);
-}
-function closeCreator(){ clearInterval(CR.timer); $('#creator').classList.remove('on'); }
-$('#cGo').addEventListener('click', () => {
-  closeCreator();
-  if (CR.kind==='edit'){ S0.look={...CR.look}; applyLook(S0.look); save(); mode='play'; toast('Looking good', 'New look saved'); }
-  else { pendingLook={...CR.look}; startNew(); }
-});
-$('#cBack').addEventListener('click', () => {
-  closeCreator(); applyLook(S0 && S0.look ? S0.look : DEFAULT_LOOK);
-  if (CR.kind==='edit'){ mode='pause'; $('#pause').classList.add('on'); } else { mode='title'; refreshTitle(); $('#title').classList.add('on'); }
-});
-$('#cRand').addEventListener('click', () => {
-  const pick=a=>a[Math.floor(Math.random()*a.length)];
-  CR.look={ skin:pick(LOOK_OPTS.skin), style:pick(LOOK_OPTS.style)[0], hair:pick(LOOK_OPTS.hair), top:pick(LOOK_OPTS.top), pants:pick(LOOK_OPTS.pants),
-            pack:Math.random()<.6, glasses:Math.random()<.3, scarf:Math.random()<.3, cap:Math.random()<.25 };
-  syncCreator(); beep(700,.05,'triangle',.04);
-});
-$('#pLook').addEventListener('click', () => openCreator('edit'));
-
 // ================= tutorial =================
 let tutT=0, tutMoved=0;
 const TUT = [
@@ -3509,7 +3323,7 @@ function refreshTitle(){ const h=hasSave(); $('#playBtn').textContent = h ? 'Con
 let newArmed=false;
 function continueGame(){
   const s=loadSave(); if (!s) return startNew();
-  S0=s; applyLook(S0.look || DEFAULT_LOOK); P.x=s.x; P.y=s.y; P.dir=s.dir||'down';
+  S0=s; delete S0.look; P.x=s.x; P.y=s.y; P.dir=s.dir||'down';
   if (s.cat){ cat.x=s.cat.x; cat.y=s.cat.y; cat.follow=s.cat.follow; cat.tx=cat.x; cat.ty=cat.y; }
   if (F().catHome){ cat.x=40*T; cat.y=25*T; cat.tx=cat.x; cat.ty=cat.y; }
   applyWorldState(); resetCombat(); lastObj=''; S0.tut=0;
@@ -3519,10 +3333,10 @@ function continueGame(){
   if (F().ch2end && chap()===2) return startChapter(3);
   beginPlay(); showZone('Welcome back', PHASE_NAMES[F().phase]);
 }
-$('#playBtn').addEventListener('click', () => { ensureAudio(); if (IS_TOUCH_DEVICE) enterFullscreen(); hasSave() ? continueGame() : openCreator('new'); });
+$('#playBtn').addEventListener('click', () => { ensureAudio(); if (IS_TOUCH_DEVICE) enterFullscreen(); hasSave() ? continueGame() : startNew(); });
 $('#newBtn').addEventListener('click', () => {
   if (!newArmed){ newArmed=true; $('#newBtn').textContent='Erase save and start over?'; return; }
-  openCreator('new');
+  startNew();
 });
 $('#setBtn').addEventListener('click', () => openSettings('title'));
 
@@ -3641,7 +3455,7 @@ setInterval(() => { if (mode==='play') save(); }, 8000);
   window.addEventListener('resize', () => { resize2(); initParticles(); });
   raf2 = requestAnimationFrame(frame2);
 })();
-window.__game = { CR: () => CR, CH, scout, greta: () => talkGreta(), C: () => C, killAll: () => C.enemies.slice().forEach(killEnemy), attack: () => attack(), Music, SETTINGS, P, S0: () => S0, F, mode: () => mode, interact, advance, choose, D, objective, teleport:(tx,ty)=>{P.x=tx*T+8;P.y=ty*T+10;}, cutNext };
+window.__game = { CH, scout, greta: () => talkGreta(), C: () => C, killAll: () => C.enemies.slice().forEach(killEnemy), attack: () => attack(), Music, SETTINGS, P, S0: () => S0, F, mode: () => mode, interact, advance, choose, D, objective, teleport:(tx,ty)=>{P.x=tx*T+8;P.y=ty*T+10;}, cutNext };
 requestAnimationFrame(step);
 })();
 </script>

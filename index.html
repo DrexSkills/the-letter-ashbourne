@@ -582,10 +582,26 @@
     .crow .cl { width: 84px; font-size: 16px; } .dot { width: 26px; height: 26px; } .chip { font-size: 16px; padding: 2px 8px; }
     .cbox footer { padding: 7px 12px; } .cbox footer .btn.big { font-size: 22px; padding: 5px 16px 7px; }
   }
+
+  /* crisp world text: NPC speech bubbles and floating numbers */
+  #worldtext { position: fixed; inset: 0; pointer-events: none; z-index: 3; overflow: hidden; }
+  #worldtext > div { position: absolute; left: 0; top: 0; will-change: transform; white-space: nowrap; }
+  .wsay { font-family: var(--body); font-size: 21px; line-height: 1; color: #2a1c14; background: #f4ead2; padding: 3px 9px 4px;
+    border: 3px solid #070a12; border-radius: 6px; box-shadow: 0 3px 0 rgba(7,10,18,.45); margin-top: -6px; }
+  .wsay::after { content: ""; position: absolute; left: 50%; bottom: -9px; margin-left: -6px; border: 6px solid transparent; border-top-color: #070a12; border-bottom: 0; }
+  .wsay::before { content: ""; position: absolute; left: 50%; bottom: -5px; margin-left: -4px; border: 4px solid transparent; border-top-color: #f4ead2; border-bottom: 0; z-index: 1; }
+  .wsay.angry { background: #ffe1d8; color: #8a2412; border-color: #3a0e08; }
+  .wsay.angry::before { border-top-color: #ffe1d8; }
+  .wsay.hiss { background: #ffe6c8; color: #8a4a12; }
+  .wsay.hiss::before { border-top-color: #ffe6c8; }
+  .wfloat { font-family: var(--display); font-size: 22px; line-height: 1; text-shadow: 2px 2px 0 #070a12, -1px -1px 0 #070a12, 1px -1px 0 #070a12, -1px 1px 0 #070a12; }
+  body.hideui #worldtext .wfloat { opacity: .9; }
+  @media (pointer: coarse) and (max-height: 520px) { .wsay { font-size: 17px; padding: 2px 7px 3px; border-width: 2px; } .wfloat { font-size: 18px; } }
 </style>
 </head>
 <body>
 <div id="stage"><canvas id="game"></canvas></div>
+<div id="worldtext" aria-hidden="true"></div>
 <div id="vignette"></div>
 
 <div id="hud" class="panel">
@@ -2920,7 +2936,7 @@ function drawCombatFX(cx,cy){
     else { ctx.fillStyle='rgba(255,90,58,.6)'; ctx.fillRect(Math.round(x+(e.face>0?(e.t==='wolf'?8:6):-(e.t==='wolf'?10:7))), Math.round(y-(e.t==='wolf'?12:6)), 2, 1); } }
   for (const p of C.fx){ ctx.fillStyle=p.col; ctx.globalAlpha=Math.max(0,Math.min(1,p.life*1.6)); ctx.fillRect(Math.round(p.x-cx),Math.round(p.y-cy),2,2); }
   ctx.globalAlpha=1; ctx.globalCompositeOperation='source-over';
-  for (const t of C.texts){ ctx.globalAlpha=Math.min(1,t.life*2); ctx.font='10px "VT323", monospace'; ctx.fillStyle='#070a12'; ctx.fillText(t.t, Math.round(t.x-cx)-7, Math.round(t.y-cy)+1); ctx.fillStyle=t.col; ctx.fillText(t.t, Math.round(t.x-cx)-8, Math.round(t.y-cy)); }
+  // floating numbers are drawn as crisp text in syncWorldText()
   ctx.globalAlpha=1;
   if (C.flash>0){ ctx.fillStyle=`rgba(200,30,30,${C.flash*.6})`; ctx.fillRect(0,0,VW,VH); }
 }
@@ -3092,15 +3108,25 @@ function bonkNPC(n, v){
   else { const L=BONK[n.id]||['Ow!','Hey!']; npcSay(n, n.bonks===1 ? (['Ow!','Hey!','Oof!'][Math.floor(Math.random()*3)]) : L[Math.floor(Math.random()*L.length)]); }
 }
 function bonkCat(v){ if (cat.follow){ npcSay(cat,'Mrrrow?!'); return; } npcSay(cat,'HSSSS!','#ffb070'); cat.tx=cat.x+v[0]*120; cat.ty=cat.y+v[1]*120; cat.wait=3; beep(900,.08,'sawtooth',.03); }
-function drawSays(cx,cy){
-  ctx.font='10px "VT323", monospace';
-  for (const s of (C.says||[])){
-    const r=s.ref; const x=Math.round(r.x-cx), y=Math.round(r.y-cy-(r===cat?16:34));
-    const w=Math.ceil(ctx.measureText(s.t).width)+6; ctx.globalAlpha=Math.min(1,s.life*2);
-    ctx.fillStyle='#070a12'; ctx.fillRect(x-w/2-1,y-10,w+2,12); ctx.fillStyle='#f4ead2'; ctx.fillRect(x-w/2,y-9,w,10); ctx.fillRect(x-1,y+1,2,2);
-    ctx.fillStyle='#2a1c14'; ctx.fillText(s.t, x-w/2+3, y-1); ctx.globalAlpha=1;
+// Speech bubbles and floating numbers are real text laid over the canvas, so they stay sharp at any size.
+let wtId=0;
+function syncWorldText(cx,cy){
+  const box=$('#worldtext'); if (!box) return;
+  const alive=new Set();
+  const place=(o, cls, html, wx, wy, alpha) => {
+    if (!o.el){ o.el=document.createElement('div'); o.el.className=cls; o.el.innerHTML=html; o.el.dataset.k=String(++wtId); box.appendChild(o.el); }
+    alive.add(o.el);
+    o.el.style.transform=`translate(${Math.round((wx-cx)*SC)}px, ${Math.round((wy-cy)*SC)}px) translate(-50%,-100%)`;
+    o.el.style.opacity=String(Math.max(0,Math.min(1,alpha)));
+  };
+  if (mode!=='title'){
+    for (const sy of (C.says||[])){ const r=sy.ref; place(sy, 'wsay'+(sy.col==='#ff9a8a'?' angry':sy.col==='#ffb070'?' hiss':''), escapeHTML(sy.t), r.x, r.y-(r===cat?12:25), sy.life*2); }
+    for (const t of (C.texts||[])){ place(t, 'wfloat', escapeHTML(t.t), t.x, t.y, t.life*2); if (!t.colored){ t.el.style.color=t.col; t.colored=1; } }
   }
+  for (const el of [...box.children]) if (!alive.has(el)) el.remove();
 }
+function escapeHTML(t){ return String(t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function drawSays(cx,cy){ syncWorldText(cx,cy); }
 
 // ================= how to play, play-mode picker, skip story =================
 function openHow(from){ howFrom=from; $('#howto').classList.add('on'); if (from==='pause') $('#pause').classList.remove('on'); if (from==='title') $('#title').classList.remove('on'); mode='how'; }
@@ -3361,6 +3387,7 @@ function render(cx,cy,dt){
     for (const n of npcs){ if (n.when && !n.when()) continue;
       const x=Math.round(n.x-cx), y=Math.round(n.y-cy-36+(reduceMotion?0:Math.sin(time*4+n.x)*1.5));
       if (x<-12||y<-12||x>VW+12||y>VH+12) continue;
+      if ((C.says||[]).some(sy => sy.ref===n)) continue;
       if (n.id===tgt) bubble(x,y,true); else if (!S0.met.includes(n.id)) bubble(x,y,false); }
   }
 

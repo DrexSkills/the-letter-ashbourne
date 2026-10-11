@@ -570,6 +570,19 @@
   .wsay.hiss::before { border-top-color: #ffe6c8; }
   .wfloat { font-family: var(--display); font-size: 22px; line-height: 1; text-shadow: 2px 2px 0 #070a12, -1px -1px 0 #070a12, 1px -1px 0 #070a12, -1px 1px 0 #070a12; }
   @media (pointer: coarse) and (max-height: 520px) { .wsay { font-size: 17px; padding: 2px 7px 3px; border-width: 2px; } .wfloat { font-size: 18px; } }
+
+  /* Key point / story-so-far boxes: the plain-English summary after each big moment */
+  #dialog.keypt { border-color: #c9a046; box-shadow: 0 0 0 3px #070a12, 0 0 22px rgba(242,194,122,.35); background: linear-gradient(180deg, rgba(42,36,24,.96), rgba(22,18,12,.96)); }
+  #dialog.keypt .who { color: #ffd88a; }
+  #dialog.keypt .line { color: #fff1d0; font-size: 24px; }
+  @media (pointer: coarse) and (max-height: 520px) { #dialog.keypt .line { font-size: 20px; } }
+
+  .story .bq { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  .story .bq .mk { width: 22px; height: 22px; flex: none; display: inline-grid; place-items: center; border: 2px solid #59617d; color: #8a93b0; font-size: 16px; }
+  .story .bq.done .mk { border-color: #6aa04a; color: #9fe07a; }
+  .story .bq b { font-weight: 400; color: var(--ink); }
+  .story .bq .ans { color: #8a93b0; flex-basis: 100%; padding-left: 30px; margin-top: -2px; }
+  .story .bq.done .ans { color: #cfe8c0; }
 </style>
 </head>
 <body>
@@ -1576,11 +1589,12 @@ function next(){
   let text = item.t;
   const think = item.s==='noah' && /^\(.*\)$/.test(text.trim());
   if (think) text = text.trim().slice(1,-1);
-  dlg.classList.toggle('noport', !c); dlg.classList.toggle('narr', item.s==='narr'); dlg.classList.toggle('think', think);
+  const keyLine = item.s==='key' || item.s==='recap';
+  dlg.classList.toggle('noport', !c); dlg.classList.toggle('narr', item.s==='narr'); dlg.classList.toggle('think', think); dlg.classList.toggle('keypt', keyLine);
   const who = dlg.querySelector('.who');
-  who.textContent = c ? c.name : '';
+  who.textContent = c ? c.name : keyLine ? (item.s==='key' ? '★ Key point' : '★ The story so far') : '';
   if (c && (think || c.role)){ const r=document.createElement('span'); r.className='role'; r.textContent = think ? '(thinking)' : c.role; who.appendChild(r); }
-  who.style.display = c ? '' : 'none';
+  who.style.display = (c || keyLine) ? '' : 'none';
   if (c) drawPortrait(pctx, c);
   S0.dlgCount = (S0.dlgCount||0) + 1;
   dlg.querySelector('.more .tip').textContent = S0.dlgCount <= 6 ? (IS_TOUCH ? 'Tap here or E to continue' : 'Press E or click to continue') : '';
@@ -1688,6 +1702,7 @@ function talkHale(){
       ]},
       {s:'hale', t:'While you’re there — stop in the square and find Clara Wynn. She keeps the town’s old newspapers. You should know what happened to this town before you go digging in it.'},
       () => { F().hale1=1; addClue('hand'); },
+      {s:'key', t:'Hale was Dad’s friend. Before he helps, I must prove I’m Elias’s son: find the word Dad carved into Tom Barrow’s fence, south of the road.'},
     ]);
   } else if (!F().key){
     if (has('carving')){
@@ -1721,6 +1736,7 @@ function haleKey(){
       {t:'Why didn’t you just tell me all this when I first walked in?', then:[ {s:'hale', t:'Because a man came in two years ago with the same story — said he was Elias’s son. He wasn’t. He was looking for the workshop. I told him nothing, but he found out I had the key. I can’t make that mistake again.'} ]},
     ]},
     () => { F().key=1; addClue('key'); setPhase(1); },
+    {s:'key', t:'Hale believes Dad didn’t run — he was forced out. Dad’s workshop is hidden in the forest. To get through the dark, I need Dad’s old lantern from Tom.'},
   ];
 }
 
@@ -1740,6 +1756,7 @@ function talkClara(){
       {s:'clara', t:'Some do. Others still carve his initials into their fences for good luck. This town made up its mind and then kept arguing about it for twenty years.'},
       {s:'clara', t:'Mara worked with your father every day. If he had a reason to be here, she’s part of it. Her grave is behind the church. And Tom Barrow at Hollow Farm — he and your father were close. Your father helped build that fence.'},
       () => { F().news=1; addClue('news'); },
+      {s:'key', t:'In 2006 the railway office burned and Mara Voss died. Dad disappeared that same night — so the whole town blamed him.'},
       () => { if (F().hale1 && !has('carving')) D.queue.unshift({s:'clara', t:'If Hale needs proof — check the east fence at Tom’s farm. Your father carved things into everything he built.'}); },
       {s:'clara', t:'If you find anything about Mara — anything at all — come and tell me. She deserves someone still looking.'},
     ]);
@@ -1807,6 +1824,7 @@ function tomConfess(){
     {s:'tom', t:'Ashwood trail starts north of the road, west of the village. Keep left. He always kept left.'},
     {s:'tom', t:'And Noah — the Ashen hate this light. Swing it at ’em and they burn twice as fast. Your father learned that the hard way.'},
     () => { F().lantern=1; addClue('lantern'); setPhase(2); },
+    {s:'key', t:'Tom lied to the police. Railway men scared him into saying he saw Dad leave the fire. So Dad was framed! Now follow the forest trail to his workshop.'},
   ];
 }
 
@@ -1831,6 +1849,7 @@ function talkSilas(){
     ]},
     {s:'silas', t:'Go on then. See what he left you. But if it explains anything about that night — you bring it to me. That’s not a request.'},
     () => { F().silas=1; F().silasGone=1; addClue('silas'); },
+    {s:'key', t:'Silas is Mara’s brother. He still believes Dad let his sister die. Keep going to the workshop.'},
   ]);
 }
 
@@ -1882,6 +1901,7 @@ function actCarving(){
     {s:'narr', t:'E.V. + T.B. — LANTERN'},
     {s:'noah', t:'E.V. — Elias Vale. And T.B.… Tom Barrow. This is his farm. They were friends.'},
     () => { addClue('carving'); },
+    {s:'key', t:'The secret word is LANTERN. Dad (E.V.) and Tom Barrow (T.B.) were best friends. Now tell Hale the word.'},
     () => { if (F().hale1) D.queue.unshift({s:'noah', t:'Lantern. That has to be the word Hale wants.'}); },
   ]);
 }
@@ -1972,6 +1992,7 @@ function actWait(){
     {s:'narr', t:'The note, in the same handwriting as the letter:'},
     {s:'narr', t:'“They’re watching the platform. I couldn’t risk it. Get the ledger first — the old engine shed, north along the tracks. It’s under the inspection pit. Then I’ll find you. — E”'},
     () => { meet('walt'); F().note=1; addClue('note'); },
+    {s:'key', t:'Dad is alive and close by — but someone is watching the station. He wants me to get Mara’s ledger from the old engine shed first.'},
     {s:'noah', t:'(The engine shed. North of the station, following the railway line.)'},
   ]);
 }
@@ -2001,6 +2022,7 @@ function talkWalt2(){
       {t:'I don’t know what to do with you, Walt.', then:[ () => { F().waltChoice='unsure'; }, {s:'walt', t:'Neither do I, lad. Neither do I. I’ll start with the truth and see where it gets me.'} ]},
     ]},
     () => { f.confess=1; addClue('confession'); },
+    {s:'key', t:'Walt started the fire, paid by Ashcombe to destroy the records. He didn’t know Mara was inside. Dad was innocent all along.'},
     {s:'noah', t:'(The end of the platform. He’s here.)'},
   ]);
 }
@@ -2024,6 +2046,7 @@ function talkAshcombe(){
       ]},
       {s:'ashcombe', t:'The gate stays locked. Good morning.'},
       () => { f.ash1=1; addClue('ashcombe'); },
+      {s:'key', t:'Victor Ashcombe bought the railway land right after the fire. He owns the shed, keeps it locked — and he already knows who I am. Suspicious.'},
       {s:'noah', t:'(How did he know who I am? There has to be another way into that yard. Someone in town might know one.)'},
     ]);
   } else dialog([{s:'ashcombe', t:'Still here? The gate is still locked, Mr. Vale. It will be locked tomorrow, too.'}]);
@@ -2051,6 +2074,7 @@ function talkSilas2(){
         ...(f.kindSilas ? [{s:'silas', t:'And because you said her name, that night in the woods. Nobody else had in years.'}] : [{s:'silas', t:'And whatever you find, I see it next. That’s the price.'}]) ]},
     ]},
     () => { f.culvertKnown=1; },
+    {s:'key', t:'Silas showed me a secret way into the shed yard: a rusty grate under the west fence, by the river.'},
     {s:'noah', t:'(A rusty grate under the west fence of the shed yard, by the river. Let’s go.)'},
   ]);
 }
@@ -2089,6 +2113,7 @@ function actPit(){
   ], () => cutscene([{paper:true, t:LEDGER}], () => {
     addClue('ledger');
     dialog([
+      {s:'key', t:'Mara’s ledger proves it: the railway land was sold to Ashcombe for a fraction of its value, and Ashcombe paid someone called “W.P.” to destroy the records two days before the fire.'},
       {s:'noah', t:'(W.P. Somebody was paid to “clear the records” two days before the fire. Not Dad. Someone called W.P.)'},
       {s:'narr', t:'A torch beam swings across the yard. Footsteps on gravel.'},
       {s:'ashcombe', t:'I did warn you about the floor, Mr. Vale.'},
@@ -2121,6 +2146,7 @@ function talkClara2(){ meet('clara'); const f=F(), c=chap();
       {s:'noah', t:'Walt. Walt from the station. The first person I spoke to in Ashbourne.'},
       {s:'clara', t:'After the fire, the railway let every other worker go. But they kept Walt on. Alone, at a station nobody uses. I always wondered who was paying for that.'},
       () => { f.wp=1; addClue('staff'); setPhase(6); },
+      {s:'key', t:'W.P. is Walter Pryce — Walt, the friendly railway worker who greeted me at the station on day one!'},
       {s:'noah', t:'(It’s getting dark. I need to talk to Walt at the station. Rosa at the post office might know something too.)'},
     ]); return;
   }
@@ -2203,12 +2229,14 @@ function startChapter(n){
     F().phase=3; todInit(); S0.tod=5.3; S0.day=(S0.day||1)+1; P.x=86*T+8; P.y=35*T+10; P.dir='up'; camX=P.x-VW/2; camY=P.y-VH/2;
     beginPlay(); refreshHUD(); save(); setTimeout(sfxWhistle, 900);
     showCard('Chapter Two', 'The Ledger', 'Dawn. The old platform, where he promised he would be.', () => dialog([
+      {s:'recap', t:'Dad was framed for the fire that killed Mara Voss. Mara’s ledger — the proof — is hidden in the old engine shed. Dad promised to meet me on the platform at dawn.'},
       {s:'noah', t:'(Dawn. The old platform. He said he would be here.)'},
       {s:'noah', t:'(I’ll sit on the bench and wait for him.)'},
     ]));
   } else if (n===3) {
     F().phase=5; todInit(); if (S0.tod<17) S0.tod=17.2; beginPlay(); refreshHUD(); save();
     showCard('Chapter Three', 'Keeping Left', 'The same day. The sun is going down over Ashbourne.', () => dialog([
+      {s:'recap', t:'I have Mara’s ledger. It shows Victor Ashcombe paid someone called “W.P.” to destroy the railway records two days before the fire. Find out who W.P. is.'},
       {s:'noah', t:'(I have Mara’s ledger. Someone called “W.P.” was paid to clear the records before the fire.)'},
       {s:'noah', t:'(Ashcombe said to ask my “friends at the station.” But first I need to know who W.P. really is. Clara keeps the old railway records.)'},
     ]));
@@ -2216,6 +2244,7 @@ function startChapter(n){
     F().phase=6; todInit(); S0.tod=21.6;
     beginPlay(); enterScene('harlow', {x:4, y:10, dir:'right'}, true); refreshHUD(); save(); setTimeout(sfxWhistle, 700);
     showCard('Chapter Four', 'Harlow Cross', 'The night train. One last stop.', () => dialog([
+      {s:'recap', t:'Walt confessed: he set the fire for Ashcombe’s money. I found Dad at last. But to put Ashcombe in prison, the police need the original ledger — locked in his office in Harlow Cross.'},
       {s:'narr', t:'The night train rattles into Harlow Cross: a smoky railway town of warehouses and black canals. Your father steps down beside you, lantern in hand.'},
       {s:'elias', t:'Mara’s copy proves the numbers. But a copy can be argued away. Ashcombe keeps the original books in his office safe.'},
       {s:'elias', t:'If he burns them tonight, he walks free. We end this before morning.'},
@@ -2282,11 +2311,13 @@ function startNew(){
   applyWorldState(); resetCombat(); lastObj='';
   $('#title').classList.remove('on');
   cutscene([
-    {html:true, t:'You are *Noah Vale*, 22.\n\nWhen you were six, your father *Elias* disappeared. Everyone said he ran away after a fire in a small town called Ashbourne.'},
-    {html:true, t:'Three days ago, a letter arrived. *From him.*'},
+    {html:true, t:'You are *Noah Vale*, 22 years old.'},
+    {html:true, t:'Twenty years ago, in the village of *Ashbourne*, the railway office burned down in the night.\n\nA woman named *Mara Voss* died inside.'},
+    {html:true, t:'That same night, your father *Elias* disappeared.\n\nSo everyone believed *he* started the fire — and ran away. You were six. You grew up believing it too.'},
+    {html:true, t:'Then, three days ago, a letter arrived.\n\n*From your father.*'},
     {paper:true, t:LETTER1},
     {html:true, t:'On the train, a stranger left a photo of your father on the seat beside you. On the back: *“Ashbourne, spring 2009”* — three years after he vanished.\n\nSo you bought a ticket.'},
-    {html:true, t:'*Your goal:* find out what really happened to your father.\n\nTalk to people. Collect clues. Follow the pink arrow.'},
+    {html:true, t:'*Your mission:*\n\nGo to Ashbourne. Find out *who really started the fire* — and *where your father is now.*\n\nTalk to people. Collect clues. Follow the pink arrow.'},
   ], () => {
     beginPlay();
     showCard('Chapter One', 'The Letter', 'Ashbourne Station, late afternoon.', () => {
@@ -2313,7 +2344,9 @@ function runEnding(){
     if (F().watch) pages.push({html:true, t:'You set Mara’s watch on the workbench beside the letter. *2:14.* The hands still haven’t moved.'});
     if (F().toldWalt || F().toldTom) pages.push({html:true, t:'Outside, a whistle carries through the trees from the direction of the station. *Someone already knows you’re here.*'});
     else pages.push({html:true, t:'You kept the letter to yourself, as he asked. For tonight, at least, *nobody knows you’re here.*'});
-    cutscene(pages, () => { F().end=1; addClue('workshop'); save(); showEnding(1); });
+    cutscene(pages, () => { F().end=1; addClue('workshop'); save();
+      dialog([{s:'key', t:'Dad’s letter explains everything so far: Mara found out the railway’s books were faked so the land could be sold off cheaply. Someone set the fire to silence her — and blamed Dad.'},
+              {s:'key', t:'Mara’s copy of the books, the ledger, is hidden in the old engine shed. Dad will meet me on the station platform at dawn.'}], () => showEnding(1)); });
   }, 900);
 }
 let endingNext = 0;
@@ -2382,6 +2415,19 @@ function refreshHUD(){
 }
 
 // ================= journal =================
+function bigQuestions(){
+  // each question only appears once the story has raised it, so nothing is spoiled early
+  const f=F(), q=[];
+  q.push([f.news, 'What happened twenty years ago?', 'The railway office burned down in 2006, and the clerk Mara Voss died inside.', true]);
+  q.push([f.lantern, 'Did Dad really start the fire?', 'No. He was framed — Tom was frightened into lying about seeing him.', true]);
+  q.push([f.gameEnd || f.ch3end, 'Where is Dad now?', 'Back in Ashbourne. He was waiting at the end of the platform.', true]);
+  q.push([f.end, 'Why was Mara killed?', 'She found proof that the railway’s books were faked so the land could be sold cheaply.', f.news]);
+  q.push([has('ledger'), 'Who was behind it?', 'Victor Ashcombe, who bought the land. He paid someone called “W.P.”', f.end]);
+  q.push([f.wp, 'Who is “W.P.”?', 'Walter Pryce — Walt, the railway worker at the station.', has('ledger')]);
+  q.push([f.confess, 'Who actually lit the fire?', 'Walt, for Ashcombe’s money. He didn’t know Mara was inside.', has('ledger')]);
+  q.push([f.ch4end, 'Will Ashcombe be stopped?', 'Yes — arrested in Harlow Cross with the original ledger.', f.ash1]);
+  return q;
+}
 function storySoFar(){
   const f=F(), out=[];
   const c1=['My father, Elias Vale, vanished when I was six. Three days ago he wrote to me and told me to come to Ashbourne and find Edmund Hale, the bookseller.'];
@@ -2439,6 +2485,9 @@ function renderJournal(){
     e.appendChild(ic); const t=document.createElement('div'); t.innerHTML=`<h3></h3><p></p>`; t.querySelector('h3').textContent=title; t.querySelector('p').textContent=text; e.appendChild(t); body.appendChild(e); };
   if (jTab==='story'){
     const box=document.createElement('div'); box.className='story'; body.appendChild(box);
+    { const h4=document.createElement('h4'); h4.textContent='The big questions'; box.appendChild(h4);
+      const bq=bigQuestions(); for (const [done,qq,a,shown] of bq){ if (!shown) continue; const p=document.createElement('p'); p.className='bq'+(done?' done':''); p.innerHTML='<span class="mk"></span><b></b> <span class="ans"></span>'; p.querySelector('.mk').textContent = done ? '✓' : '?'; p.querySelector('b').textContent=qq; p.querySelector('.ans').textContent = done ? a : 'Not solved yet.'; box.appendChild(p); }
+      if (bq.some(x=>!x[3])){ const p=document.createElement('p'); p.textContent='More questions will appear as you uncover the story.'; p.style.color='var(--dim)'; p.style.fontStyle='italic'; box.appendChild(p); } }
     for (const [h,lines] of storySoFar()){ const h4=document.createElement('h4'); h4.textContent=h; box.appendChild(h4); for (const l of lines){ const p=document.createElement('p'); p.textContent=l; box.appendChild(p);} }
     const n=document.createElement('p'); n.className='next'; n.textContent='What to do next: '+objective().t; box.appendChild(n);
     const tip=document.createElement('p'); tip.textContent = IS_TOUCH ? 'Tip: tap E next to people and sparkles. The ⌖ button shows the map.' : 'Tip: press E next to people and sparkles. Press M for the map, I for your items.'; tip.style.color='var(--dim)'; box.appendChild(tip);
@@ -3172,7 +3221,16 @@ function openModePick(){ $('#title').classList.remove('on'); $('#modepick').clas
 $('#mpStory').addEventListener('click', () => { SETTINGS.skipStory=false; saveSettings(); $('#modepick').classList.remove('on'); startNew(); });
 $('#mpAction').addEventListener('click', () => { SETTINGS.skipStory=true; saveSettings(); $('#modepick').classList.remove('on'); startNew(); });
 $('#mpBack').addEventListener('click', () => { $('#modepick').classList.remove('on'); mode='title'; refreshTitle(); $('#title').classList.add('on'); });
-function skipDialog(){ for (let i=0;i<400;i++){ if (mode!=='dialog' || D.choices) return; D.typing=false; next(); } }
+function skipDialog(){
+  // skip ahead, but stop on the gold Key point summary so players who skip still get the story
+  for (let i=0;i<400;i++){
+    if (mode!=='dialog' || D.choices) return;
+    if (dlg.classList.contains('keypt') && D.typing){ D.shown=D.full.length; dlg.querySelector('.line').textContent=D.full; D.typing=false; dlg.querySelector('.more').style.visibility='visible'; return; }
+    const nextLine = D.queue.find(x => typeof x!=='function');
+    D.typing=false; next();
+    if (nextLine && (nextLine.s==='key' || nextLine.s==='recap')){ D.shown=D.full.length; dlg.querySelector('.line').textContent=D.full; D.typing=false; dlg.querySelector('.more').style.visibility='visible'; return; }
+  }
+}
 function skipCut(){ if (mode!=='cut') return; $('#cut').classList.remove('on'); mode='play'; const d=CUT.done; CUT.done=null; if (d) d(); }
 $('#dSkip').addEventListener('click', e => { e.stopPropagation(); const first=!S0.skipped; S0.skipped=1; skipDialog(); if (first) toast('Skipped — the story is recommended!', 'Journal (J) → Story has a summary'); });
 $('#cSkip').addEventListener('click', e => { e.stopPropagation(); skipCut(); });
@@ -3539,6 +3597,7 @@ function talkMarlowe(){
     ]},
     {s:'marlowe', t:'Nell rang me too. She’s waiting by the canal bridge, south of the street. And mind yourself — the Ashen are thick tonight.'},
     () => { f.marlowe=1; },
+    {s:'key', t:'The police can only arrest Ashcombe with the ORIGINAL ledger — and it’s locked in his office safe. Find Nell Crane by the canal bridge.'},
   ]);
 }
 function talkNell(){
@@ -3554,6 +3613,7 @@ function talkNell(){
     {s:'nell', t:'Here — my key to the side door. The safe is in the basement archive. The combination is the date of the fire: 12, 06, 06.'},
     {s:'narr', t:'She presses a cold brass key into your hand.'},
     () => { f.nell=1; addClue('nell'); },
+    {s:'key', t:'Nell gave me the key to Ashcombe’s office and the safe code: 12 · 06 · 06 — the date of the fire. The office is at the east end of the street.'},
   ]);
 }
 function actOfficeDoor(){
@@ -4066,6 +4126,8 @@ function continueGame(){
   if ((F().ch3end || F().gameEnd) && chap()===3) return startChapter(4);
   if (F().ch2end && chap()===2) return startChapter(3);
   beginPlay(); showZone('Welcome back', PHASE_NAMES[F().phase]);
+  { const so=storySoFar(), cur=so.filter(x=>!x[0].startsWith('Side'))[so.filter(x=>!x[0].startsWith('Side')).length-1], last=cur ? cur[1][cur[1].length-1] : '';
+    if (last) setTimeout(() => { if (mode==='play') dialog([{s:'recap', t:'Last time: '+last}, {s:'key', t:'Next: '+objective().t+'.'}]); }, 900); }
 }
 $('#playBtn').addEventListener('click', () => { ensureAudio(); if (IS_TOUCH_DEVICE) enterFullscreen(); hasSave() ? continueGame() : startNew(); });
 $('#newBtn').addEventListener('click', () => {
@@ -4189,7 +4251,7 @@ setInterval(() => { if (mode==='play') save(); }, 8000);
   window.addEventListener('resize', () => { resize2(); initParticles(); });
   raf2 = requestAnimationFrame(frame2);
 })();
-window.__game = { sceneNPCs: () => sceneNPCs(), cam: () => ({x:Math.round(camX), y:Math.round(camY)}), npcs, nearestT: () => { const t=nearest(); return t ? t.label : null; }, SCN, IN: () => IN, enterScene, leaveScene, ACHS: () => ACHS, CH, scout, greta: () => talkGreta(), C: () => C, killAll: () => C.enemies.slice().forEach(killEnemy), attack: () => attack(), Music, SETTINGS, P, S0: () => S0, F, mode: () => mode, interact, advance, choose, D, objective, teleport:(tx,ty)=>{P.x=tx*T+8;P.y=ty*T+10;}, cutNext };
+window.__game = { bigQuestions: () => bigQuestions(), sceneNPCs: () => sceneNPCs(), cam: () => ({x:Math.round(camX), y:Math.round(camY)}), npcs, nearestT: () => { const t=nearest(); return t ? t.label : null; }, SCN, IN: () => IN, enterScene, leaveScene, ACHS: () => ACHS, CH, scout, greta: () => talkGreta(), C: () => C, killAll: () => C.enemies.slice().forEach(killEnemy), attack: () => attack(), Music, SETTINGS, P, S0: () => S0, F, mode: () => mode, interact, advance, choose, D, objective, teleport:(tx,ty)=>{P.x=tx*T+8;P.y=ty*T+10;}, cutNext };
 requestAnimationFrame(step);
 })();
 </script>

@@ -468,6 +468,55 @@
     .hgrid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 6px; padding: 8px 10px; } .hcard p { font-size: 16px; } .hcard h3 { font-size: 19px; }
     .mpcard { padding: 10px 12px; } .mpcard h3 { font-size: 24px; } .mpcard p { font-size: 16px; } #modepick h2 { margin-bottom: 8px; }
   }
+
+  /* hide-UI mode: only the game, touch controls and a small Show button */
+  #showUI { display: none; position: fixed; right: calc(12px + env(safe-area-inset-right, 0px)); top: calc(10px + env(safe-area-inset-top, 0px)); z-index: 3; font-size: 18px; padding: 3px 10px 5px; opacity: .8; }
+  body.playing.hideui #showUI { display: block; }
+  #topbtns .btn .sm.hidetxt { font-family: var(--body); font-size: 15px !important; letter-spacing: 0; }
+  body.hideui #hud, body.hideui #topbtns, body.hideui #mini, body.hideui #tut { display: none !important; }
+
+  /* nothing should hang off the screen */
+  #title { overflow-y: auto; justify-content: safe center; }
+  #settings .card, #pause .card, #ending .card, #cut .card { max-height: calc(100% - 16px); overflow-y: auto; }
+  .seg { flex-wrap: wrap; }
+  #dialog { max-height: calc(100% - 12px); overflow-y: auto; }
+
+  /* phones held upright */
+  @media (max-width: 560px) {
+    #title h1 { font-size: min(19vw, 15vh); }
+    #title .tag { font-size: 18px; margin-bottom: 12px; }
+    #install .it { font-size: 15px; }
+    #settings .card, #pause .card { padding: 14px 14px 16px; }
+    .srow { font-size: 19px; } .seg button { font-size: 17px; padding: 3px 7px; }
+    input[type=range] { width: 120px; }
+    #pause h2, #settings h2 { font-size: 34px; }
+  }
+
+  /* phones held sideways: compact goal box, controls kept clear */
+  @media (pointer: coarse) and (max-height: 520px) {
+    #hud { max-width: min(270px, 37%); padding: 5px 9px 6px; }
+    #hud .chap { font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    #hud .time { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    #hud .obj { font-size: 15px; line-height: 1.05; max-height: 3.2em; overflow: hidden; overflow-wrap: break-word; }
+    #hud .newobj { display: none !important; }
+    #hpRow { gap: 6px; margin-top: 4px; }
+    #lvlBox { font-size: 13px; } #lvlBox b { font-size: 15px; } .xpbar { width: 32px; } #shardLbl { font-size: 14px; }
+    #toast, #toast.show { top: calc(50px + env(safe-area-inset-top, 0px)); left: calc(min(270px, 37%) + 22px + env(safe-area-inset-left, 0px)); transform: none; max-width: calc(100% - min(270px, 37%) - 140px); text-align: center; padding: 4px 8px; }
+    #toast .val { font-size: 17px; } #toast .lbl { font-size: 12px; }
+    #tut, #tut.on { left: calc(146px + env(safe-area-inset-left, 0px)); right: calc(232px + env(safe-area-inset-right, 0px)); width: auto; min-width: 0; transform: none; bottom: calc(8px + env(safe-area-inset-bottom, 0px)); padding: 6px 10px; animation: none; }
+    #tut .t { font-size: 15px; line-height: 1.1; } #tut .s { display: none; } #tut .n { font-size: 20px; }
+    #prompt { bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
+    #dialog { width: auto; min-width: 0; left: calc(8px + env(safe-area-inset-left, 0px)); right: calc(8px + env(safe-area-inset-right, 0px)); transform: none; max-width: 760px; margin: 0 auto; }
+    #zone { font-size: 26px; }
+    .dskip { top: 4px; right: 6px; font-size: 15px; }
+    #dialog .who { padding-right: 70px; }
+    #showUI { font-size: 15px; }
+  }
+  @media (pointer: coarse) and (max-height: 520px) and (max-width: 760px) {
+    #topbtns { gap: 4px; } #topbtns .btn { width: 36px; height: 34px; } #topbtns .btn .sm { font-size: 18px; }
+    #mini { top: calc(48px + env(safe-area-inset-top, 0px)); width: 80px; height: 80px; }
+    #hud { max-width: min(250px, 36%); }
+  }
 </style>
 </head>
 <body>
@@ -482,6 +531,7 @@
   <div id="hpRow" style="display:none"><span id="lvlBox">Lv <b id="lvlN">1</b><span class="xpbar"><span id="xpFill"></span></span></span><canvas id="heartc" width="45" height="7"></canvas><span id="shardLbl"></span><button id="wpnBtn" aria-label="Switch weapon" title="Switch weapon (Q)"><canvas id="wpnIcon" width="16" height="16"></canvas></button></div>
 </div>
 <div id="topbtns">
+  <button class="btn" id="uiBtn" aria-label="Hide the on-screen UI" title="Hide UI (U)"><span class="lg">Hide UI</span><span class="sm hidetxt">Hide</span><span class="k">U</span></button>
   <button class="btn" id="mapBtn" aria-label="Map"><span class="lg">Map</span><span class="sm">⌖</span><span class="k">M</span></button>
   <button class="btn" id="jBtn" aria-label="Journal"><span class="lg">Journal</span><span class="sm">✎</span><span class="k">J</span></button>
   <button class="btn" id="invBtn" aria-label="Inventory"><span class="lg">Items</span><span class="sm">⬡</span><span class="k">I</span></button>
@@ -491,6 +541,7 @@
 </div>
 
 <div id="mini" class="panel" role="button" aria-label="Open map"><canvas id="minic" width="128" height="128"></canvas><div class="lbl">Map · M</div></div>
+<button id="showUI" class="btn" aria-label="Show the on-screen UI">Show UI</button>
 <div id="zone"></div>
 <div id="toast" class="panel"><div class="lbl"></div><div class="val"></div></div>
 <div id="bossbar"><div class="bn">The Cinder Warden</div><div class="track"><div class="fill"></div></div></div>
@@ -500,7 +551,7 @@
 <div id="dialog" class="panel">
   <canvas id="portrait" width="24" height="24"></canvas>
   <div class="txt">
-    <button id="dSkip" class="dskip" aria-label="Skip this conversation">Skip ⏭</button>
+    <button id="dSkip" class="dskip" aria-label="Skip this conversation" title="Skip this conversation (Esc). The story is recommended!">Skip ⏭</button>
     <div class="who"></div>
     <div class="line"></div>
     <div id="choices"></div>
@@ -607,7 +658,6 @@
     <div class="srow"><span>Text speed</span><div class="seg" id="setText"><button data-v="slow">Slow</button><button data-v="normal">Normal</button><button data-v="fast">Fast</button><button data-v="instant">Instant</button></div></div>
     <div class="srow"><span>Pixel size</span><div class="seg" id="setZoom"><button data-v="-1">Smaller</button><button data-v="0">Auto</button><button data-v="1">Larger</button></div></div>
     <div class="srow"><span>Objective marker</span><div class="seg" id="setMarker"><button data-v="1">On</button><button data-v="0">Off</button></div></div>
-    <div class="srow"><span>Story scenes</span><div class="seg" id="setStory"><button data-v="show">Show</button><button data-v="skip">Skip</button></div></div>
     <div class="srow"><span>Combat</span><div class="seg" id="setDiff"><button data-v="story">Story</button><button data-v="normal">Normal</button><button data-v="hard">Hard</button></div></div>
     <div class="srow"><span>Minimap</span><div class="seg" id="setMini"><button data-v="1">On</button><button data-v="0">Off</button></div></div>
     <div class="srow" id="resetRow"><span>Saved progress</span><button class="btn small danger" id="resetBtn">Erase save</button></div>
@@ -635,7 +685,8 @@
     <div class="hcard"><h3>Weapons</h3><p>Ashen drop <b>ember shards ✦</b>. <b>Greta the blacksmith</b>, south-east of the square, trades them for a sword, a bow and an axe. Dad’s lantern makes every hit stronger.</p></div>
     <div class="hcard"><h3>A pet</h3><p>A stray dog hides near the bridge, east of the village. Win him over with a <b>meat pie from June’s café</b> and he’ll fight the Ashen with you.</p></div>
     <div class="hcard"><h3>Menus</h3><p><span class="kb"><kbd>J</kbd> journal (story so far), <kbd>M</kbd> map, <kbd>I</kbd> items, <kbd>H</kbd> this help, <kbd>Esc</kbd> menu.</span><span class="tc">Buttons in the top-right: map, journal, items, full screen, sound, menu.</span></p></div>
-    <div class="hcard"><h3>Just want to play?</h3><p>Every conversation has a <b>Skip</b> button. You can also turn story scenes off in <b>Settings</b>. The journal keeps a short summary.</p></div>
+    <div class="hcard"><h3>Story mode (recommended)</h3><p>The Letter is a story game. Just want the action? Tap <b>Skip ⏭</b> on any conversation to jump ahead. Your goal box and the journal’s <b>Story</b> tab keep you on track.</p></div>
+    <div class="hcard"><h3>See more of the game</h3><p><span class="kb">Press <kbd>U</kbd> or</span> tap <b>Hide</b> to hide the goal box, buttons and minimap. Tap <b>Show UI</b> to bring them back.</p></div>
   </div></div></div>
 <div id="modepick" class="overlay">
   <h2>How do you want to play?</h2>
@@ -1297,6 +1348,7 @@ addEventListener('keydown', e => {
     if (e.code==='KeyQ') cycleWeapon();
     if (/^Digit[1-4]$/.test(e.code)) selectWeapon(+e.code.slice(5)-1);
     if (e.code==='KeyH') openHow('play');
+    if (e.code==='KeyU') toggleUI();
   }
 });
 addEventListener('keyup', e => { if (kmap[e.code]) keys[kmap[e.code]]=false; });
@@ -2981,17 +3033,22 @@ $('#mpAction').addEventListener('click', () => { SETTINGS.skipStory=true; saveSe
 $('#mpBack').addEventListener('click', () => { $('#modepick').classList.remove('on'); mode='title'; refreshTitle(); $('#title').classList.add('on'); });
 function skipDialog(){ for (let i=0;i<400;i++){ if (mode!=='dialog' || D.choices) return; D.typing=false; next(); } }
 function skipCut(){ if (mode!=='cut') return; $('#cut').classList.remove('on'); mode='play'; const d=CUT.done; CUT.done=null; if (d) d(); }
-$('#dSkip').addEventListener('click', e => { e.stopPropagation(); skipDialog(); });
+$('#dSkip').addEventListener('click', e => { e.stopPropagation(); const first=!S0.skipped; S0.skipped=1; skipDialog(); if (first) toast('Skipped — the story is recommended!', 'Journal (J) → Story has a summary'); });
 $('#cSkip').addEventListener('click', e => { e.stopPropagation(); skipCut(); });
 
 ETYPES.crawler.xp=3; ETYPES.wisp.xp=4; ETYPES.wolf.xp=8; ETYPES.warden.xp=60;
 let lastClock='';
+function applyHideUI(){ document.body.classList.toggle('hideui', !!SETTINGS.hideUI); }
+function toggleUI(){ SETTINGS.hideUI=!SETTINGS.hideUI; saveSettings(); applyHideUI(); }
+$('#uiBtn').addEventListener('click', () => { toggleUI(); $('#uiBtn').blur(); });
+$('#showUI').addEventListener('click', () => { toggleUI(); });
+applyHideUI();
 function drawArrows(cx,cy){ for (const a of (C.arrows||[])){ const x=Math.round(a.x-cx), y=Math.round(a.y-cy), dx=Math.sign(a.vx), dy=Math.sign(a.vy);
   for (let i=0;i<8;i++){ ctx.fillStyle = i<2 ? (a.fire?'#ffcf6a':'#dfe6f2') : i>5 ? '#efe3c8' : '#8a6240'; ctx.fillRect(x-dx*i, y-dy*i, 1, 1); } } }
 $('#howBtn').addEventListener('click', () => openHow('title'));
 $('#pHow').addEventListener('click', () => openHow('pause'));
 $('#wpnBtn').addEventListener('click', () => { if (mode==='play') cycleWeapon(); $('#wpnBtn').blur(); });
-document.querySelectorAll('#setStory button').forEach(b => b.addEventListener('click', () => { SETTINGS.skipStory = b.dataset.v==='skip'; saveSettings(); syncSettings(); }));
+SETTINGS.skipStory = false;   // the game is always story mode; players can still skip single conversations
 // ================= tutorial =================
 let tutT=0, tutMoved=0;
 const TUT = [
@@ -3247,10 +3304,10 @@ function continueGame(){
   if (F().ch2end && chap()===2) return startChapter(3);
   beginPlay(); showZone('Welcome back', PHASE_NAMES[F().phase]);
 }
-$('#playBtn').addEventListener('click', () => { ensureAudio(); if (IS_TOUCH_DEVICE) enterFullscreen(); hasSave() ? continueGame() : openModePick(); });
+$('#playBtn').addEventListener('click', () => { ensureAudio(); if (IS_TOUCH_DEVICE) enterFullscreen(); hasSave() ? continueGame() : startNew(); });
 $('#newBtn').addEventListener('click', () => {
   if (!newArmed){ newArmed=true; $('#newBtn').textContent='Erase save and start over?'; return; }
-  openModePick();
+  startNew();
 });
 $('#setBtn').addEventListener('click', () => openSettings('title'));
 
@@ -3276,7 +3333,7 @@ function syncSettings(){
   $('#setMusic').value=Math.round(SETTINGS.music*100); $('#oMusic').textContent=Math.round(SETTINGS.music*100);
   $('#setSfx').value=Math.round(SETTINGS.sfx*100); $('#oSfx').textContent=Math.round(SETTINGS.sfx*100);
   const seg=(id,v)=>document.querySelectorAll(id+' button').forEach(b=>b.classList.toggle('on', b.dataset.v===String(v)));
-  seg('#setText',SETTINGS.text); seg('#setZoom',SETTINGS.zoom); seg('#setMarker',SETTINGS.marker?1:0); seg('#setMini',SETTINGS.minimap?1:0); seg('#setDiff',SETTINGS.diff||'normal'); seg('#setStory', SETTINGS.skipStory?'skip':'show');
+  seg('#setText',SETTINGS.text); seg('#setZoom',SETTINGS.zoom); seg('#setMarker',SETTINGS.marker?1:0); seg('#setMini',SETTINGS.minimap?1:0); seg('#setDiff',SETTINGS.diff||'normal');
   $('#resetRow').style.display = settingsFrom==='title' && hasSave() ? '' : 'none';
   $('#resetBtn').textContent='Erase save'; $('#resetBtn').classList.remove('armed'); resetArmed=false;
 }

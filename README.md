@@ -38,7 +38,8 @@ Since the fire, ash creatures called **the Ashen** crawl out of the fields — *
 - **Pet:** a stray dog hides near the bridge. Win him over with a meat pie from June's café and **Scout** will fight the Ashen with you.
 - **Just for fun:** you can bonk the townsfolk too. They have opinions about it.
 - **Controls:** Space/K attack · Q or 1–4 switch weapon · H how to play. On phones: the attack button and ⇄.
-- **Story or action:** choose **Full story** or **Action mode** (skips story scenes) when you start. Every conversation also has a **Skip** button.
+- **Story mode (recommended):** The Letter is a story game. Just want the action? Every conversation has a **Skip ⏭** button, and the journal's Story tab keeps a summary.
+- **Hide UI:** press **U** or tap **Hide** to clear the goal box, buttons and minimap off the screen; tap **Show UI** to bring them back.
 - **Difficulty:** Story, Normal or Hard in Settings.
 ## Playing on a phone
 

@@ -45,6 +45,7 @@ Open `index.html` in any modern browser, or enable GitHub Pages for this reposit
 
 Since the fire, ash creatures called **the Ashen** crawl out of the fields — **but only at night**. A full day/night cycle runs in real time (about 11 minutes a day). The village and station are always safe and you heal there; sleep at June's café to skip to morning.
 
+- **Fighting animations:** see your stick, sword or axe sweep with a motion trail, draw and release the bow, feel each hit with a tiny hit-stop, damage numbers and sparks; enemies wind up, snap, swoop and lunge, flash when hit, and crumble into ash when defeated.
 - **Enemies:** Ash Crawlers, Ember Wisps, Shade Hounds (they lunge — dodge!), and the **Cinder Warden** boss.
 - **Levels:** defeating Ashen earns XP. Every level gives an extra heart and stronger hits.
 - **Weapons:** Walt gives you a walking stick. **Greta the blacksmith** trades ember shards ✦ for an **Iron sword** (fast), a **Hunting bow** (arrows) and a **Woodsman's axe** (wide, heavy swings). Dad's lantern makes every hit stronger.

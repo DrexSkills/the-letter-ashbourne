@@ -162,7 +162,7 @@ function renderScene(cx,cy,dt){
   if (sc.outdoor) for (const tr of sceneTrees(sc)) items.push({k:tr.y, d:()=>{ const s=roundTrees[tr.v]; ctx.drawImage(s, Math.round(tr.x-s.width/2-cx), Math.round(tr.y-s.height+3-cy)); }});
   for (const n of sceneNPCs()) items.push({k:n.y, d:()=>drawCharAt(ctx, n.x-cx+Math.round(n.bx||0), n.y-cy+Math.round(n.by||0), n.dir, 0, CH[n.id], n.id==='elias' && sc.outdoor)});
   const frame = P.moving ? [0,1,0,3][Math.floor(P.anim)%4] : 0;
-  if (!(C.invul>0 && Math.floor(time*16)%2)) items.push({k:P.y, d:()=>drawCharAt(ctx, P.x-cx, P.y-cy, P.dir, frame, CH.noah, F().lantern && sc.outdoor)});
+  if (!(C.invul>0 && Math.floor(time*16)%2)) items.push({k:P.y, d:()=>drawPlayerSprite(ctx, P.x-cx, P.y-cy, frame, F().lantern && sc.outdoor)});
   pushCombatItems(items,cx,cy);
   items.sort((a,b)=>a.k-b.k); for (const it of items) it.d();
   drawSwing(cx,cy);

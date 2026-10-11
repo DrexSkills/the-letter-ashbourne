@@ -29,7 +29,8 @@ function step(now){
   if (mode!=='title'){ const ct=clockText() + (F().lantern && LOOK()===2 ? ' · lantern lit' : ''); if (ct!==lastClock){ lastClock=ct; $('#timeLbl').textContent=ct; } }
   Music.setMood(mode==='title' ? 'title' : forestF>.5 ? 'forest' : ['day','dusk','night','dawn'][LOOK()]);
 
-  if (mode==='play'){
+  if (mode==='play' && C.hitstop>0){ C.hitstop-=dt; updateFX(0); }
+  else if (mode==='play'){
     let dx=0, dy=0; if(keys.left)dx--; if(keys.right)dx++; if(keys.up)dy--; if(keys.down)dy++;
     let run = !!keys.run;
     const jm = Math.hypot(joy.x, joy.y);
@@ -118,7 +119,7 @@ function render(cx,cy,dt){
     items.push({k:n.y, d:()=>drawCharAt(ctx, n.x-cx+Math.round(n.bx||0), n.y-cy+Math.round(n.by||0)+(reduceMotion?0:(Math.sin(time*2+n.x)>.95?-1:0)), n.dir, n.walking ? [0,1,0,3][Math.floor(time*7)%4] : 0, CH[n.id])}); }
   if (!F().catHome || true) items.push({k:cat.y, d:()=>drawCat(Math.round(cat.x-cx), Math.round(cat.y-cy))});
   const frame = P.moving ? [0,1,0,3][Math.floor(P.anim)%4] : 0;
-  if (mode!=='title' && !(C.invul>0 && Math.floor(time*16)%2)) items.push({k:P.y, d:()=>drawCharAt(ctx, P.x-cx, P.y-cy, P.dir, frame, CH.noah, F().lantern)});
+  if (mode!=='title' && !(C.invul>0 && Math.floor(time*16)%2)) items.push({k:P.y, d:()=>drawPlayerSprite(ctx, P.x-cx, P.y-cy, frame, F().lantern)});
   if (mode!=='title') pushCombatItems(items, cx, cy);
   items.sort((a,b)=>a.k-b.k);
   for (const it of items) it.d();

@@ -28,17 +28,18 @@ Open `index.html` in any modern browser, or enable GitHub Pages for this reposit
 | Journal | J | Journal button |
 | Pause menu | Esc or P | Menu button |
 
-## Combat — the Ashen
+## Combat, levels & night
 
-Since the fire, ash creatures crawl out of Ashbourne's fields and woods. The village and the station are always safe (and you heal there); everywhere else, especially after dark, you'll need to fight.
+Since the fire, ash creatures called **the Ashen** crawl out of the fields — **but only at night**. A full day/night cycle runs in real time (about 11 minutes a day). The village and station are always safe and you heal there; sleep at June's café to skip to morning.
 
-- **Ash Crawlers** (fast and weak), **Ember Wisps** (floating sparks), **Shade Hounds** (they crouch, then lunge — dodge!)
-- Boss: **The Cinder Warden**, guarding the engine shed. Watch for the red circle before it slams.
-- Walt gives you a walking stick; Dad's lantern makes every hit count double.
-- Defeated Ashen drop ember shards ✦ — every 10 shards adds a heart.
-- Attack: **Space / K** on keyboard, **⚔** on phones. **E** still talks and examines.
-- Choose **Story**, **Normal** or **Hard** combat in Settings.
-
+- **Enemies:** Ash Crawlers, Ember Wisps, Shade Hounds (they lunge — dodge!), and the **Cinder Warden** boss.
+- **Levels:** defeating Ashen earns XP. Every level gives an extra heart and stronger hits.
+- **Weapons:** Walt gives you a walking stick. **Greta the blacksmith** trades ember shards ✦ for an **Iron sword** (fast), a **Hunting bow** (arrows) and a **Woodsman's axe** (wide, heavy swings). Dad's lantern makes every hit stronger.
+- **Pet:** a stray dog hides near the bridge. Win him over with a meat pie from June's café and **Scout** will fight the Ashen with you.
+- **Just for fun:** you can bonk the townsfolk too. They have opinions about it.
+- **Controls:** Space/K attack · Q or 1–4 switch weapon · H how to play. On phones: the attack button and ⇄.
+- **Story or action:** choose **Full story** or **Action mode** (skips story scenes) when you start. Every conversation also has a **Skip** button.
+- **Difficulty:** Story, Normal or Hard in Settings.
 ## Playing on a phone
 
 - Turn your phone sideways — the game is laid out for landscape and zooms in for small screens.

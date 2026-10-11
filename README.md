@@ -28,6 +28,17 @@ Open `index.html` in any modern browser, or enable GitHub Pages for this reposit
 | Journal | J | Journal button |
 | Pause menu | Esc or P | Menu button |
 
+## Combat — the Ashen
+
+Since the fire, ash creatures crawl out of Ashbourne's fields and woods. The village and the station are always safe (and you heal there); everywhere else, especially after dark, you'll need to fight.
+
+- **Ash Crawlers** (fast and weak), **Ember Wisps** (floating sparks), **Shade Hounds** (they crouch, then lunge — dodge!)
+- Boss: **The Cinder Warden**, guarding the engine shed. Watch for the red circle before it slams.
+- Walt gives you a walking stick; Dad's lantern makes every hit count double.
+- Defeated Ashen drop ember shards ✦ — every 10 shards adds a heart.
+- Attack: **Space / K** on keyboard, **⚔** on phones. **E** still talks and examines.
+- Choose **Story**, **Normal** or **Hard** combat in Settings.
+
 ## Playing on a phone
 
 - Turn your phone sideways — the game is laid out for landscape and zooms in for small screens.

@@ -385,10 +385,10 @@
     #portrait { width: 56px; height: 56px; }
     #dialog .who { font-size: 21px; margin-bottom: 2px; } #dialog .line { font-size: 19px; min-height: 40px; }
     #choices { gap: 4px; margin-top: 4px; } #choices button { font-size: 18px; padding: 3px 8px; }
-    #tut, #tut.on { bottom: calc(10px + env(safe-area-inset-bottom, 0px)); width: min(470px, calc(100% - 330px)); min-width: 280px; padding: 7px 12px; }
+    #tut, #tut.on { bottom: calc(10px + env(safe-area-inset-bottom, 0px)); width: min(440px, calc(100% - 470px)); min-width: 250px; padding: 7px 12px; }
     #tut .t { font-size: 17px; } #tut .s { font-size: 13px; } #tut .n { font-size: 24px; }
     #prompt { bottom: calc(14px + env(safe-area-inset-bottom, 0px)); font-size: 18px; }
-    #toast, #toast.show { top: calc(122px + env(safe-area-inset-top, 0px)); left: calc(12px + env(safe-area-inset-left, 0px)); transform: none; max-width: min(300px, 38%); text-align: left; padding: 5px 10px; }
+    #toast, #toast.show { top: calc(174px + env(safe-area-inset-top, 0px)); left: calc(12px + env(safe-area-inset-left, 0px)); transform: none; max-width: min(300px, 38%); text-align: left; padding: 5px 10px; }
     #toast .val { font-size: 20px; } #toast .lbl { font-size: 13px; }
     #zone { font-size: 30px; top: calc(26% + env(safe-area-inset-top, 0px)); }
     #title { justify-content: center; padding-top: 6px; padding-bottom: 6px; }
@@ -412,6 +412,19 @@
   #settings { z-index: 12; }
   #rotate { z-index: 30; }
   body.inmenu #touch { display: none !important; }
+
+  /* combat HUD */
+  #hpRow { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
+  #heartc { image-rendering: pixelated; height: 14px; }
+  #shardLbl { color: var(--amber); font-size: 17px; }
+  #bossbar { position: fixed; left: 50%; bottom: calc(112px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); width: min(420px, 60%); display: none; text-align: center; z-index: 3; pointer-events: none; }
+  #bossbar.on { display: block; }
+  #bossbar .bn { font-family: var(--display); font-size: 24px; color: #ffcf6a; text-shadow: 2px 2px 0 #070a12; line-height: 1; margin-bottom: 4px; }
+  #bossbar .track { height: 12px; background: #1a0f12; border: 3px solid #070a12; box-shadow: 0 0 0 2px #6b2a2a; }
+  #bossbar .fill { height: 100%; width: 100%; background: linear-gradient(#ff8a4a, #c94a2a); transition: width .15s; }
+  .act button.atk { background: rgba(120,30,30,.75); border-color: #c94a2a; font-size: 28px; }
+  .act button.atk.on { background: rgba(232,118,58,.6); }
+  @media (pointer: coarse) and (max-height: 520px) { #bossbar { bottom: auto; top: calc(8px + env(safe-area-inset-top, 0px)); width: min(340px, 40%); } #bossbar .bn { font-size: 19px; } }
 </style>
 </head>
 <body>
@@ -423,6 +436,7 @@
   <div class="time" id="timeLbl">Late afternoon</div>
   <div class="obj" id="objLbl"></div>
   <div class="newobj">New objective</div>
+  <div id="hpRow" style="display:none"><canvas id="heartc" width="45" height="7"></canvas><span id="shardLbl"></span></div>
 </div>
 <div id="topbtns">
   <button class="btn" id="mapBtn" aria-label="Map"><span class="lg">Map</span><span class="sm">⌖</span><span class="k">M</span></button>
@@ -436,6 +450,7 @@
 <div id="mini" class="panel" role="button" aria-label="Open map"><canvas id="minic" width="128" height="128"></canvas><div class="lbl">Map · M</div></div>
 <div id="zone"></div>
 <div id="toast" class="panel"><div class="lbl"></div><div class="val"></div></div>
+<div id="bossbar"><div class="bn">The Cinder Warden</div><div class="track"><div class="fill"></div></div></div>
 <div id="tut" class="panel"><div class="n">?</div><div><div class="t"></div><div class="s"></div></div></div>
 <div id="prompt" class="panel"><b>E</b> <span></span></div>
 
@@ -455,6 +470,7 @@
   <div class="act">
     <button class="small" data-k="run" aria-label="Run">Run</button>
     <button data-k="act" aria-label="Talk or examine">E</button>
+    <button data-k="atk" class="atk" aria-label="Attack">⚔</button>
   </div>
 </div>
 
@@ -543,6 +559,7 @@
     <div class="srow"><span>Text speed</span><div class="seg" id="setText"><button data-v="slow">Slow</button><button data-v="normal">Normal</button><button data-v="fast">Fast</button><button data-v="instant">Instant</button></div></div>
     <div class="srow"><span>Pixel size</span><div class="seg" id="setZoom"><button data-v="-1">Smaller</button><button data-v="0">Auto</button><button data-v="1">Larger</button></div></div>
     <div class="srow"><span>Objective marker</span><div class="seg" id="setMarker"><button data-v="1">On</button><button data-v="0">Off</button></div></div>
+    <div class="srow"><span>Combat</span><div class="seg" id="setDiff"><button data-v="story">Story</button><button data-v="normal">Normal</button><button data-v="hard">Hard</button></div></div>
     <div class="srow"><span>Minimap</span><div class="seg" id="setMini"><button data-v="1">On</button><button data-v="0">Off</button></div></div>
     <div class="srow" id="resetRow"><span>Saved progress</span><button class="btn small danger" id="resetBtn">Erase save</button></div>
     <div class="row"><button class="btn" id="setBack">Back</button></div>
@@ -601,7 +618,7 @@ rect(59,27,2,3,PATH); rect(48,18,11,1,PATH); rect(41,17,5,1,PATH); rect(48,11,3,
 rect(25,32,2,7,PATH); rect(21,38,6,1,PATH); rect(21,39,2,1,PATH);   // Hollow Farm lane
 rect(12,41,17,12,FIELD);
 rect(81,15,2,9,PATH); rect(81,15,5,1,PATH);   // track-side path to the engine shed
-rect(79,11,10,3,PATH);                         // shed yard
+rect(79,9,10,5,PATH);                          // shed yard (boss arena)
 
 // forest trail
 const trail = [[30,29],[30,22],[25,22],[25,17],[28,17],[28,12],[20,12],[20,9],[14,9],[14,15],[9,15],[9,10],[7,10],[7,8]];
@@ -629,7 +646,7 @@ const houses = [
   { id:'farm',     x:19, y:34, w:6, h:4, roof:'#7a3a2a', wall:'#c4a782', barn:true },
   { id:'station',  x:83, y:19, w:7, h:5, roof:'#2f5d63', wall:'#a8644a', brick:true, station:true },
   { id:'workshop', x:4,  y:3,  w:7, h:5, workshop:true },
-  { id:'shed', x:80, y:5, w:8, h:6, shed:true, roof:'#2a2624', wall:'#5a4038' },
+  { id:'shed', x:80, y:4, w:8, h:5, shed:true, roof:'#2a2624', wall:'#5a4038' },
 ];
 for (const h of houses){ for (let y=h.y;y<h.y+h.h;y++) for (let x=h.x;x<h.x+h.w;x++){ solid[y*W+x]=1; if(at(x,y)!==PATH) set(x,y,GRASS);} reserveRect(h.x-1,h.y-1,h.w+2,h.h+3); }
 function reserveRect(x0,y0,w,h){ for(let y=y0;y<y0+h;y++)for(let x=x0;x<x0+w;x++) if(x>=0&&y>=0&&x<W&&y<H) reserved[y*W+x]=1; }
@@ -956,7 +973,7 @@ function drawPortrait(g, c){
 }
 
 // ================= state =================
-const NEW_STATE = () => ({ f:{ phase:0, chap:1 }, clues:[], mems:[], met:[], x:86*T+8, y:30*T+10, dir:'left', tut:1, dlgCount:0 });
+const NEW_STATE = () => ({ f:{ phase:0, chap:1 }, clues:[], mems:[], met:[], x:86*T+8, y:30*T+10, dir:'left', tut:1, dlgCount:0, hp:10, maxhp:10, shards:0 });
 let S0 = NEW_STATE();
 const F = () => S0.f;
 const chap = () => F().chap || 1;
@@ -1044,7 +1061,7 @@ const objects = [
   { id:'waitBench', x:87, y:34, label:'Sit and wait for Dad', when: () => chap()===2 && !F().note, act: actWait },
   { id:'shedGate', x:83, y:14, label:'Engine shed gate', when: () => chap()>=2, act: actGate },
   { id:'culvert', x:78, y:9, label:'Rusty grate', when: () => chap()>=2 && !F().culvert, act: actGrate },
-  { id:'pit', x:83, y:10, label:'Climb into the engine shed', when: () => chap()>=2 && F().culvert, act: actPit },
+  { id:'pit', x:83, y:8, label:'Climb into the engine shed', when: () => chap()>=2 && F().culvert && F().bossDown, act: actPit },
   { id:'postbox', x:62, y:27, label:'Post box', act: () => dialog([{s:'narr', t:'A red pillar box. Last collection 5:30 pm. Someone has polished the brass plate until it shines.'}]) },
   { id:'m_ticket', x:84, y:34, mem:'ticket', label:'Look under the bench' },
   { id:'m_stones', x:riverX(52)-2, y:52, mem:'stones', label:'Flat stones' },
@@ -1174,7 +1191,7 @@ for (const ev of ['pointerup','pointercancel','lostpointercapture']) jz.addEvent
 // ================= input =================
 const keys = {};
 let mode = 'title';
-const kmap = { ArrowUp:'up', KeyW:'up', ArrowDown:'down', KeyS:'down', ArrowLeft:'left', KeyA:'left', ArrowRight:'right', KeyD:'right', ShiftLeft:'run', ShiftRight:'run' };
+const kmap = { Space:'atk', KeyK:'atk', ArrowUp:'up', KeyW:'up', ArrowDown:'down', KeyS:'down', ArrowLeft:'left', KeyA:'left', ArrowRight:'right', KeyD:'right', ShiftLeft:'run', ShiftRight:'run' };
 addEventListener('keydown', e => {
   if (kmap[e.code]) { keys[kmap[e.code]]=true; if (mode!=='title') e.preventDefault(); }
   if (e.repeat) return;
@@ -1196,7 +1213,8 @@ addEventListener('keydown', e => {
   if (mode==='map'){ if (e.code==='KeyM') closeMap(); return; }
   if (mode==='inv'){ if (e.code==='KeyI'||e.code==='Escape') closeInv(); return; }
   if (mode==='play'){
-    if (act){ interact(); e.preventDefault(); }
+    if (act && e.code!=='Space'){ interact(); e.preventDefault(); }
+    if (e.code==='Space'){ e.preventDefault(); if (!canFight()) interact(); }
     if (e.code==='KeyJ') openJournal();
     if (e.code==='KeyM') openMap();
     if (e.code==='KeyI') openInv();
@@ -1208,7 +1226,7 @@ document.querySelectorAll('#touch button').forEach(b => {
   const k=b.dataset.k;
   const on = e => { e.preventDefault(); b.classList.add('on');
     if (k==='act'){ if (mode==='dialog'){ if (!D.choices) advance(); } else if (mode==='cut') cutNext(); else if (mode==='card') closeCard(); else if (mode==='play') interact(); }
-    else keys[k]=true; };
+    else { keys[k]=true; if (k==='atk' && mode==='play') attack(); } };
   const off = e => { e.preventDefault(); b.classList.remove('on'); if (k!=='act') keys[k]=false; };
   b.addEventListener('pointerdown',on); b.addEventListener('pointerup',off); b.addEventListener('pointercancel',off); b.addEventListener('pointerleave',off);
 });
@@ -1217,7 +1235,7 @@ $('#cut').addEventListener('click', () => { if (mode==='cut') cutNext(); });
 
 // ================= settings =================
 const SET_KEY = 'the-letter-settings-v1';
-const SETTINGS = Object.assign({ music:.6, sfx:.7, text:'normal', zoom:0, marker:true, minimap:true, muted:false }, (() => { try { return JSON.parse(localStorage.getItem(SET_KEY))||{}; } catch(e){ return {}; } })());
+const SETTINGS = Object.assign({ music:.6, sfx:.7, text:'normal', zoom:0, marker:true, minimap:true, diff:'normal', muted:false }, (() => { try { return JSON.parse(localStorage.getItem(SET_KEY))||{}; } catch(e){ return {}; } })());
 const saveSettings = () => { try { localStorage.setItem(SET_KEY, JSON.stringify(SETTINGS)); } catch(e){} };
 const TEXT_CPS = { slow:30, normal:58, fast:120, instant:1e6 };
 
@@ -1432,7 +1450,11 @@ function talkWalt(){
           {s:'walt', t:'You want Hale’s bookshop. West, over the bridge, purple roof. He does more talking than me.'},
           {s:'noah', t:'(The letter said not to tell anyone why I came. Too late for Walt.)'} ]},
       ]},
-      () => { F().walt=1; },
+      {s:'walt', t:'One more thing, lad. Take this.'},
+      {s:'narr', t:'He hands you a heavy walking stick, worn smooth at the grip.'},
+      {s:'walt', t:'Since the fire, things crawl up out of the ash once you leave the village. The Ashen, we call ’em. A good whack sends ’em back to dust.'},
+      {s:'walt', t:'Town and station are safe — they won’t follow you in. Out in the fields and the woods, you’re on your own.'},
+      () => { F().walt=1; F().stick=1; toast('New item — open items (I)', 'Walking stick'); chime(); refreshHearts(); },
     ]);
   } else if (F().end){
     dialog([{s:'walt', t: F().toldWalt ? 'Someone was asking after you, lad. Didn’t give a name. Thought you should know.' : 'Dawn train’s at six. Platform’s quiet that early. Too quiet, some say.'}]);
@@ -1574,6 +1596,7 @@ function tomConfess(){
     ]},
     {s:'narr', t:'He goes inside and comes back with a dented brass lantern. He lights it for you with hands that won’t quite stop shaking.'},
     {s:'tom', t:'Ashwood trail starts north of the road, west of the village. Keep left. He always kept left.'},
+    {s:'tom', t:'And Noah — the Ashen hate this light. Swing it at ’em and they burn twice as fast. Your father learned that the hard way.'},
     () => { F().lantern=1; addClue('lantern'); setPhase(2); },
   ];
 }
@@ -1674,6 +1697,7 @@ function actWatch(){
   ]);
 }
 function actDoor(){
+  if (F().key && F().lantern && !F().wsDone && !F().end){ dialog([{s:'noah', t:'(Not with those things circling. I have to deal with the Ashen first.)'}]); return; }
   if (!F().key){ dialog([{s:'noah', t:'Locked. The lock is new — newer than the door.'}]); return; }
   if (F().end){ dialog([{s:'noah', t:'The workbench, the letter, the dust. Dawn can’t come fast enough.'}]); return; }
   dialog([{s:'noah', t:'The key fits. It turns like it’s been oiled recently.'}], () => runEnding());
@@ -1767,7 +1791,7 @@ function talkWalt2(){
       {t:'Tell Silas. He deserves to hear it from you.', then:[ () => { F().waltChoice='silas'; }, {s:'walt', t:'…God help me. All right. Then the police. In that order.'} ]},
       {t:'I don’t know what to do with you, Walt.', then:[ () => { F().waltChoice='unsure'; }, {s:'walt', t:'Neither do I, lad. Neither do I. I’ll start with the truth and see where it gets me.'} ]},
     ]},
-    () => { f.confess=1; f.eliasHere=1; addClue('confession'); },
+    () => { f.confess=1; addClue('confession'); },
     {s:'noah', t:'(The end of the platform. He’s here.)'},
   ]);
 }
@@ -1942,10 +1966,13 @@ function runFinale(){
   pages.push({html:true, t:'Mara’s ledger reached the county council two weeks later. *The sale of the branch line was reopened, and Ashcombe Holdings’ offices in Harlow Cross were searched.*'});
   pages.push({html:true, t: (f.gaveWatch || f.kindSilas) ? 'Silas Voss stopped walking Ashwood at night. *Some mornings, he and your father leave the flowers at Mara’s grave together.*' : 'Silas never quite forgave your father. *But he stopped calling him a murderer, and in Ashbourne that counts for a great deal.*'});
   pages.push({html:true, t:'Tom Barrow testified at the inquiry. Edmund Hale finally sold a book — a history of the branch line, written by Clara Wynn.' + (f.catHome ? ' *Biscuit the cat attended every hearing from June’s windowsill.*' : '')});
+  pages.push({html:true, t:'That winter, the Ashen stopped crawling out of the fields. *Some say the land had been waiting for the truth, too.*'});
   pages.push({html:true, t:'*Some letters take twenty years to arrive.*\n\nThe End.'});
   cutscene(pages, () => { save(); showEnding(3); });
 }
 
+function resetCombat(){ C.enemies=[]; C.pickups=[]; C.fx=[]; C.texts=[]; C.wave=null; C.pkx=C.pky=0; C.lastSafe={x:86*T+8,y:30*T+10}; hpInit(); $('#bossbar').classList.remove('on'); refreshHearts();
+  const f=F(); if (f.wsWave && !f.wsDone) f.wsWave=0; if (f.bossStarted && !f.bossDown) f.bossStarted=0; if (f.pfStarted && !f.pfDone) f.pfStarted=0; }
 function applyWorldState(){
   solid[9*W+78] = F().culvert ? 0 : 1;
   const sp = SILAS_POS[chap()>=2 ? 1 : 0], si = npcs.find(n=>n.id==='silas'); si.x=sp.x; si.y=sp.y; si.home = chap()>=2 ? 'down' : 'right';
@@ -1962,7 +1989,7 @@ function closeCard(){ if (mode!=='card') return; $('#chapcard').classList.remove
 $('#chapcard').addEventListener('click', closeCard);
 function startChapter(n){
   $('#ending').classList.remove('on'); S0.tut=0; $('#tut').classList.remove('on');
-  F().chap=n; applyWorldState();
+  F().chap=n; applyWorldState(); resetCombat(); S0.hp=S0.maxhp; refreshHearts();
   if (n===2){
     F().phase=3; P.x=86*T+8; P.y=35*T+10; P.dir='up'; camX=P.x-VW/2; camY=P.y-VH/2;
     beginPlay(); refreshHUD(); save();
@@ -2034,7 +2061,7 @@ Come to the old platform at dawn. I will be there.
 function startNew(){
   S0 = NEW_STATE(); S0.tut=0; P.x=S0.x; P.y=S0.y; P.dir=S0.dir; cat.follow=false; cat.x=78*T; cat.y=47*T; cat.tx=cat.x; cat.ty=cat.y;
   try { localStorage.removeItem(SAVE_KEY); } catch(e){}
-  applyWorldState(); lastObj='';
+  applyWorldState(); resetCombat(); lastObj='';
   $('#title').classList.remove('on');
   cutscene([
     {html:true, t:'You are *Noah Vale*, 22.\n\nWhen you were six, your father *Elias* disappeared. Everyone said he ran away after a fire in a small town called Ashbourne.'},
@@ -2105,6 +2132,7 @@ function objective(){
       return { t:'Find the carved fence post at Hollow Farm (east fence, south of the road)', at:{x:29*T+8,y:46*T+6} };
     }
     if (!f.lantern) return { t:'Get Dad’s lantern from Tom Barrow at Hollow Farm', at:N('tom') };
+    if (f.wsWave && !f.wsDone) return { t:'Fight off the Ashen around the workshop!', at:null };
     if (!f.end) return { t:'Follow the forest trail north to Dad’s workshop — keep left', at: P.y>27*T ? {x:30*T+16,y:28*T} : {x:7*T+8,y:8*T} };
     return { t:'Continue to Chapter Two', at:null };
   }
@@ -2113,17 +2141,20 @@ function objective(){
     if (!f.ash1) return { t:'Find the old engine shed — north of the station, along the tracks', at:N('ashcombe') };
     if (!f.culvertKnown) return { t:'Find another way into the shed yard — ask Silas at Mara’s grave', at:N('silas') };
     if (!f.culvert) return { t:'Open the rusty grate under the shed yard’s west fence (by the river)', at:{x:78*T+8,y:9*T-4} };
-    if (!has('ledger')) return { t:'Search the engine shed’s inspection pit for the ledger', at:{x:83*T+8,y:10*T} };
+    if (!f.bossDown) return { t: f.bossStarted ? 'Defeat the Cinder Warden!' : 'Slip through the culvert into the shed yard', at: f.bossStarted ? null : {x:81*T+8,y:11*T} };
+    if (!has('ledger')) return { t:'Search the engine shed’s inspection pit for the ledger', at:{x:83*T+8,y:8*T} };
     return { t:'Continue to Chapter Three', at:null };
   }
   if (!f.wp) return { t:'Ask Clara who “W.P.” was — she has the 2006 railway staff records', at:N('clara') };
   if (!f.confess) return { t:'Confront Walt at the station' + (f.letters ? '' : ' (Rosa at the post office may know more)'), at:N('walt') };
+  if (!f.pfDone) return { t:'Defend the platform from the Ashen!', at:null };
   if (!f.gameEnd) return { t:'Meet your father at the far end of the platform', at:N('elias') };
   return { t:'The story is complete. Explore Ashbourne freely', at:null };
 }
 function npcPos(id){ const n=npcs.find(n=>n.id===id); return {x:n.x,y:n.y-28}; }
 let lastObj='';
 function refreshHUD(){
+  try { refreshHearts(); } catch(e){}
   const o=objective(); $('#objLbl').textContent=o.t; $('#jObj').textContent=o.t;
   $('#timeLbl').textContent=PHASE_NAMES[F().phase] + (F().lantern && LOOK()===2 ? ' · lantern lit' : '');
   $('#chapLbl').textContent = ['','Chapter One · The Letter','Chapter Two · The Ledger','Chapter Three · Keeping Left'][chap()];
@@ -2194,10 +2225,11 @@ function renderJournal(){
 
 // ================= inventory =================
 const ITEMS = {
+  stick:   { name:"Walking stick", key:true, src:'flag', desc:"From Walt. Heavy and worn smooth. Swing it at the Ashen — Space or K on a keyboard, ⚔ on a phone." },
   letter:  { name:"Dad’s letter",       key:false, src:'clue', desc:"The letter that started everything. Elias Vale’s handwriting — the first thing he’s ever sent you." },
   photo:   { name:"Photograph",          key:false, src:'clue', desc:"Your father, spring 2009. On the back: Ashbourne. Three years after he disappeared." },
   key:     { name:"Brass key",           key:true,  src:'clue', desc:"Heavy, warm. From Edmund Hale. Opens your father’s workshop beyond Ashwood forest." },
-  lantern: { name:"Dad’s lantern",       key:true,  src:'clue', desc:"A dented brass lantern Tom Barrow kept for twenty years. You’ll need it in Ashwood." },
+  lantern: { name:"Dad’s lantern",       key:true,  src:'clue', desc:"A dented brass lantern Tom Barrow kept for twenty years. Lights Ashwood — and your swings hit the Ashen twice as hard." },
   watch:   { name:"Mara’s pocket watch", key:false, src:'clue', desc:"Stopped at 2:14. Engraved: ‘E — keep time for me. M.’ Found half-buried in forest moss." },
   postcard:{ name:"Postcard, 2009",      key:false, src:'clue', desc:"Postmarked Harlow Cross. ‘Still keeping left. — E.’ He was alive and writing to Ashbourne." },
   ticket:  { name:"Train ticket stub",   key:false, src:'mem',  desc:"Ashbourne → City, single, 13 June 2006. One way. The night before the fire." },
@@ -2206,6 +2238,7 @@ const ITEMS = {
 function drawItemIcon(ctx, id){
   const g = ctx; const W=32, H=32;
   g.clearRect(0,0,W,H);
+  if (id==='stick'){ for (let i=0;i<20;i++){ g.fillStyle=i%5===0?'#5a3d26':'#8a6240'; g.fillRect(7+i,25-i,3,3); } g.fillStyle='#6b4a2f'; g.fillRect(24,4,6,6); g.fillStyle='#a77d55'; g.fillRect(25,5,3,2); return; }
   if (id==='letter'){
     g.fillStyle='#e9dcbc'; g.fillRect(4,8,24,18);
     g.fillStyle='#c4a96e'; g.fillRect(4,8,24,1); g.fillRect(4,25,24,1); g.fillRect(4,8,1,18); g.fillRect(27,8,1,18);
@@ -2260,7 +2293,7 @@ function drawItemIcon(ctx, id){
   }
 }
 
-function invHas(id){ const it=ITEMS[id]; if (!it) return false; return it.src==='clue' ? S0.clues.includes(id) : S0.mems.includes(id); }
+function invHas(id){ const it=ITEMS[id]; if (!it) return false; if (it.src==='flag') return !!F()[id]; return it.src==='clue' ? S0.clues.includes(id) : S0.mems.includes(id); }
 
 function openInv(){ mode='inv'; $('#inv').classList.add('on'); renderInv(); for (const k in keys) keys[k]=false; }
 function closeInv(){ $('#inv').classList.remove('on'); mode='play'; }
@@ -2402,14 +2435,278 @@ showInstallTip();
 if (IS_TOUCH_DEVICE) { const h=$('#soundHint'); if (h) h.textContent='♪ Tap anywhere to turn on the music'; }
 if ('serviceWorker' in navigator && location.protocol==='https:' && /github\.io$/.test(location.hostname)) { navigator.serviceWorker.register('sw.js').catch(()=>{}); }
 
+// ================= combat: the Ashen =================
+// Since the fire, ash creatures ("the Ashen") crawl out of the fields and woods.
+// The village and the station are safe; everywhere else they roam, more after dark.
+const ETYPES = {
+  crawler: { name:'Ash crawler', hp:1,  speed:48, r:6,  dmg:2, aggro:105, shards:1 },
+  wisp:    { name:'Ember wisp',  hp:2,  speed:30, r:6,  dmg:2, aggro:135, shards:1, fly:true },
+  wolf:    { name:'Shade hound', hp:4,  speed:40, r:8,  dmg:3, aggro:150, shards:3, lunge:true },
+  warden:  { name:'The Cinder Warden', hp:22, speed:17, r:14, dmg:4, aggro:999, shards:15, boss:true },
+};
+const SAFE = [[34,5,65,47],[79,16,91,38],[17,32,29,40]];
+const inSafe = (tx,ty) => SAFE.some(([a,b,c,d]) => tx>=a && tx<c && ty>=b && ty<d);
+const C = { enemies:[], fx:[], texts:[], pickups:[], cd:0, swing:0, invul:0, flash:0, shake:0, spawnT:0, regenT:0, wave:null, swings:0, lastSafe:{x:86*T+8,y:30*T+10} };
+const canFight = () => !!F().stick || chap()>=2;
+const DIFF = () => ({ story:{dmg:.5, cap:.6}, normal:{dmg:1, cap:1}, hard:{dmg:1.5, cap:1.4} })[SETTINGS.diff||'normal'];
+function hpInit(){ if (S0.maxhp==null) S0.maxhp=10; if (S0.hp==null) S0.hp=S0.maxhp; if (S0.shards==null) S0.shards=0; }
+
+function spawnEnemy(t, x, y, wave){
+  const d=ETYPES[t]; const e={ t, def:d, x, y, hp:d.hp, hit:0, kbx:0, kby:0, cd:1+Math.random(), state:'move', st:0, anim:Math.random()*9, wx:x, wy:y, wt:0, wave:wave||null, face:1, slamT:2.5, sumT:6 };
+  C.enemies.push(e); return e;
+}
+function eBlocked(e,x,y){
+  const tx=Math.floor(x/T), ty=Math.floor(y/T);
+  if (tx<0||ty<0||tx>=W||ty>=H) return true;
+  if (!e.wave && inSafe(tx,ty)) return true;
+  if (e.def.fly) return false;
+  return solid[ty*W+tx]===1;
+}
+function tryMove(e, dx, dy){ if (!eBlocked(e, e.x+dx, e.y)) e.x+=dx; if (!eBlocked(e, e.x, e.y+dy)) e.y+=dy; }
+
+function pickSpawnType(tx,ty){
+  const look=LOOK(), r=Math.random();
+  if (isForest(tx,ty)) return look===2 ? (r<.45?'wolf':r<.8?'wisp':'crawler') : (r<.25?'wolf':r<.6?'wisp':'crawler');
+  if (look===0 || look===4) return r<.85?'crawler':'wisp';
+  if (look===2) return r<.35?'crawler':r<.7?'wisp':'wolf';
+  return r<.55?'crawler':r<.85?'wisp':'wolf';
+}
+function trySpawn(){
+  const look=LOOK();
+  const cap = Math.round(([3,6,9,5][look] ?? 4) * DIFF().cap);
+  const roaming = C.enemies.filter(e=>!e.wave).length;
+  if (roaming >= cap) return;
+  for (let k=0;k<8;k++){
+    const a=Math.random()*Math.PI*2, d=170+Math.random()*80;
+    const x=P.x+Math.cos(a)*d, y=P.y+Math.sin(a)*d, tx=Math.floor(x/T), ty=Math.floor(y/T);
+    if (tx<1||ty<1||tx>=W-1||ty>=H-1 || inSafe(tx,ty) || solid[ty*W+tx]) continue;
+    if (isForest(tx,ty) && !F().lantern) continue;
+    if (tx>=78 && tx<=89 && ty>=3 && ty<=14) continue;   // never inside the shed yard
+    spawnEnemy(pickSpawnType(tx,ty), tx*T+8, ty*T+12); return;
+  }
+}
+
+function burst(x,y,n,cols){ for (let i=0;i<n;i++){ const a=Math.random()*6.28, s=20+Math.random()*60; C.fx.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-20,life:.5+Math.random()*.6,col:cols[i%cols.length]}); } }
+function floatText(x,y,t,col){ C.texts.push({x,y,t,col:col||'#f2c27a',life:1}); }
+
+function attack(){
+  if (C.cd>0 || !canFight() || mode!=='play') return;
+  C.cd=.36; C.swing=.18; C.swings++;
+  beep(260,.07,'triangle',.05); beep(180,.05,'triangle',.03,.03);
+  const lan=!!F().lantern, dmg=lan?2:1, reach=lan?27:23;
+  const v={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}[P.dir];
+  const hx=P.x+v[0]*13, hy=P.y-9+v[1]*13;
+  for (const e of C.enemies){
+    const ey=e.y-e.def.r - (e.def.fly?8:0);
+    if (Math.hypot(e.x-hx, ey-hy) < reach + e.def.r*.6) damageEnemy(e, dmg, v);
+  }
+}
+function damageEnemy(e, dmg, v){
+  e.hp-=dmg; e.hit=.15; const kb=e.def.boss?40:150; e.kbx=v[0]*kb; e.kby=v[1]*kb;
+  if (e.state==='wind'||e.state==='lunge'){ e.state='move'; e.cd=1.2; }
+  beep(e.def.boss?110:150,.07,'square',.05);
+  burst(e.x, e.y-e.def.r, 5, ['#ffcf6a','#e8763a']);
+  C.shake=Math.max(C.shake,.08);
+  if (e.hp<=0) killEnemy(e);
+}
+function killEnemy(e){
+  C.enemies.splice(C.enemies.indexOf(e),1);
+  burst(e.x, e.y-e.def.r, e.def.boss?60:14, ['#ffcf6a','#e8763a','#8a8494','#c94a2a']);
+  beep(90,.18,'sawtooth',.04); beep(60,.25,'triangle',.04,.05);
+  addShards(e.def.shards, e.x, e.y-20);
+  if (Math.random() < (e.def.boss?1:.18)) C.pickups.push({x:e.x, y:e.y, t:'heart', life:14});
+  if (e.def.boss){ C.shake=.5; $('#bossbar').classList.remove('on'); }
+}
+function addShards(n,x,y){
+  hpInit(); const before=Math.floor(S0.shards/10); S0.shards+=n; floatText(x,y,'+'+n+' ✦');
+  if (Math.floor(S0.shards/10)>before && S0.maxhp<20){ S0.maxhp+=2; S0.hp=S0.maxhp; toast('Ember shards ✦ '+S0.shards, 'Max health up!'); chime(); }
+  refreshHearts();
+}
+function hurtPlayer(raw, fromX, fromY){
+  if (C.invul>0 || mode!=='play') return;
+  hpInit();
+  const dmg=Math.max(1, Math.round(raw*DIFF().dmg));
+  S0.hp=Math.max(0,S0.hp-dmg); C.invul=1.1; C.flash=.35; C.shake=.25;
+  const a=Math.atan2(P.y-fromY, P.x-fromX); C.pkx=Math.cos(a)*170; C.pky=Math.sin(a)*170;
+  beep(120,.18,'sawtooth',.06); beep(80,.22,'square',.03,.04);
+  refreshHearts();
+  if (S0.hp<=0) blackout();
+}
+function blackout(){
+  mode='dialog'; const fd=$('#fade'); fd.classList.add('on');
+  setTimeout(() => {
+    for (const e of C.enemies.slice()) if (!e.wave || true) C.enemies.splice(C.enemies.indexOf(e),1);
+    if (C.wave){ const w=C.wave; C.wave=null; $('#bossbar').classList.remove('on'); if (w==='ws') F().wsWave=0; if (w==='boss') F().bossStarted=0; if (w==='pf') F().pfStarted=0; }
+    P.x=C.lastSafe.x; P.y=C.lastSafe.y; S0.hp=S0.maxhp; C.invul=2; refreshHearts();
+    camX=P.x-VW/2; camY=P.y-VH/2;
+    fd.classList.remove('on'); mode='play';
+    dialog([{s:'narr', t:'Everything goes dark. You wake up later, aching, somewhere safe. The Ashen never follow anyone into town.'}, {s:'noah', t:'(Rest in the village to heal. Then try again — maybe with a different approach.)'}]);
+  }, 700);
+}
+
+// scripted fights
+const WAVES = {
+  ws: { start: () => { F().wsWave=1; return [['wolf',3,8],['wolf',11,8],['wisp',12,2]]; },
+        done: () => { F().wsDone=1; dialog([{s:'narr', t:'The last hound crumbles into a drift of grey ash, still warm.'}, {s:'noah', t:'(Like the fire never really went out out here. The workshop door — now.)'}]); } },
+  boss:{ start: () => { F().bossStarted=1; $('#bossbar').classList.add('on'); return [['warden',84,11]]; },
+        done: () => { F().bossDown=1; save(); dialog([{s:'narr', t:'The Cinder Warden folds in on itself and collapses into a heap of cold ash.'}, {s:'narr', t:'Behind where it stood, the engine shed’s doorway is clear.'}, {s:'noah', t:'(The inspection pit. The ledger has to be in there.)'}]); } },
+  pf:  { start: () => { F().pfStarted=1; return [['wolf',83,25],['wolf',88,27],['wisp',85,37],['wolf',83,35],['wisp',89,31],['crawler',86,24]]; },
+        done: () => { F().pfDone=1; F().eliasHere=1; save(); dialog([{s:'narr', t:'The last of them falls apart in a swirl of embers. The platform lamps steady.'}, {s:'narr', t:'At the far end of the platform, someone lifts a lantern.'}]); } },
+};
+function startWave(id){
+  const list=WAVES[id].start(); C.wave=id;
+  for (const [t,tx,ty] of list){ const e=spawnEnemy(t, tx*T+8, ty*T+12, id); e.cd=1.2; }
+  if (id==='boss') refreshBoss();
+}
+function checkWaveTriggers(){
+  if (C.wave || mode!=='play') return;
+  const f=F(), tx=P.x/T, ty=P.y/T;
+  if (chap()===1 && f.key && f.lantern && !f.wsDone && !f.end && Math.hypot(P.x-(7*T+8), P.y-(9*T)) < 95){
+    dialog([{s:'narr', t:'Shapes slide out from between the trees — low, black, with eyes like coals.'}, {s:'noah', t:'(Shade hounds. They’re guarding the workshop. Here goes.)'}], () => startWave('ws')); return; }
+  if (chap()===2 && f.culvert && !f.bossDown && tx>=79 && tx<89 && ty>=9 && ty<14){
+    dialog([{s:'narr', t:'The ash in the yard begins to move. It pours together, piece by piece, into something huge.'}, {s:'noah', t:'(Whatever the fire left behind, it’s guarding the shed.)'}], () => startWave('boss')); return; }
+  if (chap()===3 && f.confess && !f.pfDone){
+    dialog([{s:'narr', t:'The platform lamps flicker. Shapes climb up out of the dark between the rails — more Ashen than you’ve ever seen.'}, {s:'noah', t:'(Dad is out there somewhere. I have to hold the platform.)'}], () => startWave('pf')); return; }
+}
+function refreshBoss(){ const b=C.enemies.find(e=>e.def.boss); if (!b) return; $('#bossbar .fill').style.width = Math.max(0,b.hp/b.def.hp*100)+'%'; }
+
+function updateCombat(dt){
+  hpInit();
+  C.cd-=dt; C.swing-=dt; C.invul-=dt; C.flash-=dt; C.shake-=dt;
+  // player knockback
+  if (C.pkx||C.pky){ const nx=P.x+C.pkx*dt, ny=P.y+C.pky*dt; if (!blocked(nx,P.y)) P.x=nx; if (!blocked(P.x,ny)) P.y=ny; C.pkx*=.82; C.pky*=.82; if (Math.abs(C.pkx)+Math.abs(C.pky)<5) C.pkx=C.pky=0; }
+  if (keys.atk) attack();
+  const ptx=Math.floor(P.x/T), pty=Math.floor(P.y/T);
+  if (inSafe(ptx,pty)){ C.lastSafe={x:P.x,y:P.y}; C.regenT+=dt; if (C.regenT>2.5 && S0.hp<S0.maxhp){ C.regenT=0; S0.hp++; refreshHearts(); } } else C.regenT=0;
+  if (canFight() && !C.wave){ C.spawnT-=dt; if (C.spawnT<=0){ C.spawnT=.9; trySpawn(); } }
+  checkWaveTriggers();
+  for (const e of C.enemies.slice()){
+    const d=e.def; e.anim+=dt; e.hit-=dt;
+    if (!e.wave && Math.hypot(e.x-P.x,e.y-P.y)>380){ C.enemies.splice(C.enemies.indexOf(e),1); continue; }
+    if (e.kbx||e.kby){ tryMove(e, e.kbx*dt, e.kby*dt); e.kbx*=.8; e.kby*=.8; if (Math.abs(e.kbx)+Math.abs(e.kby)<4) e.kbx=e.kby=0; }
+    const dx=P.x-e.x, dy=P.y-e.y, dist=Math.hypot(dx,dy)||1;
+    const playerSafe = inSafe(ptx,pty) && !e.wave;
+    e.face = dx<0?-1:1;
+    e.cd-=dt;
+    if (d.boss){
+      e.slamT-=dt; e.sumT-=dt;
+      if (e.state==='slam'){ e.st-=dt; if (e.st<=0){ e.state='move'; C.shake=.3; beep(70,.3,'sawtooth',.06); burst(e.x,e.y-4,24,['#e8763a','#8a8494']); if (Math.hypot(P.x-e.x,P.y-e.y)<46) hurtPlayer(d.dmg, e.x, e.y); } }
+      else {
+        if (dist>20) tryMove(e, dx/dist*d.speed*dt, dy/dist*d.speed*dt);
+        if (e.slamT<=0){ e.state='slam'; e.st=.85; e.slamT=2.6+Math.random(); }
+        if (e.sumT<=0 && C.enemies.filter(x=>x.t==='wisp').length<4){ e.sumT=7; for (let i=0;i<2;i++){ const w=spawnEnemy('wisp', e.x+(i?24:-24), e.y-10, e.wave); w.cd=1; } burst(e.x,e.y-20,12,['#ffcf6a']); }
+      }
+      if (dist < d.r+7) hurtPlayer(d.dmg-1, e.x, e.y);
+      refreshBoss(); continue;
+    }
+    if (d.lunge && e.state==='wind'){ e.st-=dt; if (e.st<=0){ e.state='lunge'; e.st=.32; } continue; }
+    if (d.lunge && e.state==='lunge'){ e.st-=dt; tryMove(e, e.lx*175*dt, e.ly*175*dt); if (e.st<=0){ e.state='move'; e.cd=1.5; } }
+    else if (!playerSafe && dist < d.aggro){
+      if (d.lunge && dist<62 && e.cd<=0){ e.state='wind'; e.st=.45; e.lx=dx/dist; e.ly=dy/dist; continue; }
+      const sp = d.speed * (d.fly ? 1 : 1) * (e.hit>0?.3:1);
+      tryMove(e, dx/dist*sp*dt + (d.fly?Math.sin(e.anim*3)*8*dt:0), dy/dist*sp*dt);
+    } else {
+      e.wt-=dt; if (e.wt<=0){ e.wt=1.5+Math.random()*2; e.wx=e.x+(Math.random()-.5)*80; e.wy=e.y+(Math.random()-.5)*80; }
+      const wx=e.wx-e.x, wy=e.wy-e.y, wd=Math.hypot(wx,wy); if (wd>3) tryMove(e, wx/wd*d.speed*.35*dt, wy/wd*d.speed*.35*dt);
+    }
+    if (!playerSafe && dist < d.r+6) hurtPlayer(d.dmg, e.x, e.y);
+  }
+  if (C.wave && !C.enemies.some(e=>e.wave===C.wave)){ const w=C.wave; C.wave=null; WAVES[w].done(); refreshHUD(); }
+  // pickups
+  for (const p of C.pickups.slice()){ p.life-=dt; if (p.life<=0){ C.pickups.splice(C.pickups.indexOf(p),1); continue; }
+    if (Math.hypot(p.x-P.x,p.y-P.y)<14){ C.pickups.splice(C.pickups.indexOf(p),1); S0.hp=Math.min(S0.maxhp,S0.hp+2); refreshHearts(); beep(880,.08,'triangle',.05); beep(1175,.1,'triangle',.04,.06); floatText(P.x,P.y-26,'+♥','#e86a6a'); } }
+}
+
+function updateFX(dt){
+  for (const p of C.fx.slice()){ p.life-=dt; p.x+=p.vx*dt; p.y+=p.vy*dt; p.vy+=60*dt; p.vx*=.96; if (p.life<=0) C.fx.splice(C.fx.indexOf(p),1); }
+  for (const t of C.texts.slice()){ t.life-=dt; t.y-=18*dt; if (t.life<=0) C.texts.splice(C.texts.indexOf(t),1); }
+}
+
+// drawing
+function drawEnemy(e, x, y){
+  const W_=e.hit>0, c = col => W_ ? '#fff4e0' : col, f=e.face;
+  const R=(dx,dy,w,h,col)=>{ ctx.fillStyle=c(col); ctx.fillRect(f<0 ? x-dx-w : x+dx, y+dy, w, h); };
+  const t=e.anim;
+  if (e.t==='crawler'){
+    R(-7,-1,14,2,'rgba(20,15,40,.35)');
+    const lg=Math.floor(t*12)%2;
+    R(-6,-7,11,6,'#3a3438'); R(-5,-8,8,2,'#4a4448'); R(-4,-5,3,1,'#e8763a'); R(1,-6,2,1,'#e8763a');
+    R(4,-6,3,4,'#2e292c'); R(6,-5,1,1,'#ffcf6a');
+    R(-6,-2+lg,1,2,'#2e292c'); R(-2,-2+(1-lg),1,2,'#2e292c'); R(2,-2+lg,1,2,'#2e292c');
+  } else if (e.t==='wisp'){
+    const by=Math.round(Math.sin(t*4)*2)-12;
+    R(-4,0,8,2,'rgba(20,15,40,.25)');
+    R(-4,by-3,8,8,'#c94a2a'); R(-3,by-4,6,10,'#e8763a'); R(-2,by-2,4,5,'#ffcf6a'); R(-1,by-1,2,2,'#fff4d0');
+    R(-2,by+6+Math.floor(t*8)%2,2,2,'#e8763a'); R(1,by+8,1,1,'#c94a2a');
+  } else if (e.t==='wolf'){
+    const lg=Math.floor(t*10)%2, sh = e.state==='wind' ? (Math.floor(t*30)%2?1:-1) : 0;
+    x+=sh;
+    R(-11,-1,22,3,'rgba(20,15,40,.35)');
+    R(-10,-11,15,8,'#2a2528'); R(-9,-12,12,2,'#3a3438'); R(-12,-12,3,2,'#2a2528'); R(-14,-14,3,3,'#2a2528');
+    R(-6,-9,4,1,'#c94a2a'); R(-1,-8,3,1,'#c94a2a');
+    R(4,-14,7,7,'#2a2528'); R(5,-16,2,2,'#2a2528'); R(8,-16,2,2,'#2a2528'); R(10,-11,3,3,'#221e20');
+    R(8,-12,2,1, e.state==='wind' ? '#ffffff' : '#ff5a3a');
+    R(-9,-4,2,4-lg,'#221e20'); R(-5,-4,2,3+lg,'#221e20'); R(1,-4,2,4-lg,'#221e20'); R(5,-4,2,3+lg,'#221e20');
+  } else if (e.t==='warden'){
+    if (e.state==='slam'){ const k=1-e.st/.85; ctx.fillStyle=`rgba(232,90,58,${.15+.35*k})`; ctx.beginPath(); ctx.ellipse(x, y-2, 46*k+6, 22*k+3, 0, 0, Math.PI*2); ctx.fill(); }
+    R(-16,-2,32,4,'rgba(20,15,40,.4)');
+    const bob = e.state==='slam' ? -Math.round((1-e.st/.85)*4) : Math.round(Math.sin(t*2));
+    R(-10,-12,7,12,'#2e292c'); R(3,-12,7,12,'#2e292c');
+    R(-14,-36+bob,28,26,'#3a3236'); R(-12,-38+bob,24,4,'#4a4448');
+    R(-4,-30+bob,8,8,'#c94a2a'); R(-3,-29+bob,6,6,'#e8763a'); R(-1,-27+bob,2,2,'#fff4d0');
+    R(-12,-24+bob,3,1,'#e8763a'); R(8,-32+bob,4,1,'#e8763a'); R(-8,-16+bob,1,4,'#e8763a');
+    R(-22,-34+bob,8,20,'#2e292c'); R(14,-34+bob,8,20,'#2e292c'); R(-23,-16+bob,10,6,'#3a3236'); R(13,-16+bob,10,6,'#3a3236');
+    R(-6,-46+bob,12,10,'#3a3236'); R(-4,-42+bob,2,2,'#ffcf6a'); R(2,-42+bob,2,2,'#ffcf6a');
+  }
+  if (!e.def.boss && e.hp<e.def.hp && e.hp>0){ const w=12; ctx.fillStyle='#070a12'; ctx.fillRect(x-w/2-1, y-(e.t==='wisp'?28:e.t==='wolf'?22:14), w+2, 3); ctx.fillStyle='#e86a6a'; ctx.fillRect(x-w/2, y-(e.t==='wisp'?27:e.t==='wolf'?21:13), Math.round(w*e.hp/e.def.hp), 1); }
+}
+function pushCombatItems(items, cx, cy){
+  for (const e of C.enemies){ const x=Math.round(e.x-cx), y=Math.round(e.y-cy); if (x<-40||y<-60||x>VW+40||y>VH+40) continue; items.push({k:e.y, d:()=>drawEnemy(e,x,y)}); }
+  for (const p of C.pickups){ const x=Math.round(p.x-cx), y=Math.round(p.y-cy); if (p.life<3 && Math.floor(p.life*8)%2) continue;
+    items.push({k:p.y-1, d:()=>{ const b=Math.round(Math.sin(time*5)*1.5); ctx.fillStyle='#070a12'; ctx.fillRect(x-4,y-11+b,9,8); heartPix(ctx,x-3,y-10+b,'#e84a4a'); }}); }
+}
+function heartPix(g,x,y,col){ g.fillStyle=col; g.fillRect(x+1,y,2,1); g.fillRect(x+4,y,2,1); g.fillRect(x,y+1,7,2); g.fillRect(x+1,y+3,5,1); g.fillRect(x+2,y+4,3,1); g.fillRect(x+3,y+5,1,1); }
+function drawSwing(cx,cy){
+  if (C.swing<=0 || !canFight()) return;
+  const k=1-C.swing/.18, base={up:-Math.PI/2,down:Math.PI/2,left:Math.PI,right:0}[P.dir];
+  const lan=!!F().lantern, r=lan?17:15;
+  for (let i=0;i<9;i++){ const a=base-1.1+2.2*(i/8); if (i/8>k+.2) continue;
+    const px=Math.round(P.x-cx+Math.cos(a)*r), py=Math.round(P.y-9-cy+Math.sin(a)*r);
+    ctx.fillStyle = i/8>k-.25 ? (lan?'#fff1b8':'#f4ead2') : (lan?'rgba(255,200,110,.6)':'rgba(220,210,190,.45)'); ctx.fillRect(px-1,py-1,2,2); }
+}
+function drawCombatFX(cx,cy){
+  ctx.globalCompositeOperation='lighter';
+  for (const e of C.enemies){ const x=e.x-cx, y=e.y-cy; if (x<-30||y<-50||x>VW+30||y>VH+30) continue;
+    if (e.t==='wisp'){ const by=Math.sin(e.anim*4)*2-10; const g=ctx.createRadialGradient(x,y+by,0,x,y+by,16); g.addColorStop(0,'rgba(255,170,80,.55)'); g.addColorStop(1,'rgba(255,170,80,0)'); ctx.fillStyle=g; ctx.fillRect(x-16,y+by-16,32,32); }
+    else if (e.t==='warden'){ const g=ctx.createRadialGradient(x,y-26,0,x,y-26,30); g.addColorStop(0,'rgba(255,120,60,.45)'); g.addColorStop(1,'rgba(255,120,60,0)'); ctx.fillStyle=g; ctx.fillRect(x-30,y-56,60,60); }
+    else { ctx.fillStyle='rgba(255,90,58,.6)'; ctx.fillRect(Math.round(x+(e.face>0?(e.t==='wolf'?8:6):-(e.t==='wolf'?10:7))), Math.round(y-(e.t==='wolf'?12:6)), 2, 1); } }
+  for (const p of C.fx){ ctx.fillStyle=p.col; ctx.globalAlpha=Math.max(0,Math.min(1,p.life*1.6)); ctx.fillRect(Math.round(p.x-cx),Math.round(p.y-cy),2,2); }
+  ctx.globalAlpha=1; ctx.globalCompositeOperation='source-over';
+  for (const t of C.texts){ ctx.globalAlpha=Math.min(1,t.life*2); ctx.font='10px "VT323", monospace'; ctx.fillStyle='#070a12'; ctx.fillText(t.t, Math.round(t.x-cx)-7, Math.round(t.y-cy)+1); ctx.fillStyle=t.col; ctx.fillText(t.t, Math.round(t.x-cx)-8, Math.round(t.y-cy)); }
+  ctx.globalAlpha=1;
+  if (C.flash>0){ ctx.fillStyle=`rgba(200,30,30,${C.flash*.6})`; ctx.fillRect(0,0,VW,VH); }
+}
+
+// hearts HUD
+const heartc = () => $('#heartc');
+function refreshHearts(){
+  hpInit(); const cv=heartc(); if (!cv) return;
+  const n=S0.maxhp/2; cv.width=n*9; cv.height=7; const g=cv.getContext('2d'); g.clearRect(0,0,cv.width,7);
+  for (let i=0;i<n;i++){ const v=S0.hp-i*2; heartPix(g,i*9,0,'#3a2a36'); if (v>=2) heartPix(g,i*9,0,'#e84a4a'); else if (v===1){ g.save(); g.beginPath(); g.rect(i*9,0,4,7); g.clip(); heartPix(g,i*9,0,'#e84a4a'); g.restore(); } }
+  cv.style.width=(cv.width*2)+'px'; cv.style.height='14px';
+  $('#shardLbl').textContent = canFight() ? '✦ '+S0.shards : '';
+  $('#hpRow').style.display = canFight() ? '' : 'none';
+}
+
 // ================= tutorial =================
 let tutT=0, tutMoved=0;
 const TUT = [
   null,
-  { t: () => IS_TOUCH ? 'Drag your thumb on the <b>left side</b> of the screen to walk.' : 'Walk with <b>WASD</b> or the <b>arrow keys</b>. Hold <b>Shift</b> to run.', s:'Step 1 of 4 · Getting started', done: () => tutMoved > 50 },
-  { t: () => 'See the yellow <b>!</b> above Walt? Walk next to him and ' + (IS_TOUCH ? 'tap <b>E</b>' : 'press <b>E</b>') + ' to talk.', s:'Step 2 of 4 · A yellow ! always marks who to talk to next', done: () => F().walt },
-  { t: () => 'Your current goal is always in the <b>top-left box</b>. The <b>pink arrow</b> points the way.', s:'Step 3 of 4 · Follow it to Hale’s bookshop', done: () => tutT > 8 },
-  { t: () => IS_TOUCH ? 'Stuck? Tap <b>✎</b> for your journal — it has the story so far — or <b>⌖</b> for the map.' : 'Stuck? Press <b>J</b> for your journal — it has the story so far — and <b>M</b> for the map.', s:'Step 4 of 4 · That’s everything. Good luck, Noah.', done: () => tutT > 9 },
+  { t: () => IS_TOUCH ? 'Drag your thumb on the <b>left side</b> of the screen to walk.' : 'Walk with <b>WASD</b> or the <b>arrow keys</b>. Hold <b>Shift</b> to run.', s:'Step 1 of 5 · Getting started', done: () => tutMoved > 50 },
+  { t: () => 'See the yellow <b>!</b> above Walt? Walk next to him and ' + (IS_TOUCH ? 'tap <b>E</b>' : 'press <b>E</b>') + ' to talk.', s:'Step 2 of 5 · A yellow ! always marks who to talk to next', done: () => F().walt },
+  { t: () => IS_TOUCH ? 'Outside the village, ash monsters called the <b>Ashen</b> attack. Tap <b>⚔</b> to swing your stick.' : 'Outside the village, ash monsters called the <b>Ashen</b> attack. Press <b>Space</b> (or K) to swing your stick. <b>E</b> still talks.', s:'Step 3 of 5 · The village and station are always safe, and you heal there', done: () => C.swings>0 || tutT>12 },
+  { t: () => 'Your current goal is always in the <b>top-left box</b>. The <b>pink arrow</b> points the way.', s:'Step 4 of 5 · Follow it to Hale’s bookshop', done: () => tutT > 8 },
+  { t: () => IS_TOUCH ? 'Stuck? Tap <b>✎</b> for your journal — it has the story so far — or <b>⌖</b> for the map.' : 'Stuck? Press <b>J</b> for your journal — it has the story so far — and <b>M</b> for the map.', s:'Step 5 of 5 · That’s everything. Good luck, Noah.', done: () => tutT > 9 },
 ];
 function tickTut(dt){
   const el=$('#tut'), st=S0.tut||0;
@@ -2425,7 +2722,7 @@ let last=performance.now(), time=0, titlePan=0;
 function step(now){
   document.body.classList.toggle('inmenu', ['inv','journal','map','pause','settings','ending'].includes(mode));
   const dt=Math.min(.05,(now-last)/1000); last=now; time+=dt;
-  tickDialog(dt); tickCut(dt); tickTut(dt);
+  tickDialog(dt); tickCut(dt); tickTut(dt); updateFX(dt);
   Music.setMood(mode==='title' ? 'title' : forestF>.5 ? 'forest' : ['day','dusk','night','dawn'][LOOK()]);
 
   if (mode==='play'){
@@ -2450,6 +2747,7 @@ function step(now){
     gateCool-=dt;
     // Silas encounter
     if (F().lantern && !F().silas && Math.hypot(P.x-(12*T+8), P.y-(13*T+10))<44){ const s=npcs.find(n=>n.id==='silas'); s.dir = P.x<s.x?'left':'right'; talkSilas(); }
+    updateCombat(dt);
     updateZone(dt);
     const nt=nearest(); const pr=$('#prompt');
     if (nt){ pr.style.display='block'; pr.querySelector('span').textContent=nt.label; } else pr.style.display='none';
@@ -2472,7 +2770,8 @@ function step(now){
   camX=Math.max(0,Math.min(W*T-VW,camX)); camY=Math.max(0,Math.min(H*T-VH,camY));
   if (W*T<VW) camX=(W*T-VW)/2; if (H*T<VH) camY=(H*T-VH)/2;
   const cx=Math.round(camX), cy=Math.round(camY);
-  render(cx,cy,dt);
+  const sh = C.shake>0 && !reduceMotion ? 3 : 0;
+  render(cx+Math.round((Math.random()-.5)*sh), cy+Math.round((Math.random()-.5)*sh), dt);
   if (mode!=='title') drawMini();
   requestAnimationFrame(step);
 }
@@ -2512,9 +2811,11 @@ function render(cx,cy,dt){
     items.push({k:n.y, d:()=>drawCharAt(ctx, n.x-cx, n.y-cy+(reduceMotion?0:(Math.sin(time*2+n.x)>.95?-1:0)), n.dir, 0, CH[n.id])}); }
   if (!F().catHome || true) items.push({k:cat.y, d:()=>drawCat(Math.round(cat.x-cx), Math.round(cat.y-cy))});
   const frame = P.moving ? [0,1,0,3][Math.floor(P.anim)%4] : 0;
-  if (mode!=='title') items.push({k:P.y, d:()=>drawCharAt(ctx, P.x-cx, P.y-cy, P.dir, frame, CH.noah, F().lantern)});
+  if (mode!=='title' && !(C.invul>0 && Math.floor(time*16)%2)) items.push({k:P.y, d:()=>drawCharAt(ctx, P.x-cx, P.y-cy, P.dir, frame, CH.noah, F().lantern)});
+  if (mode!=='title') pushCombatItems(items, cx, cy);
   items.sort((a,b)=>a.k-b.k);
   for (const it of items) it.d();
+  drawSwing(cx,cy);
   if (mode==='play' || mode==='dialog'){
     const ob=objective(), tgt=ob.at && ob.at.npc;
     for (const n of npcs){ if (n.when && !n.when()) continue;
@@ -2574,6 +2875,7 @@ function render(cx,cy,dt){
   }
   ctx.globalCompositeOperation='source-over';
 
+  drawCombatFX(cx,cy);
   // objective marker
   if (mode==='play' && SETTINGS.marker){
     const o=objective(); if (o.at){ const x=o.at.x-cx, y=o.at.y-cy, bob=reduceMotion?0:Math.sin(time*4)*2;
@@ -2642,7 +2944,7 @@ function continueGame(){
   S0=s; P.x=s.x; P.y=s.y; P.dir=s.dir||'down';
   if (s.cat){ cat.x=s.cat.x; cat.y=s.cat.y; cat.follow=s.cat.follow; cat.tx=cat.x; cat.ty=cat.y; }
   if (F().catHome){ cat.x=40*T; cat.y=25*T; cat.tx=cat.x; cat.ty=cat.y; }
-  applyWorldState(); lastObj=''; S0.tut=0;
+  applyWorldState(); resetCombat(); lastObj=''; S0.tut=0;
   camX=P.x-VW/2; camY=P.y-VH/2; curZone='';
   $('#title').classList.remove('on');
   if (F().end && chap()===1) return startChapter(2);
@@ -2678,7 +2980,7 @@ function syncSettings(){
   $('#setMusic').value=Math.round(SETTINGS.music*100); $('#oMusic').textContent=Math.round(SETTINGS.music*100);
   $('#setSfx').value=Math.round(SETTINGS.sfx*100); $('#oSfx').textContent=Math.round(SETTINGS.sfx*100);
   const seg=(id,v)=>document.querySelectorAll(id+' button').forEach(b=>b.classList.toggle('on', b.dataset.v===String(v)));
-  seg('#setText',SETTINGS.text); seg('#setZoom',SETTINGS.zoom); seg('#setMarker',SETTINGS.marker?1:0); seg('#setMini',SETTINGS.minimap?1:0);
+  seg('#setText',SETTINGS.text); seg('#setZoom',SETTINGS.zoom); seg('#setMarker',SETTINGS.marker?1:0); seg('#setMini',SETTINGS.minimap?1:0); seg('#setDiff',SETTINGS.diff||'normal');
   $('#resetRow').style.display = settingsFrom==='title' && hasSave() ? '' : 'none';
   $('#resetBtn').textContent='Erase save'; $('#resetBtn').classList.remove('armed'); resetArmed=false;
 }
@@ -2691,6 +2993,7 @@ $('#setSfx').addEventListener('input', e => { SETTINGS.sfx=e.target.value/100; $
 $('#setSfx').addEventListener('change', () => chime());
 document.querySelectorAll('#setText button').forEach(b => b.addEventListener('click', () => { SETTINGS.text=b.dataset.v; saveSettings(); syncSettings(); }));
 document.querySelectorAll('#setZoom button').forEach(b => b.addEventListener('click', () => { SETTINGS.zoom=+b.dataset.v; saveSettings(); syncSettings(); resize(); }));
+document.querySelectorAll('#setDiff button').forEach(b => b.addEventListener('click', () => { SETTINGS.diff=b.dataset.v; saveSettings(); syncSettings(); }));
 document.querySelectorAll('#setMini button').forEach(b => b.addEventListener('click', () => { SETTINGS.minimap=b.dataset.v==='1'; saveSettings(); syncSettings(); applyMini(); }));
 document.querySelectorAll('#setMarker button').forEach(b => b.addEventListener('click', () => { SETTINGS.marker=b.dataset.v==='1'; saveSettings(); syncSettings(); }));
 $('#resetBtn').addEventListener('click', () => {
@@ -2770,7 +3073,7 @@ setInterval(() => { if (mode==='play') save(); }, 8000);
   window.addEventListener('resize', () => { resize2(); initParticles(); });
   raf2 = requestAnimationFrame(frame2);
 })();
-window.__game = { Music, SETTINGS, P, S0: () => S0, F, mode: () => mode, interact, advance, choose, D, objective, teleport:(tx,ty)=>{P.x=tx*T+8;P.y=ty*T+10;}, cutNext };
+window.__game = { C: () => C, killAll: () => C.enemies.slice().forEach(killEnemy), attack: () => attack(), Music, SETTINGS, P, S0: () => S0, F, mode: () => mode, interact, advance, choose, D, objective, teleport:(tx,ty)=>{P.x=tx*T+8;P.y=ty*T+10;}, cutNext };
 requestAnimationFrame(step);
 })();
 </script>

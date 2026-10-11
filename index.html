@@ -548,7 +548,7 @@
   .acard h3 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 22px; color: var(--ink); line-height: 1; }
   .acard.got h3 { color: var(--amber); }
   .acard p { margin: 2px 0 0; font-size: 17px; color: var(--dim); line-height: 1.1; }
-  #achToast { position: fixed; left: 50%; top: calc(14px + env(safe-area-inset-top, 0px)); transform: translate(-50%, -140%); z-index: 9; transition: transform .45s cubic-bezier(.2,.9,.3,1.2);
+  #achToast { position: fixed; left: 50%; top: calc(14px + env(safe-area-inset-top, 0px)); transform: translate(-50%, -140%); z-index: 8; transition: transform .45s cubic-bezier(.2,.9,.3,1.2);
     background: linear-gradient(180deg, #2a2418, #16120c); border: 3px solid #c9a046; box-shadow: 0 0 0 3px #070a12, 0 0 24px rgba(242,194,122,.45); padding: 8px 18px 10px; text-align: center; pointer-events: none; max-width: calc(100% - 24px); }
   #achToast { visibility: hidden; }
   #achToast.on { transform: translate(-50%, 0); visibility: visible; }
@@ -556,6 +556,20 @@
   #achToast .an { font-family: var(--display); font-size: 28px; color: #ffe2a0; line-height: 1; }
   #achToast .ad { font-size: 16px; color: #d9cfb8; }
   @media (pointer: coarse) and (max-height: 520px) { #achToast .an { font-size: 21px; } #achToast { padding: 5px 12px 6px; } .agrid { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 5px; padding: 8px; } .acard h3 { font-size: 18px; } .acard p { font-size: 14px; } }
+
+  /* crisp world text: speech bubbles over people's heads, and floating numbers */
+  #worldtext { position: fixed; inset: 0; pointer-events: none; z-index: 9; overflow: hidden; }
+  #worldtext > div { position: absolute; left: 0; top: 0; will-change: transform; white-space: nowrap; }
+  .wsay { font-family: var(--body); font-size: 21px; line-height: 1; color: #2a1c14; background: #f4ead2; padding: 3px 9px 4px;
+    border: 3px solid #070a12; border-radius: 6px; box-shadow: 0 3px 0 rgba(7,10,18,.45); margin-top: -8px; }
+  .wsay::after { content: ""; position: absolute; left: var(--tail, 50%); bottom: -9px; margin-left: -6px; border: 6px solid transparent; border-top-color: #070a12; border-bottom: 0; }
+  .wsay::before { content: ""; position: absolute; left: var(--tail, 50%); bottom: -5px; margin-left: -4px; border: 4px solid transparent; border-top-color: #f4ead2; border-bottom: 0; z-index: 1; }
+  .wsay.angry { background: #ffe1d8; color: #8a2412; border-color: #3a0e08; }
+  .wsay.angry::before { border-top-color: #ffe1d8; }
+  .wsay.hiss { background: #ffe6c8; color: #8a4a12; }
+  .wsay.hiss::before { border-top-color: #ffe6c8; }
+  .wfloat { font-family: var(--display); font-size: 22px; line-height: 1; text-shadow: 2px 2px 0 #070a12, -1px -1px 0 #070a12, 1px -1px 0 #070a12, -1px 1px 0 #070a12; }
+  @media (pointer: coarse) and (max-height: 520px) { .wsay { font-size: 17px; padding: 2px 7px 3px; border-width: 2px; } .wfloat { font-size: 18px; } }
 </style>
 </head>
 <body>
@@ -2734,8 +2748,10 @@ function attack(){
   beep(S0.weapon==='axe'?160:260,.07,'triangle',.05); beep(180,.05,'triangle',.03,.03);
   const reach=w.reach+(lan?3:0), hx=P.x+v[0]*13, hy=P.y-9+v[1]*13;
   for (const e of C.enemies.slice()){ const ey=e.y-e.def.r-(e.def.fly?8:0); if (Math.hypot(e.x-hx, ey-hy) < reach + e.def.r*.6) damageEnemy(e, dmg, v); }
-  for (const n of (IN ? sceneNPCs() : npcs.filter(vis))){ if (Math.hypot(n.x-hx, (n.y-10)-hy) < reach) bonkNPC(n, v); }
-  if (Math.hypot(cat.x-hx, cat.y-6-hy) < reach-4) bonkCat(v);
+  let hitN=null, hd=reach;
+  for (const n of (IN ? sceneNPCs() : npcs.filter(vis))){ const d=Math.hypot(n.x-hx, (n.y-10)-hy); if (d < hd){ hd=d; hitN=n; } }
+  if (hitN) bonkNPC(hitN, v);
+  else if (!IN && Math.hypot(cat.x-hx, cat.y-6-hy) < reach-4) bonkCat(v);
 }
 function damageEnemy(e, dmg, v){
   e.hp-=dmg; e.hit=.15; const kb=e.def.boss?40:150; e.kbx=v[0]*kb; e.kby=v[1]*kb;
@@ -3124,14 +3140,21 @@ let wtId=0;
 function syncWorldText(cx,cy){
   const box=$('#worldtext'); if (!box) return;
   const alive=new Set();
+  cx=Math.round(camX); cy=Math.round(camY);
+  const c=canvas.getBoundingClientRect(), vw=innerWidth;
   const place=(o, cls, html, wx, wy, alpha) => {
     if (!o.el){ o.el=document.createElement('div'); o.el.className=cls; o.el.innerHTML=html; o.el.dataset.k=String(++wtId); box.appendChild(o.el); }
     alive.add(o.el);
-    o.el.style.transform=`translate(${Math.round((wx-cx)*SC)}px, ${Math.round((wy-cy)*SC)}px) translate(-50%,-100%)`;
+    const sx=c.left+(wx-cx)*SC, sy=c.top+(wy-cy)*SC;
+    if (cls.startsWith('wsay')){
+      const w=o.el.offsetWidth||80, left=Math.max(6, Math.min(vw-w-6, sx-w/2));
+      o.el.style.setProperty('--tail', Math.round(Math.max(10, Math.min(w-10, sx-left)))+'px');
+      o.el.style.transform=`translate(${Math.round(left)}px, ${Math.round(sy)}px) translateY(-100%)`;
+    } else o.el.style.transform=`translate(${Math.round(sx)}px, ${Math.round(sy)}px) translate(-50%,-100%)`;
     o.el.style.opacity=String(Math.max(0,Math.min(1,alpha)));
   };
   if (mode!=='title'){
-    for (const sy of (C.says||[])){ const r=sy.ref; place(sy, 'wsay'+(sy.col==='#ff9a8a'?' angry':sy.col==='#ffb070'?' hiss':''), escapeHTML(sy.t), r.x, r.y-(r===cat?12:25), sy.life*2); }
+    for (const sy of (C.says||[])){ const r=sy.ref; place(sy, 'wsay'+(sy.col==='#ff9a8a'?' angry':sy.col==='#ffb070'?' hiss':''), escapeHTML(sy.t), r.x+(r.bx||0), r.y+(r.by||0)-(r===cat?12:25), sy.life*2); }
     for (const t of (C.texts||[])){ place(t, 'wfloat', escapeHTML(t.t), t.x, t.y, t.life*2); if (!t.colored){ t.el.style.color=t.col; t.colored=1; } }
   }
   for (const el of [...box.children]) if (!alive.has(el)) el.remove();
@@ -4166,7 +4189,7 @@ setInterval(() => { if (mode==='play') save(); }, 8000);
   window.addEventListener('resize', () => { resize2(); initParticles(); });
   raf2 = requestAnimationFrame(frame2);
 })();
-window.__game = { npcs, nearestT: () => { const t=nearest(); return t ? t.label : null; }, SCN, IN: () => IN, enterScene, leaveScene, ACHS: () => ACHS, CH, scout, greta: () => talkGreta(), C: () => C, killAll: () => C.enemies.slice().forEach(killEnemy), attack: () => attack(), Music, SETTINGS, P, S0: () => S0, F, mode: () => mode, interact, advance, choose, D, objective, teleport:(tx,ty)=>{P.x=tx*T+8;P.y=ty*T+10;}, cutNext };
+window.__game = { sceneNPCs: () => sceneNPCs(), cam: () => ({x:Math.round(camX), y:Math.round(camY)}), npcs, nearestT: () => { const t=nearest(); return t ? t.label : null; }, SCN, IN: () => IN, enterScene, leaveScene, ACHS: () => ACHS, CH, scout, greta: () => talkGreta(), C: () => C, killAll: () => C.enemies.slice().forEach(killEnemy), attack: () => attack(), Music, SETTINGS, P, S0: () => S0, F, mode: () => mode, interact, advance, choose, D, objective, teleport:(tx,ty)=>{P.x=tx*T+8;P.y=ty*T+10;}, cutNext };
 requestAnimationFrame(step);
 })();
 </script>

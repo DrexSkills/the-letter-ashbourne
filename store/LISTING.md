@@ -12,40 +12,40 @@ The Letter: A Pixel Mystery
 Your father vanished 20 years ago. Three days ago, he wrote to you.
 
 ## Full description (max 4000 characters)
-Twenty years ago, the railway office in the village of Ashbourne burned down. A woman died inside. That same night your father disappeared — and everyone believed he started the fire and ran.
+Twenty years ago, the railway office in the village of Ashbourne burned down in the night. A woman died inside. That same night, your father vanished — and the whole village believed he started the fire.
 
-Then, three days ago, a letter arrived. From him.
+Three days ago, a letter arrived. From him.
 
-The Letter is a story-driven pixel-art mystery adventure. Take the train to Ashbourne, talk to the people who knew your father, collect clues, and uncover the truth that a whole town has kept buried for twenty years.
+The Letter is a story-driven pixel-art mystery adventure. Step off the train in Ashbourne, talk to the people who knew your father, gather clues, and uncover the truth a whole village has kept buried for twenty years.
 
-★ A FULL STORY IN 14 CHAPTERS
-It opens on the night of the fire: flames over the railway office, a village in chaos, and a man running into the dark. Then twenty years later, you step off the train. Follow the trail through four parts and fourteen chapters — from a quiet country village and a lantern-lit forest to a burned-out engine shed and a smoky canal town. Your choices shape the ending.
+🔥 A STORY WORTH FINISHING
+It begins on the night of the fire: flames over the railway office, a village in chaos, and a man running into the dark. Then, twenty years later, you arrive. Fourteen chapters across four parts, full of twists, choices that shape the ending, and a mystery that pays off.
 
-★ A LIVING VILLAGE
-Meet 16 characters, each with their own portrait and personality. Townsfolk go about their day and head home when night falls. Visit them in their homes, from the cosy café to the old water mill.
+🏡 A LIVING VILLAGE
+Meet 16 characters, each with their own portrait, personality and secrets. Townsfolk go about their day, head home at nightfall and shelter from the rain. Step inside the café, the bookshop, the forge, the old mill and more.
 
-★ FIGHT THE CREATURES OF THE NIGHT
-Since the fire, ash creatures crawl out of the fields at night — joined by forest archers, goblin warriors, shadow stalkers, stone golems and crystal wisps. Fight with a stick, sword, bow or axe, block with a shield, drink healing potions, level up, and face powerful bosses.
+⚔️ FIGHT THE CREATURES OF THE NIGHT
+Since the fire, the Ashen crawl out of the fields after dark — joined by forest archers, goblin warriors, shadow stalkers, stone golems and crystal wisps. Fight with a stick, sword, bow or axe, block with a shield, drink healing potions, level up, and face powerful bosses.
 
-★ SURVIVE
-Keep an eye on your hunger: buy bread and stew at June’s café. Rain sends the townsfolk indoors; when it snows, everyone wraps up in coats and woolly hats.
+🍞 SURVIVE AND EXPLORE
+Keep an eye on your hunger and buy bread and stew at June’s café. Explore a whole valley: a lantern-lit forest, a quiet lake, ancient abbey ruins and a smoky canal town.
 
-★ EXPLORE AND COLLECT
-Find 23 clues and 5 hidden memories, help the townsfolk with side quests, befriend a stray dog who fights by your side, and unlock 23 achievements.
+🌦️ BEAUTIFUL ATMOSPHERE
+A real day-and-night cycle, rain showers, snowfall with everyone wrapped up in coats and woolly hats, forest fog, fireflies, birds and calm music that changes with the time of day.
 
-★ BEAUTIFUL ATMOSPHERE
-A real day-and-night cycle, drifting clouds, rain showers, forest fog, birds, fireflies and calm music that changes with the time of day.
+🐕 FRIENDS ALONG THE WAY
+Win over Scout, the stray dog by the bridge, and he’ll fight at your side. Find June’s lost cat. Help an old fisherman find his lucky lure.
 
-★ EASY TO PLAY
-A short tutorial, a clear goal on screen, a journal that sums up the story so far, and skip buttons if you just want the action. Works fully offline.
+✨ EASY TO PICK UP
+A short tutorial, a clear goal always on screen, a journal that sums up the story so far, and a skip button if you just want the action. 23 achievements, 23 clues and 5 hidden memories to find.
 
-No ads. No in-app purchases. No data collected.
+No ads. No in-app purchases. No data collected. Works fully offline and saves automatically.
 
 ## Category
-Game → Adventure
+App or game: **Game** · Category: **Adventure**
 
-## Tags (pick up to 5)
-Adventure, Mystery, Story, Pixel art, Single player
+## Tags (pick up to 5 from Google's list)
+Mystery · Story-driven · Pixel art / Pixelated · Single player · Offline
 
 ## Contact email
 (your email)

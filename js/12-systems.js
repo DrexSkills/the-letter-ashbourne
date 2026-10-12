@@ -160,6 +160,7 @@ function renderScene(cx,cy,dt){
   const items=[];
   sc.strips.forEach((st,y) => { if (st) items.push({k:y*T+T-1, d:()=>ctx.drawImage(st,-cx,y*T-14-cy)}); });
   if (sc.outdoor) for (const tr of sceneTrees(sc)) items.push({k:tr.y, d:()=>{ const s=roundTrees[tr.v]; ctx.drawImage(s, Math.round(tr.x-s.width/2-cx), Math.round(tr.y-s.height+3-cy)); }});
+  if (IN==='cafe' && F().catHome) items.push({k:3*T+12, d:()=>drawSleepingCat(Math.round(2*T+8-cx), Math.round(3*T+12-cy))});
   for (const n of sceneNPCs()) items.push({k:n.y, d:()=>drawCharAt(ctx, n.x-cx+Math.round(n.bx||0), n.y-cy+Math.round(n.by||0), n.dir, 0, CH[n.id], n.id==='elias' && sc.outdoor)});
   const frame = P.moving ? [0,1,0,3][Math.floor(P.anim)%4] : 0;
   if (!(C.invul>0 && Math.floor(time*16)%2)) items.push({k:P.y, d:()=>drawPlayerSprite(ctx, P.x-cx, P.y-cy, frame, F().lantern && sc.outdoor)});
@@ -217,4 +218,14 @@ const safeAt = (tx,ty) => IN ? sceneSafeAt(tx,ty) : inSafe(tx,ty);
 function arrowBlocked(tx,ty){
   if (IN){ const sc=SCN[IN]; if (tx<0||ty<0||tx>=sc.w||ty>=sc.h) return true; const g=sc.glyph[ty][tx]; return sc.grid[ty*sc.w+tx]===1 && g!=='~' && g!=='='; }
   return tx<0||ty<0||tx>=W||ty>=H || (solid[ty*W+tx] && tiles[ty*W+tx]!==WATER && tiles[ty*W+tx]!==RAIL);
+}
+
+// Biscuit, curled up asleep by the café stove
+function drawSleepingCat(x,y){
+  const R=(dx,dy,w,h,c)=>{ ctx.fillStyle=c; ctx.fillRect(x+dx,y+dy,w,h); };
+  R(-7,-1,14,2,'rgba(20,15,40,.3)');
+  R(-6,-6,11,5,'#d9823a'); R(-5,-7,8,2,'#e8964a'); R(-3,-6,1,4,'#b8662a'); R(0,-6,1,4,'#b8662a');
+  R(3,-7,5,4,'#d9823a'); R(3,-8,1,2,'#d9823a'); R(6,-8,1,1,'#b8662a'); R(5,-5,2,1,'#5a3a20');
+  R(-7,-3,10,2,'#c8742e');
+  if (!reduceMotion){ const k=(time*0.6)%1; ctx.globalAlpha=1-k; ctx.fillStyle='#efe3c8'; ctx.font='8px "VT323", monospace'; ctx.fillText('z', x+7+k*3, y-9-k*7); ctx.globalAlpha=1; }
 }

@@ -117,7 +117,7 @@ function render(cx,cy,dt){
   items.push({k:42*T, d:()=>drawTrain(90*T-cx, 14*T-cy)});
   for (const n of npcs){ if (!vis(n)) continue; if (!inV(n.x,n.y,30)) continue;
     items.push({k:n.y, d:()=>drawCharAt(ctx, n.x-cx+Math.round(n.bx||0), n.y-cy+Math.round(n.by||0)+(reduceMotion?0:(Math.sin(time*2+n.x)>.95?-1:0)), n.dir, n.walking ? [0,1,0,3][Math.floor(time*7)%4] : 0, CH[n.id])}); }
-  if (!F().catHome || true) items.push({k:cat.y, d:()=>drawCat(Math.round(cat.x-cx), Math.round(cat.y-cy))});
+  if (!F().catHome || cat.follow) items.push({k:cat.y, d:()=>drawCat(Math.round(cat.x-cx), Math.round(cat.y-cy))});
   const frame = P.moving ? [0,1,0,3][Math.floor(P.anim)%4] : 0;
   if (mode!=='title' && !(C.invul>0 && Math.floor(time*16)%2)) items.push({k:P.y, d:()=>drawPlayerSprite(ctx, P.x-cx, P.y-cy, frame, F().lantern)});
   if (mode!=='title') pushCombatItems(items, cx, cy);
@@ -272,6 +272,8 @@ function continueGame(){
   $('#title').classList.remove('on');
   IN=null;
   if (S0.scene && SCN[S0.scene]){ if (SCN[S0.scene].ch4 && chap()===4) enterScene(S0.scene, {px:S0.x, py:S0.y, dir:S0.dir}, true); else if (SCN[S0.scene].out){ const o=SCN[S0.scene].out; P.x=o[0]*T+8; P.y=o[1]*T+10; } }
+  if (!IN && blocked(P.x,P.y) && chap()>=2){ P.x=82*T+8; P.y=16*T+10; P.dir='down'; camX=P.x-VW/2; camY=P.y-VH/2; }   // rescue a stuck save near the station
+  unstickPlayer();
   if (F().end && chap()===1) return startChapter(2);
   if ((F().ch3end || F().gameEnd) && chap()===3) return startChapter(4);
   if (F().ch2end && chap()===2) return startChapter(3);

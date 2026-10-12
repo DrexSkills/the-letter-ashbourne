@@ -224,7 +224,7 @@ function talkJune(){
       () => { F().june=1; },
     ]);
   } else {
-    dialog([{s:'june', t: F().catHome ? 'Biscuit hasn’t left the windowsill since. Thank you, love.' : F().phase===2 ? 'Still no Biscuit. She likes the meadow east of the river, near the station.' : 'Biscuit likes the meadow across the bridge. South of the road, near the water.'}]);
+    dialog([{s:'june', t: F().catHome ? 'Biscuit hasn’t left her spot by the stove since. Thank you, love.' : F().phase===2 ? 'Still no Biscuit. She likes the meadow east of the river, near the station.' : 'Biscuit likes the meadow across the bridge. South of the road, near the water.'}]);
   }
 }
 
@@ -570,18 +570,18 @@ function showCard(num, ttl, sub, done){
 function closeCard(){ if (mode!=='card') return; $('#chapcard').classList.remove('on'); mode='play'; const d=CARD; CARD=null; if (d) d(); }
 $('#chapcard').addEventListener('click', closeCard);
 function startChapter(n){
-  IN=null; $('#ending').classList.remove('on'); S0.tut=0; $('#tut').classList.remove('on');
+  IN=null; C.dying=[]; $('#ending').classList.remove('on'); S0.tut=0; $('#tut').classList.remove('on');
   F().chap=n; applyWorldState(); resetCombat(); S0.hp=S0.maxhp; refreshHearts();
   if (n===2){
     F().phase=3; todInit(); S0.tod=5.3; S0.day=(S0.day||1)+1; P.x=86*T+8; P.y=35*T+10; P.dir='up'; camX=P.x-VW/2; camY=P.y-VH/2;
-    beginPlay(); refreshHUD(); save(); setTimeout(sfxWhistle, 900);
+    beginPlay(); unstickPlayer(); refreshHUD(); save(); setTimeout(sfxWhistle, 900);
     showCard('Chapter Two', 'The Ledger', 'Dawn. The old platform, where he promised he would be.', () => dialog([
       {s:'recap', t:'Dad was framed for the fire that killed Mara Voss. Mara’s ledger — the proof — is hidden in the old engine shed. Dad promised to meet me on the platform at dawn.'},
       {s:'noah', t:'(Dawn. The old platform. He said he would be here.)'},
       {s:'noah', t:'(I’ll sit on the bench and wait for him.)'},
     ]));
   } else if (n===3) {
-    F().phase=5; todInit(); if (S0.tod<17) S0.tod=17.2; beginPlay(); refreshHUD(); save();
+    F().phase=5; todInit(); if (S0.tod<17) S0.tod=17.2; P.x=82*T+8; P.y=16*T+10; P.dir='down'; camX=P.x-VW/2; camY=P.y-VH/2; beginPlay(); unstickPlayer(); refreshHUD(); save();
     showCard('Chapter Three', 'Keeping Left', 'The same day. The sun is going down over Ashbourne.', () => dialog([
       {s:'recap', t:'I have Mara’s ledger. It shows Victor Ashcombe paid someone called “W.P.” to destroy the railway records two days before the fire. Find out who W.P. is.'},
       {s:'noah', t:'(I have Mara’s ledger. Someone called “W.P.” was paid to clear the records before the fire.)'},
@@ -769,4 +769,20 @@ function actAltar(){
     {s:'narr', t:'Scratched underneath, much newer: “THE ASH REMEMBERS. 2006.”'},
     {s:'noah', t:'(Dad’s word was Lantern, too. And 2006 — the year of the fire. Somebody here knew.)'},
   ]);
+}
+
+
+// If Noah ever ends up inside a wall, tree or building (for example from an older save),
+// move him to the nearest open spot so the game never gets stuck.
+function unstickPlayer(){
+  if (IN || !blocked(P.x, P.y)) return false;
+  const tx0=Math.floor(P.x/T), ty0=Math.floor(P.y/T);
+  for (let r=1;r<30;r++) for (let dy=-r;dy<=r;dy++) for (let dx=-r;dx<=r;dx++){
+    if (Math.max(Math.abs(dx),Math.abs(dy))!==r) continue;
+    const tx=tx0+dx, ty=ty0+dy, x=tx*T+8, y=ty*T+10;
+    if (tx<1||ty<1||tx>=W-1||ty>=H-1) continue;
+    if (isForest(tx,ty) && !F().lantern) continue;
+    if (!blocked(x,y)){ P.x=x; P.y=y; camX=P.x-VW/2; camY=P.y-VH/2; return true; }
+  }
+  P.x=86*T+8; P.y=30*T+10; camX=P.x-VW/2; camY=P.y-VH/2; return true;
 }

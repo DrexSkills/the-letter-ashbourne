@@ -24,7 +24,7 @@ New players get a short guided tutorial, yellow **!** markers above whoever move
 - **Atmosphere:** drifting cloud shadows, falling leaves, birds, golden sun rays at dawn and dusk, forest fog, and passing rain showers with their own sound (turn weather off in Settings).
 
 - **Go inside:** Hale's Books, June's Café, the post office, Greta's forge, St. Aldric's church, Dad's workshop and the engine shed — each with things to find.
-- **Daily routines:** townsfolk move around through the day and go indoors at night (you can visit them inside). Whoever your goal needs always waits for you.
+- **Daily routines:** townsfolk move around through the day, and at 7pm everyone heads home before the Ashen come out — Hale to his bookshop, Tom to his farmhouse, Walt to the ticket office, Ned to his fishing hut and so on. Visit them inside; if your goal needs someone at night, the arrow points to their front door.
 - **Sound:** footsteps that change on grass, paths, stone and wood; creaking doors; the train whistle; the church bell.
 - **Achievements:** 23 to unlock, from finishing chapters to bonking every townsperson.
 

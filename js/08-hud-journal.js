@@ -3,9 +3,14 @@
 
 // ================= objectives & HUD =================
 function objective(){
+  const o=objectiveBase();
+  if (o.at && o.at.inside && SCN[o.at.inside] && IN!==o.at.inside){ o.t = o.t + ' — they’re indoors for the night (' + SCN[o.at.inside].name + ')'; }
+  return o;
+}
+function objectiveBase(){
   const f=F(), c=chap();
   if (c===4) return objective4();
-  const N = id => ({ ...npcPos(id), npc:id });
+  const N = id => { const p=npcPos(id); return p.inside ? { ...p, who:id } : { ...p, npc:id }; };
   if (c===1){
     if (!f.walt) return { t:'Ask the railway worker (Walt) where the bookseller is', at:N('walt') };
     if (!f.hale1) return { t:'Find Edmund Hale’s bookshop — west over the bridge, purple roof', at:N('hale') };
@@ -34,7 +39,9 @@ function objective(){
   if (!f.gameEnd) return { t:'Meet your father at the far end of the platform', at:N('elias') };
   return { t:'The story is complete. Explore Ashbourne freely', at:null };
 }
-function npcPos(id){ const n=npcs.find(n=>n.id===id); return {x:n.x,y:n.y-28}; }
+function npcPos(id){ const n=npcs.find(n=>n.id===id);
+  if (n.inside && SCN[n.inside] && SCN[n.inside].out){ const o=SCN[n.inside].out; return { x:o[0]*T+8, y:(o[1]-1)*T-6, inside:n.inside }; }   // indoors: point at the front door
+  return {x:n.x,y:n.y-28}; }
 let lastObj='';
 function refreshHUD(){
   try { refreshHearts(); } catch(e){}

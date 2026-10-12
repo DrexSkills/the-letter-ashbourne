@@ -49,23 +49,27 @@ let whistleT=20;
 // Townsfolk move around during the day and go indoors at night (you can visit them inside).
 // Whoever your current goal needs always waits at their usual spot.
 const ROUTINE = {
+  // m = morning, a = afternoon, e = evening, n = night (from dusk, before the Ashen come out)
   hale:  { m:[[52,25]], a:'books', e:[[50,30]], n:'books' },
   june:  { m:[[43,25]], a:'cafe',  e:[[44,29]], n:'cafe' },
-  clara: { m:[[44,36]], a:[[43,42]], e:[[44,36]], n:[[41,42]] },
-  tom:   { m:[[22,39],[22,44],[24,44]], a:[[22,39],[22,47],[19,48]], e:[[22,44],[22,39],[27,38]], n:[[27,38]] },
+  clara: { m:[[44,36]], a:[[43,42]], e:[[44,36]], n:'records' },
+  tom:   { m:[[22,39],[22,44],[24,44]], a:[[22,39],[22,47],[19,48]], e:[[22,44],[22,39],[27,38]], n:'farm' },
   pip:   { m:[[riverX(46)-2,46]], a:[[58,40],[50,34]], e:[[58,40],[riverX(46)-2,46]], n:'away' },
   rosa:  { m:[[61,28]], a:'post',  e:[[61,28]], n:'post' },
   greta: { m:[[59,41]], a:[[59,41]], e:'forge', n:'forge' },
   bennet:{ m:[[48,13]], a:[[50,12],[54,12]], e:[[50,12],[48,13]], n:'church' },
+  walt:  { m:[[86,27]], a:[[86,27]], e:[[86,27]], n:'station' },
+  agnes: { m:[[66,67]], a:[[66,67]], e:[[66,67]], n:'mill' },
+  ned:   { m:[[24,78]], a:[[24,78]], e:[[24,78]], n:'hut' },
 };
-const period = () => { const t=S0.tod ?? 10; return t>=7&&t<12 ? 'm' : t>=12&&t<17 ? 'a' : t>=17&&t<21 ? 'e' : 'n'; };
+const period = () => { const t=S0.tod ?? 10; return t>=7&&t<12 ? 'm' : t>=12&&t<17 ? 'a' : t>=17&&t<19 ? 'e' : 'n'; };   // everyone heads home at 7pm, before the Ashen appear at 7:30
 function worldSolid(px,py){ const tx=Math.floor(px/T), ty=Math.floor(py/T); return tx<0||ty<0||tx>=W||ty>=H||solid[ty*W+tx]; }
 function updateRoutines(dt){
   const per=period(), ob=objective(), pin=ob.at && !ob.at.scene && ob.at.npc;
   for (const n of npcs){
     const R=ROUTINE[n.id]; if (!R) continue;
     if (n.hx==null){ n.hx=n.x; n.hy=n.y; }
-    const pinned = n.id===pin && !(IN && n.inside===IN);
+    const pinned = n.id===pin && !(IN && n.inside===IN) && per!=='n';
     let plan = pinned ? [[(n.hx-8)/T, (n.hy-12)/T]] : R[per];
     const key = per + (pinned ? '!' : '');
     const far = IN || Math.hypot(n.x-P.x, n.y-P.y) > 300;
@@ -167,7 +171,7 @@ function renderScene(cx,cy,dt){
   pushCombatItems(items,cx,cy);
   items.sort((a,b)=>a.k-b.k); for (const it of items) it.d();
   drawSwing(cx,cy);
-  const ob=objective(), tgt=ob.at && ob.at.npc;
+  const ob=objective(), tgt=ob.at && (ob.at.npc || ob.at.who);
   for (const n of sceneNPCs()){ if ((C.says||[]).some(s=>s.ref===n)) continue; const x=Math.round(n.x-cx), y=Math.round(n.y-cy-36+(reduceMotion?0:Math.sin(time*4)*1.5)); if (n.id===tgt) bubble(x,y,true); else if (!S0.met.includes(n.id)) bubble(x,y,false); }
   // lighting
   const night=darkAmt()/.58;

@@ -91,6 +91,50 @@ const SCN = {
     "|..B.......u.|",
     "______D_______" ],
     objs:[ {x:6,y:4,label:'The inspection pit', act: () => actPit()} ] },
+  records: { name:'The Records Office', floor:'wood', wall:'#3e4a5a', out:[41,41], residents:{ clara:[5,3] }, map:[
+    "#W##YYY##W#",
+    "|YYY...YYY|",
+    "|.........|",
+    "|..EEE....|",
+    "|.........|",
+    "|Y...T...P|",
+    "____D______" ],
+    objs:[ {x:2,y:1,label:'Archive boxes', act: () => dialog([{s:'narr', t:'Cardboard boxes labelled by year, all the way back to 1952. The box for 2006 is much thinner than the others.'}])} ] },
+  farm: { name:'Tom’s farmhouse', floor:'wood', wall:'#7a5a3a', out:[22,38], residents:{ tom:[6,3] }, map:[
+    "##W##K##W##",
+    "|F.......B|",
+    "|A..T.....|",
+    "|...c.....|",
+    "|.........|",
+    "|B......PB|",
+    "____D______" ],
+    objs:[ {x:5,y:0,label:'A photo on the wall', act: () => dialog([{s:'narr', t:'Two young men grinning beside a half-built fence, covered in mud. Written on the frame: “E. and T. — Lantern, 1998.”'}])},
+           {x:1,y:1,label:'The stove', act: () => dialog([{s:'narr', t:'A pot of stew bubbles on the stove. It smells better than anything you’ve eaten in days.'}])} ] },
+  mill: { name:'Inside the Old Mill', floor:'wood', wall:'#6a5a4a', out:[63,66], residents:{ agnes:[4,3] }, map:[
+    "##W##W##W##",
+    "|BB...mm..|",
+    "|.....mm..|",
+    "|.........|",
+    "|.T.c.....|",
+    "|B.......F|",
+    "____D______" ],
+    objs:[ {x:6,y:2,label:'The millstones', act: () => dialog([{s:'narr', t:'Two great stones grind slowly, turned by the wheel outside. Flour dust hangs gold in the lamplight.'}])} ] },
+  hut: { name:'Ned’s fishing hut', floor:'wood', wall:'#5a6a7a', out:[13,72], residents:{ ned:[4,2] }, map:[
+    "#W##K##W#",
+    "|B..T..P|",
+    "|.......|",
+    "|A.....B|",
+    "___D_____" ],
+    objs:[ {x:3,y:1,label:'Fishing rods', act: () => dialog([{s:'narr', t:'A dozen rods, each with a name painted on the handle. The newest one just says “LUCKY”.'}])} ] },
+  station: { name:'The ticket office', floor:'tile', wall:'#2f5d63', out:[86,24], residents:{ walt:[3,2] }, map:[
+    "##W##K##W##",
+    "|E.EE...YY|",
+    "|.........|",
+    "|c..c..c..|",
+    "|.........|",
+    "|B.....P..|",
+    "____D______" ],
+    objs:[ {x:9,y:1,label:'The timetable', act: () => dialog([{s:'narr', t:'Timetable: one train in, one train out. The last one leaves at nine. Someone has written in pencil underneath: “Keep left.”'}])} ] },
   harlow: { name:'Harlow Cross', outdoor:true, ch4:true, spawns:true, safe:[[0,0,8,24]], floor:'cobble', map:[
     "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%",
     "==p%%%%%%%%%%%%%%,,%%%%%%%%%%%%%%%%%%%%%",
@@ -142,7 +186,7 @@ const SCN = {
     objs:[ {x:6,y:4,label:'The safe', act: () => actSafe()} ] },
 };
 const LIGHT_GLYPHS = { F:'255,140,60', O:'255,120,40', N:'255,210,120', E:'255,220,150', l:'255,200,110' };
-const SOLID_GLYPHS = new Set('#W M K|_ S C A T c F P B V O Q X L N Y w G E Z J u % = ~ l b t 1'.replace(/ /g,''));
+const SOLID_GLYPHS = new Set('#W M K|_ S C A T c F P B V O Q X L N Y w G E Z J u % = ~ l b t 1 m'.replace(/ /g,''));
 
 function buildScene(id){
   const sc=SCN[id]; if (sc.base) return sc;
@@ -231,6 +275,7 @@ function drawGlyph(R, ch, ox, x, y, sc, gl, rr){
     case 'E': R(ox,2,T,12,'#5a3a24'); R(ox,2,T,3,'#8a6240'); R(ox+3,-1,5,3,'#efe3c8'); if (x%3===0){ R(ox+11,-4,2,6,'#3a3a40'); R(ox+9,-6,6,3,'#c9a046'); } return true;
     case 'P': R(ox+4,9,8,6,'#a0503a'); R(ox+5,8,6,2,'#b8603a'); R(ox+3,0,10,9,'#3f7434'); R(ox+6,-4,4,5,'#5a9443'); R(ox+2,3,3,3,'#5a9443'); return true;
     case 'B': R(ox+3,1,10,14,'#7a5a3a'); R(ox+3,4,10,2,'#4a3a2a'); R(ox+3,10,10,2,'#4a3a2a'); R(ox+4,1,8,2,'#9a7a5a'); return true;
+    case 'm': { const cx=ox+8, cy2=4; for (let yy=-6;yy<=6;yy++){ const ww=Math.floor(Math.sqrt(36-yy*yy)); R(cx-ww,cy2+yy,ww*2,1, yy<-2?'#a8a296':'#8d877d'); } R(cx-1,cy2-1,2,2,'#5a554e'); return true; }
     case 'J': R(ox,0,T,16,'#120d0b'); R(ox,0,T,2,'#3a2a24'); if (x%2) R(ox+2,6,12,2,'#4a3426'); return true;
     case 'u': R(ox+1,5,14,10,'#2a2220'); R(ox+3,2,6,5,'#1a1614'); R(ox+9,4,5,3,'#3a302a'); R(ox+5,8,2,1,'#c94a2a'); return true;
     case 'l': R(ox+7,-12,2,26,'#22252f'); R(ox+5,-17,6,6,'#22252f'); R(ox+6,-16,4,4,'#ffd88a'); R(ox+5,13,6,2,'#22252f'); return true;
@@ -256,7 +301,7 @@ function sceneNPCs(){
   if (!IN) return [];
   const sc=SCN[IN], out=[];
   for (const [id,[tx,ty]] of Object.entries(sc.residents||{})){
-    const n=npcs.find(q=>q.id===id); if (!n || n.inside!==IN) continue;
+    const n=npcs.find(q=>q.id===id); if (!n || n.inside!==IN || (n.when && !n.when())) continue;
     const key=IN+':'+id; const p = SCENE_PROXY[key] || (SCENE_PROXY[key]={ id, x:tx*T+8, y:ty*T+12, dir:'down', home:'down', turnT:3, talk: () => n.talk() });
     out.push(p);
   }

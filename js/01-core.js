@@ -85,6 +85,7 @@ const houses = [
   { id:'station',  x:83, y:19, w:7, h:5, roof:'#2f5d63', wall:'#a8644a', brick:true, station:true },
   { id:'workshop', x:4,  y:3,  w:7, h:5, workshop:true },
   { id:'mill', x:61, y:61, w:6, h:5, roof:'#5a4a3a', wall:'#c9b28a', mill:true },
+  { id:'hut', x:12, y:67, w:4, h:4, roof:'#4a5a6a', wall:'#a8946e' },
   { id:'shed', x:80, y:4, w:8, h:5, shed:true, roof:'#2a2624', wall:'#5a4038' },
 ];
 for (const h of houses){ for (let y=h.y;y<h.y+h.h;y++) for (let x=h.x;x<h.x+h.w;x++){ solid[y*W+x]=1; if(at(x,y)!==PATH) set(x,y,GRASS);} reserveRect(h.x-1,h.y-1,h.w+2,h.h+3); }

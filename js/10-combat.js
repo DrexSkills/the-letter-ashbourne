@@ -402,7 +402,9 @@ function drawWeaponIcon(g,id){
 // ================= day & night =================
 // A full day lasts about 11 real minutes. The Ashen only come out at night.
 function todInit(){ if (S0.tod==null) S0.tod = [10,17.5,21,5.5,9,17.5,21][F().phase] ?? 10; if (!S0.day) S0.day=1; }
-function tickClock(dt){ todInit(); const L=LOOK(); S0.tod += dt * (L===0 ? 1/28 : 1/22); if (S0.tod>=24){ S0.tod-=24; S0.day++; } }
+function tickClock(dt){ todInit(); const L=LOOK();
+  if (L===2 && C.lastLook!==2 && C.lastLook!==undefined && !S0.nightTip){ S0.nightTip=1; toast('Night has fallen', 'Townsfolk have gone home — knock on their doors'); }
+  C.lastLook=L; S0.tod += dt * (L===0 ? 1/28 : 1/22); if (S0.tod>=24){ S0.tod-=24; S0.day++; } }
 function darkAmt(){ const t=S0.tod ?? 10; if (t>=7&&t<17) return 0; if (t>=17&&t<19.5) return .58*(t-17)/2.5; if (t>=5&&t<7) return .58*(1-(t-5)/2); return .58; }
 function clockText(){ todInit(); const t=S0.tod, h=Math.floor(t), m=Math.floor((t-h)*60/10)*10; const hh=((h+11)%12)+1, ap=h<12?'am':'pm';
   const L=LOOK(); const name = L===0 ? (t<12?'Morning':'Afternoon') : ['','Dusk','Night','Dawn'][L];

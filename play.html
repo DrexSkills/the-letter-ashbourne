@@ -74,7 +74,7 @@
   <canvas id="titleBg"></canvas>
   <div class="tenv" aria-hidden="true"><img src="icon-192.png" alt="" onerror="this.parentNode.remove()"></div>
   <h1>The Letter</h1>
-  <div class="sub">A pixel mystery in four chapters</div>
+  <div class="sub">A pixel mystery in fourteen chapters</div>
   <div class="divider"></div>
   <p class="tag">Twenty years ago your father vanished.<br>Three days ago, he wrote to you.</p>
   <div class="menu">
@@ -207,6 +207,10 @@
   <header><h2>Achievements</h2><span class="count" id="achCount"></span><button class="xbtn" id="achClose">✕ Close</button></header>
   <div id="achGrid" class="agrid"></div></div></div>
 <div id="achToast"><div class="at">★ Achievement unlocked</div><div class="an"></div><div class="ad"></div></div>
+<div id="cineBars" aria-hidden="true"><i></i><i></i></div>
+<div id="cineCap" aria-live="polite"></div>
+<div id="cineBig"></div>
+<button id="cineSkip" class="skipbtn" aria-label="Skip the opening scene"><span>Skip scene</span><svg class="ff" viewBox="0 0 16 12" aria-hidden="true" shape-rendering="crispEdges"><path d="M1 1h2v1h1v1h1v1h1v1h1v2H6v1H5v1H4v1H3v1H1z"/><path d="M8 1h2v1h1v1h1v1h1v1h1v2h-1v1h-1v1h-1v1h-1v1H8z"/><rect x="14" y="1" width="1.6" height="10"/></svg></button>
 <div id="fade"></div>
 
 <!-- The game code is split into numbered files in js/ — they load in this order. -->
@@ -223,6 +227,7 @@
 <script src="js/11-scenes.js"></script>
 <script src="js/12-systems.js"></script>
 <script src="js/13-atmosphere.js"></script>
+<script src="js/13b-prologue.js"></script>
 <script src="js/14-main.js"></script>
 </body>
 </html>

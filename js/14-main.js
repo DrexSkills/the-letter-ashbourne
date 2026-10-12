@@ -54,11 +54,11 @@ function step(now){
     gateCool-=dt;
     // Silas encounter
     if (!IN && F().lantern && !F().silas && Math.hypot(P.x-(12*T+8), P.y-(13*T+10))<44){ const s=npcs.find(n=>n.id==='silas'); s.dir = P.x<s.x?'left':'right'; talkSilas(); }
-    tickClock(dt); updateCombat(dt); updatePet(dt); try { updateRoutines(dt); } catch(e){} try { checkAchs(dt); } catch(e){} whistleT-=dt;
+    tickClock(dt); updateCombat(dt); updatePet(dt); checkChapterCard(); try { updateRoutines(dt); } catch(e){} try { checkAchs(dt); } catch(e){} whistleT-=dt;
     updateZone(dt);
     const nt=nearest(); const pr=$('#prompt');
     if (nt){ pr.style.display='block'; pr.querySelector('span').textContent=nt.label; } else pr.style.display='none';
-  } else { P.moving=false; $('#prompt').style.display='none'; if (mode==='title') titlePan += dt*12; }
+  } else { P.moving=false; $('#prompt').style.display='none'; if (mode==='title') titlePan += dt*12; if (mode==='cine'){ updatePrologue(dt); tickClockFrozen(); } }
 
   // NPC idle turning
   for (const n of npcs){ n.turnT-=dt; if (n.turnT<0){ n.turnT=3+rng()*5; n.dir = rng()<.6 ? n.home : pick(['down','left','right','up']); } }
@@ -72,6 +72,7 @@ function step(now){
   // camera
   let tx, ty;
   if (mode==='title'){ tx = 52*T + Math.sin(titlePan*.01)*30*T - VW/2; ty = 22*T - VH/2 + Math.sin(titlePan*.007)*6*T; }
+  else if (CINE.active){ tx=CINE.cam.x-VW/2; ty=CINE.cam.y-VH/2; }
   else { tx=P.x-VW/2; ty=P.y-12-VH/2; }
   camX += (tx-camX)*Math.min(1,dt*(mode==='title'?1:8)); camY += (ty-camY)*Math.min(1,dt*(mode==='title'?1:8));
   camX=Math.max(0,Math.min(mapW()-VW,camX)); camY=Math.max(0,Math.min(mapH()-VH,camY));
@@ -114,13 +115,14 @@ function render(cx,cy,dt){
     ctx.fillStyle='rgba(20,15,40,.3)'; ctx.fillRect(x-3,y+12,8,2); ctx.fillStyle='#22252f'; ctx.fillRect(x,y-10,2,23); ctx.fillRect(x-2,y+11,6,2); ctx.fillRect(x-2,y-15,6,6);
     ctx.fillStyle=phase>0?'#ffd88a':'#c9b88a'; ctx.fillRect(x-1,y-14,4,4); }});
   // train
-  items.push({k:42*T, d:()=>drawTrain(90*T-cx, 14*T-cy)});
-  for (const n of npcs){ if (!vis(n)) continue; if (!inV(n.x,n.y,30)) continue;
+  items.push({k:42*T, d:()=>drawTrain(90*T-cx, 14*T-cy+Math.round(CINE.active ? CINE.trainY : 0))});
+  if (CINE.active) pushCineItems(items, cx, cy);
+  for (const n of npcs){ if (CINE.active) break; if (!vis(n)) continue; if (!inV(n.x,n.y,30)) continue;
     items.push({k:n.y, d:()=>drawCharAt(ctx, n.x-cx+Math.round(n.bx||0), n.y-cy+Math.round(n.by||0)+(reduceMotion?0:(Math.sin(time*2+n.x)>.95?-1:0)), n.dir, n.walking ? [0,1,0,3][Math.floor(time*7)%4] : 0, CH[n.id])}); }
-  if (!F().catHome || cat.follow) items.push({k:cat.y, d:()=>drawCat(Math.round(cat.x-cx), Math.round(cat.y-cy))});
+  if (!CINE.active && (!F().catHome || cat.follow)) items.push({k:cat.y, d:()=>drawCat(Math.round(cat.x-cx), Math.round(cat.y-cy))});
   const frame = P.moving ? [0,1,0,3][Math.floor(P.anim)%4] : 0;
-  if (mode!=='title' && !(C.invul>0 && Math.floor(time*16)%2)) items.push({k:P.y, d:()=>drawPlayerSprite(ctx, P.x-cx, P.y-cy, frame, F().lantern)});
-  if (mode!=='title') pushCombatItems(items, cx, cy);
+  if (mode!=='title' && !(CINE.active && !CINE.showPlayer) && !(C.invul>0 && Math.floor(time*16)%2)) items.push({k:P.y, d:()=>drawPlayerSprite(ctx, P.x-cx, P.y-cy, frame, F().lantern)});
+  if (mode!=='title' && !CINE.active) pushCombatItems(items, cx, cy);
   items.sort((a,b)=>a.k-b.k);
   for (const it of items) it.d();
   drawSwing(cx,cy);
@@ -167,6 +169,7 @@ function render(cx,cy,dt){
     const cut=(x,y,r,a)=>{ if (x<-r||y<-r||x>VW+r||y>VH+r) return; const gg=dctx.createRadialGradient(x,y,0,x,y,r); gg.addColorStop(0,`rgba(0,0,0,${a})`); gg.addColorStop(.6,`rgba(0,0,0,${a*.5})`); gg.addColorStop(1,'rgba(0,0,0,0)'); dctx.fillStyle=gg; dctx.fillRect(x-r,y-r,r*2,r*2); };
     for (const h of houses) for (const [gx,gy] of h.glows){ if (h.workshop && phase!==2) continue; cut(h.x*T+gx-cx, h.y*T-h.extra+gy-cy+6, 26, .9); }
     if (phase>0) for (const [lx,ly] of lamps) cut(lx*T+8-cx, ly*T-6-cy, 46, .95);
+    if (CINE.active) for (const [lx,ly,lr] of CINE.lights) cut(lx-cx, ly-cy, lr, 1);
     if (F().lantern && mode!=='title'){ const fl=reduceMotion?0:Math.sin(time*9)*2+Math.sin(time*23); cut(P.x-cx, P.y-10-cy, 78+fl, 1); }
     dctx.globalCompositeOperation='source-over';
     ctx.drawImage(dark,0,0);
@@ -185,6 +188,7 @@ function render(cx,cy,dt){
   }
   ctx.globalCompositeOperation='source-over';
 
+  drawCineFX(cx,cy);
   drawSkyAtmos(cx,cy,dt);
   drawCombatFX(cx,cy);
   // objective marker
@@ -406,3 +410,5 @@ setInterval(() => { if (mode==='play') save(); }, 8000);
 })();
 window.__game = { ATM, bigQuestions: () => bigQuestions(), sceneNPCs: () => sceneNPCs(), cam: () => ({x:Math.round(camX), y:Math.round(camY)}), npcs, nearestT: () => { const t=nearest(); return t ? t.label : null; }, SCN, IN: () => IN, enterScene, leaveScene, ACHS: () => ACHS, CH, scout, greta: () => talkGreta(), C: () => C, killAll: () => C.enemies.slice().forEach(killEnemy), attack: () => attack(), Music, SETTINGS, P, S0: () => S0, F, mode: () => mode, interact, advance, choose, D, objective, teleport:(tx,ty)=>{P.x=tx*T+8;P.y=ty*T+10;}, cutNext };
 requestAnimationFrame(step);
+
+function tickClockFrozen(){ /* the clock is set by the opening scene itself */ }

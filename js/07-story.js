@@ -575,14 +575,14 @@ function startChapter(n){
   if (n===2){
     F().phase=3; todInit(); S0.tod=5.3; S0.day=(S0.day||1)+1; P.x=86*T+8; P.y=35*T+10; P.dir='up'; camX=P.x-VW/2; camY=P.y-VH/2;
     beginPlay(); unstickPlayer(); refreshHUD(); save(); setTimeout(sfxWhistle, 900);
-    showCard('Chapter Two', 'The Ledger', 'Dawn. The old platform, where he promised he would be.', () => dialog([
+    S0.shownChap=6; showCard('Part Two · Chapter 6', 'Dawn', 'The old platform, where he promised he would be.', () => dialog([
       {s:'recap', t:'Dad was framed for the fire that killed Mara Voss. Mara’s ledger — the proof — is hidden in the old engine shed. Dad promised to meet me on the platform at dawn.'},
       {s:'noah', t:'(Dawn. The old platform. He said he would be here.)'},
       {s:'noah', t:'(I’ll sit on the bench and wait for him.)'},
     ]));
   } else if (n===3) {
     F().phase=5; todInit(); if (S0.tod<17) S0.tod=17.2; P.x=82*T+8; P.y=16*T+10; P.dir='down'; camX=P.x-VW/2; camY=P.y-VH/2; beginPlay(); unstickPlayer(); refreshHUD(); save();
-    showCard('Chapter Three', 'Keeping Left', 'The same day. The sun is going down over Ashbourne.', () => dialog([
+    S0.shownChap=9; showCard('Part Three · Chapter 9', 'W.P.', 'The same day. The sun is going down over Ashbourne.', () => dialog([
       {s:'recap', t:'I have Mara’s ledger. It shows Victor Ashcombe paid someone called “W.P.” to destroy the railway records two days before the fire. Find out who W.P. is.'},
       {s:'noah', t:'(I have Mara’s ledger. Someone called “W.P.” was paid to clear the records before the fire.)'},
       {s:'noah', t:'(Ashcombe said to ask my “friends at the station.” But first I need to know who W.P. really is. Clara keeps the old railway records.)'},
@@ -590,7 +590,7 @@ function startChapter(n){
   } else {
     F().phase=6; todInit(); S0.tod=21.6;
     beginPlay(); enterScene('harlow', {x:4, y:10, dir:'right'}, true); refreshHUD(); save(); setTimeout(sfxWhistle, 700);
-    showCard('Chapter Four', 'Harlow Cross', 'The night train. One last stop.', () => dialog([
+    S0.shownChap=12; showCard('Part Four · Chapter 12', 'Harlow Cross', 'The night train. One last stop.', () => dialog([
       {s:'recap', t:'Walt confessed: he set the fire for Ashcombe’s money. I found Dad at last. But to put Ashcombe in prison, the police need the original ledger — locked in his office in Harlow Cross.'},
       {s:'narr', t:'The night train rattles into Harlow Cross: a smoky railway town of warehouses and black canals. Your father steps down beside you, lantern in hand.'},
       {s:'elias', t:'Mara’s copy proves the numbers. But a copy can be argued away. Ashcombe keeps the original books in his office safe.'},
@@ -657,17 +657,17 @@ function startNew(){
   try { localStorage.removeItem(SAVE_KEY); } catch(e){}
   applyWorldState(); resetCombat(); lastObj='';
   $('#title').classList.remove('on');
-  cutscene([
-    {html:true, t:'You are *Noah Vale*, 22 years old.'},
-    {html:true, t:'Twenty years ago, in the village of *Ashbourne*, the railway office burned down in the night.\n\nA woman named *Mara Voss* died inside.'},
-    {html:true, t:'That same night, your father *Elias* disappeared.\n\nSo everyone believed *he* started the fire — and ran away. You were six. You grew up believing it too.'},
+  // the night of the fire (2006), then twenty years later the train pulls in
+  mode='cine';
+  startPrologue(() => cutscene([
+    {html:true, t:'You are *Noah Vale*, 22.\n\nYou were six when your father disappeared — and you grew up believing *he* started that fire.'},
     {html:true, t:'Then, three days ago, a letter arrived.\n\n*From your father.*'},
     {paper:true, t:LETTER1},
     {html:true, t:'On the train, a stranger left a photo of your father on the seat beside you. On the back: *“Ashbourne, spring 2009”* — three years after he vanished.\n\nSo you bought a ticket.'},
-    {html:true, t:'*Your mission:*\n\nGo to Ashbourne. Find out *who really started the fire* — and *where your father is now.*\n\nTalk to people. Collect clues. Follow the pink arrow.'},
+    {html:true, t:'*Your mission:*\n\nFind out *who really started the fire* — and *where your father is now.*\n\nTalk to people. Collect clues. Follow the pink arrow.'},
   ], () => {
-    beginPlay();
-    showCard('Chapter One', 'The Letter', 'Ashbourne Station, late afternoon.', () => {
+    beginPlay(); S0.shownChap=1;
+    showCard('Part One · Chapter 1', 'Arrival', 'Ashbourne Station. Twenty years after the fire.', () => {
       dialog([
         {s:'noah', t:'(Ashbourne. Smaller than I pictured.)'},
         {s:'noah', t:'(The letter says to find a bookseller called Edmund Hale. I don’t know where his shop is.)'},
@@ -675,7 +675,7 @@ function startNew(){
         () => { addClue('letter'); setTimeout(()=>addClue('photo'), 2200); },
       ], () => { S0.tut=1; tutT=0; });
     });
-  });
+  }));
 }
 function beginPlay(){ mode='play'; document.body.classList.add('playing'); $('#hud').style.display='block'; $('#topbtns').style.display='flex'; refreshHUD(); }
 
@@ -702,9 +702,9 @@ $('#againBtn').addEventListener('click', () => { $('#ending').classList.remove('
 function showEnding(ch){
   mode='ending'; $('#ending').classList.add('on');
   const nClues=S0.clues.length, total=Object.keys(CLUES).length, people=Object.keys(PEOPLE).length;
-  const T_ = { 1:['Chapter One complete','Next: Chapter Two — The Ledger','Continue to Chapter Two'],
-               2:['Chapter Two complete','Next: Chapter Three — Keeping Left','Continue to Chapter Three'],
-               3:['Chapter Three complete','Next: Chapter Four — Harlow Cross','Continue to Chapter Four'],
+  const T_ = { 1:['Part One complete','Chapters 1–5 · Next: Part Two — The Ledger','Continue to Part Two'],
+               2:['Part Two complete','Chapters 6–8 · Next: Part Three — Keeping Left','Continue to Part Three'],
+               3:['Part Three complete','Chapters 9–11 · Next: Part Four — Harlow Cross','Continue to Part Four'],
                4:['The End','The Letter — the complete story','Keep exploring'] }[ch];
   $('#endTitle').textContent=T_[0]; $('#endSub').textContent=T_[1]; $('#roamBtn').textContent=T_[2];
   endingNext = ch<4 ? ch+1 : 0;
@@ -785,4 +785,49 @@ function unstickPlayer(){
     if (!blocked(x,y)){ P.x=x; P.y=y; camX=P.x-VW/2; camY=P.y-VH/2; return true; }
   }
   P.x=86*T+8; P.y=30*T+10; camX=P.x-VW/2; camY=P.y-VH/2; return true;
+}
+
+
+// ================= fourteen chapters in four parts =================
+const CHAPTERS = [
+  { n:1,  part:1, t:'Arrival',        sub:'Ashbourne Station. Twenty years after the fire.',   done:f=>f.hale1,
+    recap:'I arrived in Ashbourne with Dad’s letter. Now I need to find the bookseller, Edmund Hale.' },
+  { n:2,  part:1, t:'The Word',       sub:'Prove you are Elias Vale’s son.',                   done:f=>f.key,
+    recap:'Hale knew Dad’s handwriting, but he wants proof: the word Dad carved into everything he built.' },
+  { n:3,  part:1, t:'Old Friends',    sub:'Tom Barrow has kept a secret for twenty years.',     done:f=>f.lantern,
+    recap:'Hale gave me the key to Dad’s workshop, deep in Ashwood forest. I need Dad’s old lantern from Tom to get through the dark.' },
+  { n:4,  part:1, t:'Ashwood',        sub:'Nobody goes into the forest after dark.',            done:f=>f.wsDone || f.end,
+    recap:'Tom admitted he lied about Dad after the fire. With Dad’s lantern lit, it’s time to cross Ashwood forest to the workshop.' },
+  { n:5,  part:1, t:'The Workshop',   sub:'What did your father leave behind?',                 done:f=>f.end,
+    recap:'I fought my way through the forest. Dad’s workshop is right here — the key is in my pocket.' },
+  { n:6,  part:2, t:'Dawn',           sub:'The old platform, where he promised he would be.',  done:f=>f.ash1,
+    recap:'Dad was framed for the fire that killed Mara Voss. Her ledger — the proof — is in the old engine shed.' },
+  { n:7,  part:2, t:'The Culvert',    sub:'There is always another way in.',                    done:f=>f.bossDown,
+    recap:'Victor Ashcombe owns the engine shed and keeps it locked. I need another way into the yard.' },
+  { n:8,  part:2, t:'The Ledger',     sub:'What Mara found.',                                   done:f=>f.ch2end,
+    recap:'I beat the Cinder Warden that guarded the shed. Mara’s ledger is hidden inside.' },
+  { n:9,  part:3, t:'W.P.',           sub:'Two letters. One name.',                             done:f=>f.wp,
+    recap:'The ledger shows Ashcombe paid someone called “W.P.” to destroy the records before the fire. Who is W.P.?' },
+  { n:10, part:3, t:'Confession',     sub:'Somebody has carried this for twenty years.',        done:f=>f.confess,
+    recap:'W.P. is Walter Pryce — Walt, the railway worker. I have to face him.' },
+  { n:11, part:3, t:'The Platform',   sub:'Hold the line until he comes.',                      done:f=>f.gameEnd || f.ch3end,
+    recap:'Walt confessed to the fire. Now the Ashen are coming for the platform — and Dad is out there somewhere.' },
+  { n:12, part:4, t:'Harlow Cross',   sub:'The night train. One last stop.',                    done:f=>f.nell,
+    recap:'I found Dad. But Ashcombe walks free unless the police get the original ledger from his safe in Harlow Cross.' },
+  { n:13, part:4, t:'The Archive',    sub:'The ash remembers.',                                 done:f=>f.heartDown,
+    recap:'Nell Crane gave me the office key and the safe code: 12 · 06 · 06. The archive is in Ashcombe’s basement.' },
+  { n:14, part:4, t:'The Last Train', sub:'Some letters take twenty years to arrive.',          done:f=>f.ch4end,
+    recap:'I have the original ledger. One last thing to do: face Victor Ashcombe.' },
+];
+const PART_WORD = ['', 'One', 'Two', 'Three', 'Four'];
+function curChapter(){ const f=F(); for (const c of CHAPTERS) if (!c.done(f)) return c; return CHAPTERS[CHAPTERS.length-1]; }
+// when the story moves into a new chapter (inside the same part), show its title card and a one-line recap
+function checkChapterCard(){
+  if (mode!=='play' || CINE.active) return;
+  const c=curChapter();
+  if (S0.shownChap==null){ S0.shownChap=c.n; return; }
+  if (c.n > S0.shownChap && c.part===chap()){
+    S0.shownChap=c.n; save();
+    showCard(`Part ${PART_WORD[c.part]} · Chapter ${c.n}`, c.t, c.sub, () => dialog([{s:'recap', t:c.recap}]));
+  }
 }

@@ -10,7 +10,7 @@ addEventListener('keydown', e => {
   if (e.repeat) return;
   const act = e.code==='KeyE'||e.code==='Space'||e.code==='Enter';
   if (e.code==='Escape' || (e.code==='KeyP' && (mode==='play'||mode==='pause'))){
-    if (mode==='play') openPause(); else if (mode==='ach') closeAch(); else if (mode==='how') closeHow(); else if (mode==='dialog') skipDialog(); else if (mode==='cut') skipCut(); else if (mode==='pause') closePause(); else if (mode==='settings') closeSettings(); else if (mode==='journal') closeJournal(); else if (mode==='map') closeMap(); else if (mode==='inv') closeInv();
+    if (mode==='cine'){ endPrologue(true); } else if (mode==='play') openPause(); else if (mode==='ach') closeAch(); else if (mode==='how') closeHow(); else if (mode==='dialog') skipDialog(); else if (mode==='cut') skipCut(); else if (mode==='pause') closePause(); else if (mode==='settings') closeSettings(); else if (mode==='journal') closeJournal(); else if (mode==='map') closeMap(); else if (mode==='inv') closeInv();
     e.preventDefault(); return;
   }
   if (mode==='dialog'){

@@ -47,7 +47,7 @@ function refreshHUD(){
   try { refreshHearts(); } catch(e){}
   const o=objective(); $('#objLbl').textContent=o.t; $('#jObj').textContent=o.t;
   lastClock='';
-  $('#chapLbl').textContent = ['','Chapter One · The Letter','Chapter Two · The Ledger','Chapter Three · Keeping Left','Chapter Four · Harlow Cross'][chap()];
+  { const c=curChapter(); $('#chapLbl').textContent = `Chapter ${c.n} · ${c.t}`; }
   if (o.t !== lastObj){ if (lastObj && mode!=='title'){ const h=$('#hud'); h.classList.remove('flash'); void h.offsetWidth; h.classList.add('flash'); } lastObj=o.t; }
 }
 

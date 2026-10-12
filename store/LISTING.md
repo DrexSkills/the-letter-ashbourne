@@ -15,8 +15,8 @@ Then, three days ago, a letter arrived. From him.
 
 The Letter is a story-driven pixel-art mystery adventure. Take the train to Ashbourne, talk to the people who knew your father, collect clues, and uncover the truth that a whole town has kept buried for twenty years.
 
-★ A FULL STORY IN FOUR CHAPTERS
-Follow the trail from a quiet country village, through a dark lantern-lit forest, to a burned-out engine shed and a smoky canal town. Every chapter ends with a twist — and your choices shape the ending.
+★ A FULL STORY IN 14 CHAPTERS
+It opens on the night of the fire: flames over the railway office, a village in chaos, and a man running into the dark. Then twenty years later, you step off the train. Follow the trail through four parts and fourteen chapters — from a quiet country village and a lantern-lit forest to a burned-out engine shed and a smoky canal town. Your choices shape the ending.
 
 ★ A LIVING VILLAGE
 Meet 16 characters, each with their own portrait and personality. Townsfolk go about their day and head home when night falls. Visit them in their homes, from the cosy café to the old water mill.

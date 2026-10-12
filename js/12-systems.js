@@ -95,8 +95,8 @@ function updateRoutines(dt){
 
 // ================= achievements =================
 const ACH = [
-  ['first','First steps','Arrive in Ashbourne.'], ['ch1','The Letter','Finish Chapter One.'], ['ch2','The Ledger','Finish Chapter Two.'],
-  ['ch3','Keeping Left','Finish Chapter Three.'], ['ch4','Some letters take twenty years','Finish the whole story.'],
+  ['first','First steps','Arrive in Ashbourne.'], ['ch1','The Letter','Finish Part One (chapters 1–5).'], ['ch2','The Ledger','Finish Part Two (chapters 6–8).'],
+  ['ch3','Keeping Left','Finish Part Three (chapters 9–11).'], ['ch4','Some letters take twenty years','Finish all 14 chapters.'],
   ['memories','Remembering','Find all 5 hidden memories.'], ['detective','Detective','Find every clue in the game.'],
   ['bonk','Nobody’s safe','Bonk every townsperson in Ashbourne.'], ['untouchable','Untouchable','Defeat the Cinder Warden without getting hit.'],
   ['heart','Heartbreaker','Defeat the Ashen Heart.'], ['lvl5','Seasoned','Reach level 5.'], ['lvl10','Ember-forged','Reach level 10.'],

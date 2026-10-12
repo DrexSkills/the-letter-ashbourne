@@ -7,6 +7,9 @@ Twenty years ago Noah's father, Elias Vale, vanished. Three days ago, he wrote t
 
 ## Story
 
+**14 chapters in 4 parts**, opening with an animated scene of the night of the fire in 2006.
+
+
 **Chapter One — The Letter.** Noah Vale arrives in Ashbourne after a letter from the father who vanished twenty years ago. A bookseller, a farmer's fence, a dark forest, and a hidden workshop.
 
 **Chapter Two — The Ledger.** Dawn on the old platform. His father doesn't come, but a note does. A locked engine shed, a landowner with too many answers, and the ledger Mara Voss died protecting.
@@ -93,6 +96,7 @@ js/               the game code, split by topic — files load in number order (
   11-scenes.js       building interiors and Chapter Four (Harlow Cross)
   12-systems.js      sound effects, daily routines, achievements, drawing interiors
   13-atmosphere.js   cloud shadows, leaves, birds, sun rays, fog, rain and dust
+  13b-prologue.js    the opening scene: the night of the fire in 2006, then the train arrives
   14-main.js         tutorial, main loop, drawing the world, menus and start-up
 build.py          optional: bundles everything into one file, dist/the-letter.html
 sw.js, manifest.webmanifest, icons   for "Add to Home Screen"

@@ -2,6 +2,9 @@
 
 Copy these into Google Play Console → *Grow users* → *Store presence* → *Main store listing*.
 
+## Screenshots
+Use the 8 images in `store/google-play-screenshots/` (1920×1080, landscape) for **Phone**, **7-inch tablet** and **10-inch tablet** screenshots. Upload them in order 01 → 08.
+
 ## App name (max 30 characters)
 The Letter: A Pixel Mystery
 

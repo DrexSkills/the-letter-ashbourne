@@ -645,3 +645,23 @@ body.cine #cineSkip { display: inline-flex; }
 
 /* before Walt gives you the stick: show hearts and hunger, hide the fighting bits */
 body:not(.canfight) #lvlBox, body:not(.canfight) #wpnBtn, body:not(.canfight) #shardLbl { display: none !important; }
+
+/* ===== phones held upright: buttons in one row along the top, goal box full width below ===== */
+@media (orientation: portrait) and (max-width: 640px) {
+  #topbtns { left: calc(8px + env(safe-area-inset-left, 0px)); right: calc(8px + env(safe-area-inset-right, 0px)); top: calc(8px + env(safe-area-inset-top, 0px));
+    flex-direction: row !important; justify-content: flex-end; gap: 5px; }
+  #topbtns .btn { width: 40px !important; height: 38px !important; padding: 0 !important; display: grid !important; place-items: center; }
+  #topbtns .btn .lg, #topbtns .btn .k { display: none !important; }
+  #topbtns .btn .pxi { margin: 0 !important; width: 20px; height: 20px; }
+  #hud { left: calc(8px + env(safe-area-inset-left, 0px)); right: calc(8px + env(safe-area-inset-right, 0px)); top: calc(54px + env(safe-area-inset-top, 0px));
+    max-width: none !important; width: auto; padding: 7px 11px 8px; }
+  #hud .chap { font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #hud .time { font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #hud .obj { font-size: 17px; line-height: 1.1; max-height: 3.4em; overflow: hidden; }
+  #hud .newobj { display: none !important; }
+  body.playing.showmini #mini { display: none; }
+  #achToast { top: calc(196px + env(safe-area-inset-top, 0px)); max-width: calc(100% - 24px); }
+  #toast, #toast.show { top: calc(290px + env(safe-area-inset-top, 0px)); left: 50%; right: auto; transform: translateX(-50%); max-width: calc(100% - 24px); text-align: center; }
+  #zone { top: 40%; font-size: 30px; }
+  #showUI { top: calc(8px + env(safe-area-inset-top, 0px)); }
+}

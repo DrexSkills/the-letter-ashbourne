@@ -630,3 +630,18 @@ body.cine #hud, body.cine #topbtns, body.cine #mini, body.cine #tut, body.cine #
 #cineBig.on { opacity: 1; }
 #cineSkip { display: none; position: fixed; right: calc(16px + env(safe-area-inset-right, 0px)); bottom: calc(11vh + 14px); z-index: 10; }
 body.cine #cineSkip { display: inline-flex; }
+
+/* ===== hunger, potions, food, shield ===== */
+#hungerBox { display: inline-flex; align-items: center; gap: 4px; }
+#hungerBox .hico { width: 15px; height: 12px; fill: #e8b04a; }
+.hbar { width: 38px; height: 6px; background: #0e1322; border: 2px solid #283252; display: inline-block; }
+.hbar span { display: block; height: 100%; width: 100%; background: #9fe07a; transition: width .5s, background .5s; }
+.qbtn { display: inline-flex; align-items: center; gap: 3px; height: 30px; padding: 0 6px; background: #0e1322; border: 2px solid var(--edge); color: var(--ink); font-family: var(--body); font-size: 17px; cursor: pointer; }
+.qbtn svg { width: 15px; height: 12px; fill: #e8b04a; } #potBtn svg { fill: #9fe07a; }
+.qbtn:hover { border-color: var(--amber); }
+.act button.blk { display: none; } body.hasshield .act button.blk { display: block; }
+.act button.blk svg { width: 26px; height: 20px; fill: #dfe6f2; }
+@media (pointer: coarse) and (max-height: 520px) { .hbar { width: 28px; } .qbtn { height: 26px; font-size: 15px; } }
+
+/* before Walt gives you the stick: show hearts and hunger, hide the fighting bits */
+body:not(.canfight) #lvlBox, body:not(.canfight) #wpnBtn, body:not(.canfight) #shardLbl { display: none !important; }

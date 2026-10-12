@@ -4,7 +4,7 @@
 // ================= objectives & HUD =================
 function objective(){
   const o=objectiveBase();
-  if (o.at && o.at.inside && SCN[o.at.inside] && IN!==o.at.inside){ o.t = o.t + ' — they’re indoors for the night (' + SCN[o.at.inside].name + ')'; }
+  if (o.at && o.at.inside && SCN[o.at.inside] && IN!==o.at.inside){ o.t = o.t + (ATM.shelter && LOOK()!==2 ? ' — they’re sheltering from the rain (' : ' — they’re indoors for the night (') + SCN[o.at.inside].name + ')'; }
   return o;
 }
 function objectiveBase(){
@@ -101,7 +101,8 @@ function storySoFar(){
   }
   const side=['At night the Ashen come out. The village and station are safe. Sleep at June’s café to skip to morning.'];
   side.push(F().pet ? 'Scout the dog is with you now, fighting at your side.' : F().pie ? 'You have a meat pie. Take it to the stray dog by the bridge, east of the village.' : 'A stray dog hides near the bridge, east of the village. A meat pie from June’s café (5 ✦) might win him over.');
-  side.push('Greta the blacksmith, south-east of the square, trades ember shards ✦ for a sword, bow and axe.');
+  side.push('Greta the blacksmith, south-east of the square, trades ember shards ✦ for a sword, bow, axe and an oak shield.');
+  side.push('Keep an eye on your hunger. June’s café counter sells bread, stew and healing potions.');
   side.push(F().lureDone ? 'You returned Old Ned’s lucky lure. He’s catching fish again.' : F().lureFound ? 'You found Ned’s lucky lure — take it back to him at Willow Lake.' : F().lureQuest ? 'Old Ned lost his lucky lure in the Abbey ruins, across the river to the south-east.' : 'The road south from the square leads to Willow Lake, the Old Mill and the Abbey ruins.');
   out.push(['Side quests & tips', side]);
   return out;

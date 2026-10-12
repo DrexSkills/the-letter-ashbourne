@@ -21,8 +21,11 @@ It opens on the night of the fire: flames over the railway office, a village in 
 ★ A LIVING VILLAGE
 Meet 16 characters, each with their own portrait and personality. Townsfolk go about their day and head home when night falls. Visit them in their homes, from the cosy café to the old water mill.
 
-★ FIGHT THE ASHEN
-Since the fire, ash creatures crawl out of the fields at night. Fight them with a stick, sword, bow or axe, level up, and face powerful bosses.
+★ FIGHT THE CREATURES OF THE NIGHT
+Since the fire, ash creatures crawl out of the fields at night — joined by forest archers, goblin warriors, shadow stalkers, stone golems and crystal wisps. Fight with a stick, sword, bow or axe, block with a shield, drink healing potions, level up, and face powerful bosses.
+
+★ SURVIVE
+Keep an eye on your hunger: buy bread and stew at June’s café. Rain sends the townsfolk indoors; when it snows, everyone wraps up in coats and woolly hats.
 
 ★ EXPLORE AND COLLECT
 Find 23 clues and 5 hidden memories, help the townsfolk with side quests, befriend a stray dog who fights by your side, and unlock 23 achievements.

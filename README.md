@@ -49,6 +49,9 @@ Open `play.html` in any modern browser (`index.html` is the game's landing page)
 Since the fire, ash creatures called **the Ashen** crawl out of the fields — **but only at night**. A full day/night cycle runs in real time (about 11 minutes a day). The village and station are always safe and you heal there; sleep at June's café to skip to morning.
 
 - **Fighting animations:** see your stick, sword or axe sweep with a motion trail, draw and release the bow, feel each hit with a tiny hit-stop, damage numbers and sparks; enemies wind up, snap, swoop and lunge, flash when hit, and crumble into ash when defeated.
+- **New creatures:** Forest Archers shoot from a distance, Goblin Warriors charge, Forest Spirits heal other monsters, Shadow Stalkers hide until they pounce, Stone Golems smash the ground, and Crystal Wisps split when hit.
+- **Survival:** a shield (hold B) blocks attacks and arrows from the front; healing potions (R); a hunger bar — buy bread and stew at June's café and eat with F.
+- **Weather:** rain sends townsfolk indoors; in snow everyone wears coats, scarves and woolly hats.
 - **Enemies:** Ash Crawlers, Ember Wisps, Shade Hounds (they lunge — dodge!), and the **Cinder Warden** boss.
 - **Levels:** defeating Ashen earns XP. Every level gives an extra heart and stronger hits.
 - **Weapons:** Walt gives you a walking stick. **Greta the blacksmith** trades ember shards ✦ for an **Iron sword** (fast), a **Hunting bow** (arrows) and a **Woodsman's axe** (wide, heavy swings). Dad's lantern makes every hit stronger.
@@ -93,6 +96,7 @@ js/               the game code, split by topic — files load in number order (
   08-hud-journal.js  goals, the goal box, the journal and items
   09-world.js        area names, collisions, interacting, camera, phone extras
   10-combat.js       the Ashen, fighting, bosses, weapons, levels, day/night, Scout, Greta
+  10b-creatures.js   Forest Archer, Goblin Warrior, Forest Spirit, Shadow Stalker, Stone Golem, Crystal Wisp; shield, potions, hunger, café food
   11-scenes.js       building interiors and Chapter Four (Harlow Cross)
   12-systems.js      sound effects, daily routines, achievements, drawing interiors
   13-atmosphere.js   cloud shadows, leaves, birds, sun rays, fog, rain and dust

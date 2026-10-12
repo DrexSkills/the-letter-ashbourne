@@ -32,7 +32,7 @@ const SCN = {
     "|B........B|",
     "_____D______" ],
     objs:[ {x:1,y:2,label:'Armchair by the stove', act: () => actCafeChair()},
-           {x:4,y:1,label:'Pies under glass', act: () => dialog([{s:'narr', t:'Meat pies, apple pies, and one very suspicious-looking eel pie. A card says: “5 ✦ each. Ask June.”'}])},
+           {x:4,y:1,label:'Café counter — buy food & potions', act: () => openFoodShop()},
            {x:2,y:3,label:'Biscuit', when: () => F().catHome, act: () => dialog([{s:'narr', t: LOOK()===2 ? 'Biscuit is curled up by the stove, fast asleep. One ear twitches when you say her name.' : 'Biscuit opens one eye, purrs like a little engine, and goes straight back to sleep by the warm stove.'}]) },
            {x:5,y:0,label:'The café clock', act: () => dialog([{s:'narr', t:'The clock runs five minutes fast. A note underneath: “So nobody is ever late for tea. — J.”'}])} ] },
   post: { name:'Ashbourne Post Office', floor:'tile', wall:'#7a2e2e', out:[59,27], residents:{ rosa:[5,2] }, public:true, map:[

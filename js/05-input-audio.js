@@ -4,7 +4,7 @@
 // ================= input =================
 const keys = {};
 let mode = 'title';
-const kmap = { Space:'atk', KeyK:'atk', ArrowUp:'up', KeyW:'up', ArrowDown:'down', KeyS:'down', ArrowLeft:'left', KeyA:'left', ArrowRight:'right', KeyD:'right', ShiftLeft:'run', ShiftRight:'run' };
+const kmap = { KeyB:'block', Space:'atk', KeyK:'atk', ArrowUp:'up', KeyW:'up', ArrowDown:'down', KeyS:'down', ArrowLeft:'left', KeyA:'left', ArrowRight:'right', KeyD:'right', ShiftLeft:'run', ShiftRight:'run' };
 addEventListener('keydown', e => {
   if (kmap[e.code]) { keys[kmap[e.code]]=true; if (mode!=='title') e.preventDefault(); }
   if (e.repeat) return;
@@ -32,6 +32,8 @@ addEventListener('keydown', e => {
     if (e.code==='KeyM') openMap();
     if (e.code==='KeyI') openInv();
     if (e.code==='KeyQ') cycleWeapon();
+    if (e.code==='KeyR') usePotion();
+    if (e.code==='KeyF') eatFood();
     if (/^Digit[1-4]$/.test(e.code)) selectWeapon(+e.code.slice(5)-1);
     if (e.code==='KeyH') openHow('play');
     if (e.code==='KeyU') toggleUI();

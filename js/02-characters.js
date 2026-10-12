@@ -35,6 +35,7 @@ function drawChar(g, px, py, dir, frame, c, holdLight){
     r(5,15+b,3,lL,c.pants); r(8,15+b,3,rL,c.pants2);
     r(5,15+b+lL,3,2,'#18181d'); r(8,15+b+rL,3,2,'#18181d');
     rh(4,9,8,7,c.top); rh(4,14,8,1,c.top2);
+    if (c.coat){ rh(4,14,8,4,c.top); rh(4,17,8,1,c.top2); if (dir==='down') rh(7,10,1,7,c.top2); }
     if (c.shirt && dir==='down') rh(7,9,2,5,c.shirt);
     if (c.apron && dir==='down') rh(5,11,6,5,c.apron);
     if (c.scarf) rh(5,9,6,2,c.scarf);
@@ -53,7 +54,7 @@ function drawChar(g, px, py, dir, frame, c, holdLight){
       if (c.mustache) rh(6,7,4,1,c.mustache);
       if (c.stubble) { rh(5,7,6,2,c.stubble); rh(6,7,4,1,c.skin2); }
       if (c.glasses){ rh(5,6,6,1,'#2a2a2a'); rh(6,6,1,1,'#bfe0f0'); rh(9,6,1,1,'#bfe0f0'); }
-      if (c.hat){ if (c.hat.s==='cap'){ rh(4,0,8,3,hc); rh(4,3,8,1,hc2);} else if (c.hat.s==='straw'){ rh(4,-1,8,3,hc); rh(2,2,12,1,hc2);} else { rh(5,-1,6,3,hc); rh(3,2,10,1,hc2);} }
+      if (c.hat){ if (c.hat.s==='beanie'){ rh(4,0,8,4,hc); rh(4,3,8,1,hc2); rh(5,1,1,2,shade(hc,1.25)); rh(7,-2,2,2,'#efe3c8'); } else if (c.hat.s==='cap'){ rh(4,0,8,3,hc); rh(4,3,8,1,hc2);} else if (c.hat.s==='straw'){ rh(4,-1,8,3,hc); rh(2,2,12,1,hc2);} else { rh(5,-1,6,3,hc); rh(3,2,10,1,hc2);} }
       if (holdLight){ r(12,14+b,2,3,'#3a2a1a'); r(12,15+b,2,1,'#ffd88a'); }
     } else {
       if (c.pack){ rh(4,9,8,6,'#6b4a2f'); rh(5,10,6,2,'#563a24'); rh(7,12,2,1,'#c9a46a'); }
@@ -63,13 +64,14 @@ function drawChar(g, px, py, dir, frame, c, holdLight){
       else if (c.style==='long'){ rh(4,1,8,10,hh); rh(3,3,1,8,hh); rh(12,3,1,8,hh); }
       else if (c.style==='bald'){ rh(5,4,6,4,hh); rh(6,3,4,1,shade(c.skin,1.1)); }
       else { rh(4,1,8,6,hh); if (c.style==='bun') rh(6,-1,4,3,hh); }
-      if (c.hat){ if (c.hat.s==='cap'){ rh(4,0,8,3,hc);} else if (c.hat.s==='straw'){ rh(4,-1,8,3,hc); rh(2,2,12,1,hc2);} else { rh(5,-1,6,3,hc); rh(3,2,10,1,hc2);} }
+      if (c.hat){ if (c.hat.s==='beanie'){ rh(4,0,8,4,hc); rh(4,3,8,1,hc2); rh(5,1,1,2,shade(hc,1.25)); rh(7,-2,2,2,'#efe3c8'); } else if (c.hat.s==='cap'){ rh(4,0,8,3,hc);} else if (c.hat.s==='straw'){ rh(4,-1,8,3,hc); rh(2,2,12,1,hc2);} else { rh(5,-1,6,3,hc); rh(3,2,10,1,hc2);} }
       if (holdLight){ r(2,14+b,2,3,'#3a2a1a'); r(2,15+b,2,1,'#ffd88a'); }
     }
   } else {
     if (step!==0){ r(5,15+b,2,4,c.pants2); r(9,15+b,2,4,c.pants); r(4,19+b,3,2,'#18181d'); r(9,19+b,3,2,'#18181d'); }
     else { r(6,15,4,5,c.pants); r(6,20,5,2,'#18181d'); }
     rh(5,9,6,7,c.top); rh(5,14,6,1,c.top2);
+    if (c.coat){ rh(5,14,6,4,c.top); rh(5,17,6,1,c.top2); }
     if (c.apron) rh(9,10,2,6,c.apron);
     if (c.scarf) rh(5,9,6,2,c.scarf);
     if (c.pack){ rh(2,9,4,6,'#6b4a2f'); rh(2,10,3,2,'#563a24'); }
@@ -87,12 +89,26 @@ function drawChar(g, px, py, dir, frame, c, holdLight){
     if (c.mustache) rh(9,7,3,1,c.mustache);
     if (c.stubble) rh(8,8,4,1,c.stubble);
     if (c.glasses){ rh(7,6,5,1,'#2a2a2a'); rh(9,6,1,1,'#bfe0f0'); }
-    if (c.hat){ if (c.hat.s==='cap'){ rh(4,0,8,3,hc); rh(10,3,4,1,hc2);} else if (c.hat.s==='straw'){ rh(4,-1,8,3,hc); rh(2,2,12,1,hc2);} else { rh(5,-1,6,3,hc); rh(3,2,10,1,hc2);} }
+    if (c.hat){ if (c.hat.s==='beanie'){ rh(4,0,8,4,hc); rh(4,3,8,1,hc2); rh(5,1,1,2,shade(hc,1.25)); rh(7,-2,2,2,'#efe3c8'); } else if (c.hat.s==='cap'){ rh(4,0,8,3,hc); rh(10,3,4,1,hc2);} else if (c.hat.s==='straw'){ rh(4,-1,8,3,hc); rh(2,2,12,1,hc2);} else { rh(5,-1,6,3,hc); rh(3,2,10,1,hc2);} }
   }
 }
 // characters blink now and then, each on their own rhythm
 function blinkNow(c){ if (typeof time==='undefined' || reduceMotion) return false; const t=time*0.8 + (c.pitch||300)*0.0137; return (t % 3.7) < 0.12; }
+// In the snow, everyone outdoors wears a warm coat, a scarf and a woolly hat.
+const WINTER_COATS = { Noah:'#3a3f52', 'Walt Pryce':'#2a2f45', 'Edmund Hale':'#5a4636', June:'#7a3a32', 'Clara Wynn':'#3a4a3a', 'Tom Barrow':'#5a4a32', Pip:'#c0392b',
+  'Rosa Marsh':'#6a2a2a', 'Reverend Bennet':'#1a1a22', 'Greta Holloway':'#4a3a32', 'Agnes Mott':'#5a6a4a', 'Old Ned':'#d9a03a', 'Silas Voss':'#2b2826', 'Victor Ashcombe':'#2a2e3e', 'Elias Vale':'#5a5650' };
+const BEANIES = ['#a33a2e','#2f5a7a','#c9a046','#3a6a3a','#6a3a6e','#d8d0c0'];
+const _winterCache = new WeakMap();
+function winterOn(){ return typeof ATM!=='undefined' && ATM.snow>.35 && !(IN && SCN[IN] && !SCN[IN].outdoor); }
+function winterize(c){
+  if (_winterCache.has(c)) return _winterCache.get(c);
+  const coat = WINTER_COATS[c.name] || shade(c.top||'#3a3f52', .8), k=(c.name||'x').length;
+  const w = { ...c, top:coat, top2:shade(coat,.74), coat:true, scarf: c.scarf || ['#c94a2a','#e8c46a','#f2f2f2','#4a7ad8'][k%4], apron:undefined, shirt:undefined,
+    hat: c.hat || { c:BEANIES[k%BEANIES.length], s:'beanie' } };
+  _winterCache.set(c, w); return w;
+}
 function drawCharAt(g, sx, sy, dir, frame, c, holdLight){
+  if (winterOn()) c=winterize(c);
   const kid = c.kid ? 3 : 0;
   const px=Math.round(sx-8), py=Math.round(sy-23+kid);
   if (dir==='left'){ g.save(); g.translate(px+16,py); g.scale(-1,1); drawChar(g,0,0,'right',frame,c,holdLight); g.restore(); }
@@ -100,6 +116,7 @@ function drawCharAt(g, sx, sy, dir, frame, c, holdLight){
 }
 
 function drawPortrait(g, c){
+  if (winterOn()) c=winterize(c);
   g.clearRect(0,0,24,24);
   const r=(x,y,w,h,col)=>{ g.fillStyle=col; g.fillRect(x,y,w,h); };
   r(0,0,24,24, shade(c.top,.5)); r(0,0,24,8, shade(c.top,.62)); r(0,16,24,8, shade(c.top,.38));
@@ -123,7 +140,8 @@ function drawPortrait(g, c){
   if (c.stubble){ r(7,14,10,3,c.stubble); r(10,14,4,1,'#6a3a2a'); r(8,15,8,1,shade(c.stubble,1.2)); }
   if (c.glasses){ const f='#2a2a2a'; for (const gx of [8,12]){ r(gx,10,4,1,f); r(gx,12,4,1,f); r(gx,10,1,3,f); r(gx+3,10,1,3,f);} r(9,11,2,1,'#bfe0f0'); r(13,11,2,1,'#bfe0f0'); r(10,11,1,1,E); r(14,11,1,1,E); }
   if (c.hat){ const hc=c.hat.c, hc2=shade(hc,.7);
-    if (c.hat.s==='cap'){ r(6,2,12,5,hc); r(6,7,13,1,hc2); r(10,3,4,2,'#e8c46a'); }
+    if (c.hat.s==='beanie'){ r(6,1,12,7,hc); r(6,6,12,2,hc2); r(8,2,2,4,shade(hc,1.25)); r(10,-1,4,3,'#efe3c8'); }
+    else if (c.hat.s==='cap'){ r(6,2,12,5,hc); r(6,7,13,1,hc2); r(10,3,4,2,'#e8c46a'); }
     else if (c.hat.s==='straw'){ r(7,1,10,5,hc); r(3,6,18,2,hc2); r(7,5,10,1,'#8a3b2e'); }
     else { r(8,1,8,5,hc); r(5,6,14,1,hc2); r(8,5,8,1,'#4a3a32'); } }
 }

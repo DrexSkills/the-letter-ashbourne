@@ -1,7 +1,7 @@
 // The Letter — Atmosphere: drifting cloud shadows, leaves, birds, sun rays, fog, rain (with sound) and dust puffs.
 'use strict';
 
-const ATM = { leaves:[], birds:[], birdT:12, puffs:[], drops:[], rain:0, rainTarget:0, weatherT:90, rainSnd:null, inited:false };
+const ATM = { leaves:[], birds:[], birdT:12, puffs:[], drops:[], flakes:[], rain:0, rainTarget:0, snow:0, snowTarget:0, shelter:false, weatherT:90, rainSnd:null, inited:false };
 
 // soft cloud-shadow and fog textures, drawn once
 function softBlobTexture(w, h, blobs, alpha, col){
@@ -26,6 +26,7 @@ function atmosInit(){
   if (ATM.inited) return; ATM.inited=true;
   for (let i=0;i<26;i++) ATM.leaves.push(newLeaf(true));
   for (let i=0;i<140;i++) ATM.drops.push(newDrop(true));
+  for (let i=0;i<130;i++) ATM.flakes.push({ x:Math.random()*VW, y:Math.random()*VH, v:12+Math.random()*16, p:Math.random()*6.28, s:Math.random()<.25?2:1 });
 }
 function newLeaf(anywhere){
   const cols=['#d9823a','#c94a2a','#e8c46a','#7aa64a','#f2b6c6','#e8a050'];
@@ -40,11 +41,22 @@ function updateAtmos(dt){
   const look=LOOK();
   // weather: now and then a rain shower rolls in (Harlow Cross is always drizzly)
   if (mode==='play'){ ATM.weatherT-=dt;
-    if (ATM.weatherT<=0){ ATM.weatherT = ATM.rainTarget>0 ? 120+Math.random()*120 : 60+Math.random()*90;
-      ATM.rainTarget = (ATM.rainTarget>0 || Math.random()>.35) ? 0 : .6+Math.random()*.4; } }
-  let target = SETTINGS.weather===false ? 0 : (IN==='harlow' ? Math.max(.45, ATM.rainTarget) : ATM.rainTarget);
-  if (mode==='title') target=0;
+    if (ATM.weatherT<=0){
+      if (ATM.rainTarget>0 || ATM.snowTarget>0){ ATM.rainTarget=0; ATM.snowTarget=0; ATM.weatherT=70+Math.random()*100; }   // the weather clears
+      else { const r=Math.random();
+        if (r<.4) ATM.weatherT=60+Math.random()*80;                                                                   // stays clear a while longer
+        else if (r<.75){ ATM.rainTarget=.6+Math.random()*.4; ATM.weatherT=110+Math.random()*120; }                     // a rain shower
+        else { ATM.snowTarget=.6+Math.random()*.4; ATM.weatherT=130+Math.random()*120; } } } }                        // snowfall
+  let target = SETTINGS.weather===false ? 0 : (IN==='harlow' && !ATM.snowTarget ? Math.max(.45, ATM.rainTarget) : ATM.rainTarget);
+  if (mode==='title' || mode==='cine') target=0;
   ATM.rain += (target-ATM.rain)*Math.min(1,dt*.35);
+  const snowTarget = (SETTINGS.weather===false || mode==='title' || mode==='cine') ? 0 : ATM.snowTarget;
+  ATM.snow += (snowTarget-ATM.snow)*Math.min(1,dt*.25);
+  // townsfolk shelter indoors when it rains
+  if (!ATM.shelter && ATM.rain>.3 && ATM.rainTarget>0 && IN!=='harlow'){ ATM.shelter=true; if (mode==='play') toast('It’s raining', 'Townsfolk are sheltering indoors'); }
+  if (ATM.shelter && ATM.rain<.08) ATM.shelter=false;
+  if (ATM.snowTarget>0 && ATM.snow>.35 && !ATM.snowTip && mode==='play'){ ATM.snowTip=true; toast('It’s snowing', 'Everyone’s wrapped up warm'); }
+  if (ATM.snowTarget===0) ATM.snowTip=false;
   rainSound();
   if (reduceMotion) return;
   for (const c of CLOUDS){ c.x += c.s*dt; if (c.x > W*T+200) { c.x=-260; c.y=Math.random()*H*T; } }
@@ -57,6 +69,7 @@ function updateAtmos(dt){
   ATM.birds = ATM.birds.filter(b => b.x>-60 && b.x<VW+60);
   for (const d of ATM.drops){ if (d.splash>0){ d.splash-=dt; if (d.splash<=0) Object.assign(d, newDrop(false)); continue; }
     d.y+=d.v*dt; d.x-=d.v*.18*dt; if (d.y > d.land){ d.splash=.14; } if (!d.land) d.land = 20+Math.random()*(VH-20); }
+  for (const f of ATM.flakes){ f.p+=dt*1.3; f.y+=f.v*dt; f.x+=(Math.sin(f.p)*7 - 4)*dt; if (f.y>VH+4){ f.y=-4; f.x=Math.random()*(VW+20); } if (f.x<-4) f.x=VW+4; }
   for (const p of ATM.puffs){ p.t+=dt; p.y-=6*dt; }
   ATM.puffs = ATM.puffs.filter(p => p.t<.45);
 }
@@ -85,7 +98,7 @@ function drawSkyAtmos(cx,cy,dt){
     ctx.globalAlpha=1;
   }
   // falling leaves and petals (day and dusk, not in heavy rain)
-  if ((look===0||look===1||look===3) && ATM.rain<.4 && !reduceMotion){
+  if ((look===0||look===1||look===3) && ATM.rain<.4 && ATM.snow<.2 && !reduceMotion){
     for (const l of ATM.leaves){ ctx.fillStyle=l.col; const flip=Math.sin(l.p)>0; ctx.fillRect(Math.round(l.x), Math.round(l.y), flip?2:1, flip?1:2); }
   }
   // birds, with their shadows far below
@@ -99,6 +112,12 @@ function drawSkyAtmos(cx,cy,dt){
       const gr=ctx.createLinearGradient(0,0,0,VH); gr.addColorStop(0, look===1?'rgba(255,170,100,.09)':'rgba(255,190,210,.08)'); gr.addColorStop(1,'rgba(255,170,100,0)');
       ctx.fillStyle=gr; ctx.beginPath(); ctx.moveTo(x0,0); ctx.lineTo(x0+w,0); ctx.lineTo(x0+w-VH*.45,VH); ctx.lineTo(x0-VH*.45,VH); ctx.closePath(); ctx.fill(); }
     ctx.globalCompositeOperation='source-over';
+  }
+  // snow
+  if (ATM.snow>.02){
+    ctx.fillStyle=`rgba(200,215,240,${.08*ATM.snow})`; ctx.fillRect(0,0,VW,VH);
+    if (!reduceMotion){ const n=Math.floor(ATM.flakes.length*ATM.snow); ctx.fillStyle='rgba(248,250,255,.9)';
+      for (let i=0;i<n;i++){ const f=ATM.flakes[i]; ctx.fillRect(Math.round(f.x), Math.round(f.y), f.s, f.s); } }
   }
   // rain
   if (ATM.rain>.02){
@@ -118,4 +137,11 @@ function rainSound(){
       const lp=ac.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=5000; const g=ac.createGain(); g.gain.value=0; s.connect(f); f.connect(lp); lp.connect(g); g.connect(ac.destination); s.start();
       ATM.rainSnd={g}; } catch(e){ return; } }
   ATM.rainSnd.g.gain.setTargetAtTime(want, ac.currentTime, .4);
+}
+
+// a soft white frost over the ground while it snows (trees and houses stay drawn on top)
+function drawSnowGround(cx,cy){
+  if (ATM.snow<=.02 || (IN && !(SCN[IN] && SCN[IN].outdoor))) return;
+  ctx.fillStyle=`rgba(236,242,255,${.42*ATM.snow})`; ctx.fillRect(0,0,VW,VH);
+  if (!reduceMotion){ ctx.fillStyle=`rgba(255,255,255,${.5*ATM.snow})`; for (let i=0;i<60;i++){ const h=hash(i, Math.floor(cx/97), Math.floor(cy/97)); ctx.fillRect((h%VW), ((h>>>11)%VH), 1, 1); } }
 }

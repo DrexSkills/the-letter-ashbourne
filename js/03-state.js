@@ -95,7 +95,7 @@ const objects = [
   { id:'door', x:7, y:7, label:'Workshop door', act: () => actDoor() },
   { id:'watch', x:26, y:14, label:'Something glints', when: () => !F().watch, act: () => actWatch(), sparkle:true },
   { id:'well', x:46, y:32, label:'Look into the well', act: () => dialog([{s:'noah', t:'A coin glints at the bottom. Somebody made a wish here and meant it.'}]) },
-  { id:'cafeDoor', x:41, y:23, label:'Enter June’s café', act: () => enterScene('cafe') },
+  { id:'cafeDoor', x:41, y:23, label:'Enter June’s café (food & potions)', act: () => enterScene('cafe') },
   { id:'booksDoor', x:52, y:23, label:'Enter Hale’s Books', act: () => enterScene('books') },
   { id:'postDoor', x:59, y:26, label:'Enter the post office', act: () => enterScene('post') },
   { id:'forgeDoor', x:57, y:40, label:'Enter the forge', act: () => enterScene('forge') },

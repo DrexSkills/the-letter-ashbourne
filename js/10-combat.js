@@ -34,7 +34,12 @@ function tryMove(e, dx, dy){ if (!eBlocked(e, e.x+dx, e.y)) e.x+=dx; if (!eBlock
 function pickSpawnType(tx,ty){
   const look=LOOK(), r=Math.random();
   if (IN==='harlow') return r<.45?'crow':r<.75?'crawler':'wisp';
-  if (tx>=72 && ty>=74) return r<.5?'wolf':r<.8?'wisp':'crow';          // the Abbey ruins are the most dangerous place
+  // the new creatures live in their own places
+  const n=t_=>C.enemies.filter(e=>e.t===t_).length;
+  if (!IN && isForest(tx,ty)){ if (r<.16) return 'archer'; if (r<.32) return 'goblin'; if (r<.4 && !n('spirit')) return 'spirit'; if (r<.56) return 'stalker'; }
+  if (tx>=72 && ty>=74){ if (r<.18 && !n('golem')) return 'golem'; if (r<.42) return 'crystal'; if (r<.56) return 'stalker'; if (r<.68) return 'archer'; return r<.85?'wolf':'wisp'; }
+  if (!IN && ty>=OLD_H){ if (r<.18) return 'goblin'; if (r<.3) return 'archer'; }
+  if (!IN && r<.08) return 'goblin';          // the Abbey ruins are the most dangerous place
   if (ty>=OLD_H) return r<.35?'crawler':r<.6?'wisp':r<.8?'crow':'wolf';  // the southern lands
   if (isForest(tx,ty)) return look===2 ? (r<.45?'wolf':r<.8?'wisp':'crawler') : (r<.25?'wolf':r<.6?'wisp':'crawler');
   if (look===0 || look===4) return r<.85?'crawler':'wisp';
@@ -64,7 +69,7 @@ function burst(x,y,n,cols){ for (let i=0;i<n;i++){ const a=Math.random()*6.28, s
 function floatText(x,y,t,col){ C.texts.push({x,y,t,col:col||'#f2c27a',life:1}); }
 
 function attack(){
-  if (C.cd>0 || !canFight() || mode!=='play') return;
+  if (C.cd>0 || !canFight() || mode!=='play' || isBlocking()) return;
   wInit(); const w=curW(); C.cd=w.cd; C.swingDur = S0.weapon==='axe' ? .28 : S0.weapon==='sword' ? .16 : .18; C.swing=C.swingDur; C.swings++;
   const lan=!!F().lantern, v={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}[P.dir];
   const dmg=(w.dmg+(lan?1:0))*dmgMult();
@@ -81,7 +86,7 @@ function damageEnemy(e, dmg, v, light){
   e.hp-=dmg; e.hit=.15;
   C.hitstop = Math.max(C.hitstop, light ? .025 : e.def.boss ? .07 : .05);
   floatText(e.x + (Math.random()*6-3), e.y-e.def.r*2-(e.def.fly?14:6), '-'+Math.max(1,Math.round(dmg)), dmg>=3 ? '#ffcf6a' : '#ffffff');
-  C.impacts.push({ x:e.x, y:e.y-e.def.r-(e.def.fly?8:0), t:0, a:Math.random()*Math.PI }); const kb=e.def.boss?40:150; e.kbx=v[0]*kb; e.kby=v[1]*kb;
+  C.impacts.push({ x:e.x, y:e.y-e.def.r-(e.def.fly?8:0), t:0, a:Math.random()*Math.PI }); const kb=(e.def.boss||e.def.heavy)?30:150; onCreatureHit(e); e.kbx=v[0]*kb; e.kby=v[1]*kb;
   if (e.state==='wind'||e.state==='lunge'){ e.state='move'; e.cd=1.2; }
   beep(e.def.boss?110:150,.07,'square',.05);
   burst(e.x, e.y-e.def.r, 5, ['#ffcf6a','#e8763a']);
@@ -103,6 +108,7 @@ function addShards(n,x,y){
 }
 function hurtPlayer(raw, fromX, fromY){
   if (C.invul>0 || mode!=='play') return;
+  if (shieldBlocks(fromX, fromY)){ blockedFX((P.x+fromX)/2, (P.y+fromY)/2-8); C.invul=.35; const a=Math.atan2(P.y-fromY, P.x-fromX); C.pkx=Math.cos(a)*90; C.pky=Math.sin(a)*90; return; }
   hpInit(); C.noHit=false; C.hurtT=.28;
   const dmg=Math.max(1, Math.round(raw*DIFF().dmg));
   S0.hp=Math.max(0,S0.hp-dmg); C.invul=1.1; C.flash=.35; C.shake=.25;
@@ -115,6 +121,7 @@ function blackout(){
   mode='dialog'; const fd=$('#fade'); fd.classList.add('on');
   setTimeout(() => {
     for (const e of C.enemies.slice()) if (!e.wave || true) C.enemies.splice(C.enemies.indexOf(e),1);
+    C.eproj=[]; S0.hunger=Math.max(S0.hunger??100, 40);
     if (C.wave){ const w=C.wave; C.wave=null; $('#bossbar').classList.remove('on'); if (w==='ws') F().wsWave=0; if (w==='boss') F().bossStarted=0; if (w==='pf') F().pfStarted=0; if (w==='heart'){ F().heartStarted=0; F().safeOpen=0; } }
     if (IN && SCN[IN].ch4){ enterScene('harlow', {x:4, y:10, dir:'right'}, true); } else { if (IN){ IN=null; } P.x=C.lastSafe.x; P.y=C.lastSafe.y; } S0.hp=S0.maxhp; C.invul=2; refreshHearts();
     camX=P.x-VW/2; camY=P.y-VH/2;
@@ -163,6 +170,7 @@ function updateCombat(dt){
   // player knockback
   if (C.pkx||C.pky){ const nx=P.x+C.pkx*dt, ny=P.y+C.pky*dt; if (!blocked(nx,P.y)) P.x=nx; if (!blocked(P.x,ny)) P.y=ny; C.pkx*=.82; C.pky*=.82; if (Math.abs(C.pkx)+Math.abs(C.pky)<5) C.pkx=C.pky=0; }
   if (keys.atk) attack();
+  updateEnemyProjectiles(dt);
   for (const a of C.arrows.slice()){
     a.life-=dt; a.x+=a.vx*dt; a.y+=a.vy*dt; const tx=Math.floor(a.x/T), ty=Math.floor((a.y+8)/T);
     let gone = a.life<=0 || arrowBlocked(tx,ty);
@@ -183,6 +191,7 @@ function updateCombat(dt){
     const playerSafe = safeAt(ptx,pty) && !e.wave;
     e.face = dx<0?-1:1;
     e.cd-=dt;
+    if (d.ai && CREATURE_AI[d.ai] && CREATURE_AI[d.ai](e, dt, dx, dy, dist, playerSafe)) continue;
     if (d.boss){
       e.slamT-=dt; e.sumT-=dt;
       if (e.state==='slam'){ e.st-=dt; if (e.st<=0){ e.state='move'; C.shake=.3; beep(70,.3,'sawtooth',.06); burst(e.x,e.y-4,24,['#e8763a','#8a8494']); if (Math.hypot(P.x-e.x,P.y-e.y)<46) hurtPlayer(d.dmg, e.x, e.y); } }
@@ -225,6 +234,7 @@ function drawEnemy(e, x, y){
   const W_=e.hit>0, c = col => W_ ? '#fff4e0' : col, f=e.face;
   const R=(dx,dy,w,h,col)=>{ ctx.fillStyle=c(col); ctx.fillRect(f<0 ? x-dx-w : x+dx, y+dy, w, h); };
   const t=e.anim;
+  if (CREATURE_DRAW[e.t]){ CREATURE_DRAW[e.t](e,x,y,R,t); drawCreatureBar(e,x,y); return; }
   if (e.t==='crawler'){
     R(-7,-1,14,2,'rgba(20,15,40,.35)');
     const lg=Math.floor(t*12)%2;
@@ -311,7 +321,7 @@ function weaponPixels(id, len, a, px, py, put){
   }
 }
 function drawSwing(cx,cy){
-  drawArrows(cx,cy); drawSays(cx,cy);
+  drawEnemyProjectiles(cx,cy); drawArrows(cx,cy); drawShield(cx,cy); drawSays(cx,cy);
   if (!canFight()) return;
   const v={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}[P.dir], base={up:-Math.PI/2,down:Math.PI/2,left:Math.PI,right:0}[P.dir];
   const [ox,oy]=playerPoseOffset(), hx=Math.round(P.x-cx+ox+v[0]*3), hy=Math.round(P.y-cy+oy-11+(P.dir==='up'?-2:0));
@@ -341,6 +351,7 @@ function drawCombatFX(cx,cy){
     for (let i=0;i<4;i++){ const a=im.a+i*Math.PI/2; for (let d=r*.4; d<=r; d+=1) ctx.fillRect(Math.round(x+Math.cos(a)*d), Math.round(y+Math.sin(a)*d), 1, 1); }
     ctx.fillRect(x-1,y-1,3,3); }
   for (const e of C.enemies){ const x=e.x-cx, y=e.y-cy; if (x<-30||y<-50||x>VW+30||y>VH+30) continue;
+    if (creatureGlow(e,x,y)) continue;
     if (e.t==='wisp'){ const by=Math.sin(e.anim*4)*2-10; const g=ctx.createRadialGradient(x,y+by,0,x,y+by,16); g.addColorStop(0,'rgba(255,170,80,.55)'); g.addColorStop(1,'rgba(255,170,80,0)'); ctx.fillStyle=g; ctx.fillRect(x-16,y+by-16,32,32); }
     else if (e.t==='warden'||e.t==='heart'){ const g=ctx.createRadialGradient(x,y-26,0,x,y-26,30); g.addColorStop(0,'rgba(255,120,60,.45)'); g.addColorStop(1,'rgba(255,120,60,0)'); ctx.fillStyle=g; ctx.fillRect(x-30,y-56,60,60); }
     else { ctx.fillStyle='rgba(255,90,58,.6)'; ctx.fillRect(Math.round(x+(e.face>0?(e.t==='wolf'?8:6):-(e.t==='wolf'?10:7))), Math.round(y-(e.t==='wolf'?12:6)), 2, 1); } }
@@ -354,6 +365,7 @@ function drawCombatFX(cx,cy){
 // hearts HUD
 const heartc = () => $('#heartc');
 function refreshHearts(){
+  try { refreshHungerHUD(); } catch(e){}
   hpInit(); const cv=heartc(); if (!cv) return;
   const n=S0.maxhp/2; cv.width=n*9; cv.height=7; const g=cv.getContext('2d'); g.clearRect(0,0,cv.width,7);
   for (let i=0;i<n;i++){ const v=S0.hp-i*2; heartPix(g,i*9,0,'#3a2a36'); if (v>=2) heartPix(g,i*9,0,'#e84a4a'); else if (v===1){ g.save(); g.beginPath(); g.rect(i*9,0,4,7); g.clip(); heartPix(g,i*9,0,'#e84a4a'); g.restore(); } }
@@ -362,7 +374,8 @@ function refreshHearts(){
   try { wInit(); $('#lvlN').textContent=S0.lvl; $('#xpFill').style.width=Math.min(100,S0.xp/xpNeed(S0.lvl)*100)+'%';
     for (const id of ['#wpnIcon','#atkIcon']){ const g=$(id).getContext('2d'); g.clearRect(0,0,16,16); drawWeaponIcon(g, S0.weapon||'stick'); }
     document.body.classList.toggle('multiw', S0.weapons.length>1); } catch(e){}
-  $('#hpRow').style.display = canFight() ? '' : 'none';
+  $('#hpRow').style.display = '';   // hearts and hunger are always shown; weapon bits only once you can fight
+  document.body.classList.toggle('canfight', canFight());
 }
 
 // ================= levels & weapons =================
@@ -487,10 +500,11 @@ function talkGreta(){
     () => { F().greta1=1; },
   ];
   const left = ['sword','bow','axe'].filter(id => !S0.weapons.includes(id));
-  if (!left.length){ dialog([...intro, {s:'greta', t:'You’ve bought my whole stock. Look after that axe — I’ll want to hear stories.'}]); return; }
+  if (!left.length && S0.shield){ dialog([...intro, {s:'greta', t:'You’ve bought my whole stock. Look after that axe — I’ll want to hear stories.'}]); return; }
   dialog([...intro,
     {s:'greta', t:`What’ll it be? You’ve got ${S0.shards} ✦.`},
     {choice:[
+      ...(S0.shield ? [] : [{ t:'Oak shield — 12 ✦', then: () => buyShield() }]),
       ...left.map(id => ({ t:`${WEAPONS[id].name} — ${WEAPONS[id].price} ✦`, then: () => buyWeapon(id) })),
       {t:'Just looking.', then:[ {s:'greta', t:'Looking’s free. Hitting things costs extra.'} ]},
     ]},

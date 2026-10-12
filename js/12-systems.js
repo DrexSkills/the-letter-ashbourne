@@ -10,6 +10,7 @@ function sfxNoise(dur, type, freq, q, vol, when=0){
     const g=ac.createGain(); g.gain.setValueAtTime(vol,t); g.gain.exponentialRampToValueAtTime(.0001,t+dur); s.connect(f); f.connect(g); g.connect(Music.sfx()); s.start(t, Math.random()*.4); s.stop(t+dur+.02); } catch(e){}
 }
 function sfxStep(surf){
+  if (surf==='snow'){ sfxNoise(.09,'lowpass',1100,.8,.06); sfxNoise(.05,'highpass',2600,.6,.02,.02); return; }
   if (surf==='grass') sfxNoise(.07,'lowpass',850,.7,.045);
   else if (surf==='dirt') sfxNoise(.06,'bandpass',1300,1.2,.05);
   else if (surf==='wood'){ sfxNoise(.05,'bandpass',650,2,.05); beep(135+Math.random()*25,.05,'sine',.03); }
@@ -38,6 +39,7 @@ function sfxBell(){
 }
 function sfxClunk(){ beep(70,.25,'square',.06); beep(110,.15,'triangle',.05,.05); sfxNoise(.2,'lowpass',500,1,.08); }
 function surfaceHere(){
+  if (typeof ATM!=='undefined' && ATM.snow>.5 && outdoorsNow()) return 'snow';
   const tx=Math.floor(P.x/T), ty=Math.floor(P.y/T);
   if (IN){ const sc=SCN[IN]; if (sc.outdoor){ const g=sc.glyph[ty] && sc.glyph[ty][tx]; return g==='"' ? 'grass' : g==='+' ? 'wood' : 'stone'; }
     return sc.floor==='wood' ? 'wood' : sc.floor==='charred' ? 'dirt' : 'stone'; }
@@ -65,7 +67,7 @@ const ROUTINE = {
 const period = () => { const t=S0.tod ?? 10; return t>=7&&t<12 ? 'm' : t>=12&&t<17 ? 'a' : t>=17&&t<19 ? 'e' : 'n'; };   // everyone heads home at 7pm, before the Ashen appear at 7:30
 function worldSolid(px,py){ const tx=Math.floor(px/T), ty=Math.floor(py/T); return tx<0||ty<0||tx>=W||ty>=H||solid[ty*W+tx]; }
 function updateRoutines(dt){
-  const per=period(), ob=objective(), pin=ob.at && !ob.at.scene && ob.at.npc;
+  const per = (period()==='n' || ATM.shelter) ? 'n' : period(), ob=objective(), pin=ob.at && !ob.at.scene && ob.at.npc;   // rain sends everyone indoors too
   for (const n of npcs){
     const R=ROUTINE[n.id]; if (!R) continue;
     if (n.hx==null){ n.hx=n.x; n.hy=n.y; }
@@ -155,6 +157,7 @@ function renderScene(cx,cy,dt){
   const sc=SCN[IN], look=LOOK();
   ctx.fillStyle='#05060e'; ctx.fillRect(0,0,VW,VH);
   ctx.drawImage(sc.base,-cx,-cy);
+  if (sc.outdoor) drawSnowGround(cx,cy);
   const glass=['#bfe0f0','#e8a070','#1a2850','#e8b0c8'][look];
   for (const [x,y] of sc.windows){
     if (sc.outdoor){ ctx.fillStyle = (look===1||look===2) ? (((x*7+y)%3)?'#f6c56a':'#1a1e2e') : '#4a5a6e'; ctx.fillRect(x*T+5-cx,y*T+4-cy,6,6); }

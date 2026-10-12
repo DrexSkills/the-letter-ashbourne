@@ -728,11 +728,11 @@ function talkAgnes(){
       {s:'agnes', t:'Well, look at you — a visitor who walked all the way to the Old Mill! I’m Agnes Mott. My family has ground Ashbourne’s flour for two hundred years.'},
       {s:'agnes', t:'You’ll want to be careful out here after dark. The Ashen came the summer of the fire — rose up out of the burned fields. They’re worst at the old Abbey across the river.'},
       {s:'agnes', t:'Here — take a warm loaf. Come back any day and I’ll have another for you.'},
-      () => { f.agnes1=1; f.loafDay=S0.day; S0.hp=S0.maxhp; refreshHearts(); toast('Fresh bread', 'Fully healed'); },
+      () => { f.agnes1=1; f.loafDay=S0.day; S0.hp=S0.maxhp; S0.hunger=100; refreshHearts(); toast('Fresh bread', 'Fully healed and full'); },
       {s:'key', t:'Agnes the miller will heal you with fresh bread once a day. The Abbey ruins across the river are dangerous at night.'},
     ]); return;
   }
-  if (f.loafDay !== S0.day){ dialog([{s:'agnes', t:'Fresh out of the oven. Eat it while it’s warm, love.'}], () => { f.loafDay=S0.day; S0.hp=S0.maxhp; refreshHearts(); toast('Fresh bread', 'Fully healed'); chime(); }); return; }
+  if (f.loafDay !== S0.day){ dialog([{s:'agnes', t:'Fresh out of the oven. Eat it while it’s warm, love.'}], () => { f.loafDay=S0.day; S0.hp=S0.maxhp; S0.hunger=100; refreshHearts(); toast('Fresh bread', 'Fully healed and full'); chime(); }); return; }
   dialog([{s:'agnes', t: LOOK()===2 ? 'Stay by the lamps tonight. The Ashen don’t like the mill wheel’s noise, but they don’t mind much else.' : 'That’s today’s loaf eaten! Come back tomorrow, and I’ll have another.'}]);
 }
 function talkNed(){

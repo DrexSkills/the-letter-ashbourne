@@ -40,7 +40,7 @@ function step(now){
     if (P.moving){
       if (Math.abs(dx)>=Math.abs(dy)) P.dir = dx<0?'left':'right'; else P.dir = dy<0?'up':'down';
       const len=Math.hypot(dx,dy); dx/=len; dy/=len;
-      const sp = run ? 108 : 64;
+      const sp = (run ? 108 : 64) * (isBlocking() ? .5 : 1) * ((S0.hunger??100)<=0 ? .8 : 1);
       const nx=P.x+dx*sp*dt; if (!blocked(nx,P.y)) P.x=nx;
       const ny=P.y+dy*sp*dt; if (!blocked(P.x,ny)) P.y=ny;
       // forest needs light
@@ -54,7 +54,7 @@ function step(now){
     gateCool-=dt;
     // Silas encounter
     if (!IN && F().lantern && !F().silas && Math.hypot(P.x-(12*T+8), P.y-(13*T+10))<44){ const s=npcs.find(n=>n.id==='silas'); s.dir = P.x<s.x?'left':'right'; talkSilas(); }
-    tickClock(dt); updateCombat(dt); updatePet(dt); checkChapterCard(); try { updateRoutines(dt); } catch(e){} try { checkAchs(dt); } catch(e){} whistleT-=dt;
+    tickClock(dt); updateCombat(dt); updatePet(dt); checkChapterCard(); tickHunger(dt); try { updateRoutines(dt); } catch(e){} try { checkAchs(dt); } catch(e){} whistleT-=dt;
     updateZone(dt);
     const nt=nearest(); const pr=$('#prompt');
     if (nt){ pr.style.display='block'; pr.querySelector('span').textContent=nt.label; } else pr.style.display='none';
@@ -89,6 +89,7 @@ function render(cx,cy,dt){
   const phase=LOOK();
   ctx.fillStyle='#1d3320'; ctx.fillRect(0,0,VW,VH);
   ctx.drawImage(ground,-cx,-cy);
+  drawSnowGround(cx,cy);
 
   // water shimmer
   const t0=Math.max(0,Math.floor(cx/T)), t1=Math.min(W-1,Math.ceil((cx+VW)/T)), r0=Math.max(0,Math.floor(cy/T)), r1=Math.min(H-1,Math.ceil((cy+VH)/T));
@@ -412,3 +413,6 @@ window.__game = { ATM, bigQuestions: () => bigQuestions(), sceneNPCs: () => scen
 requestAnimationFrame(step);
 
 function tickClockFrozen(){ /* the clock is set by the opening scene itself */ }
+
+$('#potBtn').addEventListener('click', e => { e.stopPropagation(); if (mode==='play') usePotion(); $('#potBtn').blur(); });
+$('#foodBtn').addEventListener('click', e => { e.stopPropagation(); if (mode==='play') eatFood(); $('#foodBtn').blur(); });

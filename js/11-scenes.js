@@ -319,7 +319,7 @@ function enterScene(id, at, silent){
   if (!IN) { sceneReturn = { x:P.x, y:P.y }; }
   IN=id; C.enemies=C.enemies.filter(e=>e.wave && e.scene===id); C.arrows=[]; C.pickups=[];
   let sx, sy;
-  if (at){ sx=at.x; sy=at.y; } else { const dy=sc.map.findIndex(r=>r.includes('D')); const dx=sc.map[dy].indexOf('D'); sx=dx; sy=dy-1; }
+  if (at){ sx=at.x; sy=at.y; } else { const dy=sc.map.findIndex(r=>r.includes('D')); if (dy<0){ sx=4; sy=10; /* no door (Harlow Cross): start on the platform */ } else { sx=sc.map[dy].indexOf('D'); sy=dy-1; } }
   P.x = (at && at.px!=null) ? at.px : sx*T+8; P.y = (at && at.py!=null) ? at.py : sy*T+10; P.dir = at && at.dir || 'up';
   if (F().pet){ scout.x=P.x; scout.y=P.y+8; }
   camX=P.x-VW/2; camY=P.y-VH/2; curZone=sc.name;

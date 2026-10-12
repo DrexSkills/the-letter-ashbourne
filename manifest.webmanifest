@@ -2,7 +2,7 @@
   "name": "The Letter — Ashbourne",
   "short_name": "The Letter",
   "description": "A 2D pixel-art mystery adventure. Twenty years ago your father vanished. Three days ago, he wrote to you.",
-  "start_url": "./",
+  "start_url": "./play.html",
   "scope": "./",
   "display": "fullscreen",
   "display_override": [

@@ -8,7 +8,8 @@ const WWW = path.resolve('www');
 fs.rmSync(WWW, { recursive: true, force: true });
 fs.mkdirSync(WWW, { recursive: true });
 
-for (const item of ['index.html', 'css', 'js', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png', 'favicon-32.png']) {
+fs.copyFileSync(path.join(ROOT, 'play.html'), path.join(WWW, 'index.html'));   // the game page becomes the app's start page
+for (const item of ['css', 'js', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png', 'favicon-32.png']) {
   fs.cpSync(path.join(ROOT, item), path.join(WWW, item), { recursive: true });
 }
 

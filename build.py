@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """Bundle the game into ONE self-contained HTML file: dist/the-letter.html
 
-You don't need this to run the game — just open index.html (or the GitHub Pages site).
+You don't need this to run the game — just open play.html (or the GitHub Pages site).
 Use it when you want a single file to share, e.g. to send someone or play offline.
 
     python3 build.py
 """
 import re, os
 ROOT = os.path.dirname(os.path.abspath(__file__))
-html = open(os.path.join(ROOT, 'index.html'), encoding='utf-8').read()
+html = open(os.path.join(ROOT, 'play.html'), encoding='utf-8').read()
 css = open(os.path.join(ROOT, 'css', 'style.css'), encoding='utf-8').read()
 html = html.replace('<link rel="stylesheet" href="css/style.css">', '<style>\n' + css + '</style>')
 def inline(m):

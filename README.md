@@ -30,7 +30,7 @@ New players get a short guided tutorial, yellow **!** markers above whoever move
 
 ## Play
 
-Open `index.html` in any modern browser, or enable GitHub Pages for this repository and play it online.
+Open `play.html` in any modern browser (`index.html` is the game's landing page), or enable GitHub Pages for this repository and play it online.
 
 | Action | Keyboard | Mobile |
 | --- | --- | --- |
@@ -75,7 +75,9 @@ Since the fire, ash creatures called **the Ashen** crawl out of the fields — *
 ## Project structure
 
 ```
-index.html        the page: layout, menus and the order the scripts load in
+index.html        the landing page (story, screenshots, characters, a big Play button)
+play.html         the game page: layout, menus and the order the scripts load in
+site/             images and styles for the landing page
 css/style.css     all the styling
 js/               the game code, split by topic — files load in number order (14 files)
   01-core.js         constants, helpers, the Ashbourne world map, houses and trees

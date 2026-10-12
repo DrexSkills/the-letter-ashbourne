@@ -99,3 +99,14 @@ sw.js, manifest.webmanifest, icons   for "Add to Home Screen"
 **Editing tips:** dialogue lives in `js/07-story.js` (chapters 1–3) and `js/11-scenes.js` (chapter 4). Change the look of the game in `css/style.css`. Edit with a plain code editor like VS Code so quotes don't turn "curly".
 
 To run it locally, serve the folder (for example `python3 -m http.server`) and open http://localhost:8000. To make a single shareable file, run `python3 build.py`.
+
+## Android app (Google Play)
+
+Every time the game changes, GitHub automatically builds a signed Android app and posts it on the [Releases page](https://github.com/DrexSkills/the-letter-ashbourne/releases):
+
+- `the-letter-<n>.aab` — upload this to **Google Play Console**
+- `the-letter-<n>.apk` — install directly on an Android phone to test
+
+How it works: `app/` wraps the game with [Capacitor](https://capacitorjs.com) (offline fonts, landscape, full screen); `.github/workflows/android.yml` builds and signs it. The signing key lives in the repo's **Actions secrets** — keep your own backup copy of `the-letter-upload.jks` and its password somewhere safe.
+
+Store listing text, screenshots and the feature graphic are in `store/`. Privacy policy: https://drexskills.github.io/the-letter-ashbourne/privacy.html

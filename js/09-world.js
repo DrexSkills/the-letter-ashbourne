@@ -78,7 +78,9 @@ const flies=Array.from({length:70},()=>({x:(2+rng()*33)*T, y:(1+rng()*25)*T, p:r
 const rflies=Array.from({length:25},()=>({x:(60+rng()*20)*T, y:rng()*H*T, p:rng()*6.28, s:.5+rng()}));
 
 // ================= mobile: full screen, rotate, install =================
-const isStandalone = () => matchMedia('(display-mode: fullscreen)').matches || matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+// inside the Android/iPhone app (Capacitor) the game already runs full screen like an installed app
+const IS_APP = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+const isStandalone = () => IS_APP || matchMedia('(display-mode: fullscreen)').matches || matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
 const fsEl = () => document.fullscreenElement || document.webkitFullscreenElement;
 const canFS = !!(document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen) && !isStandalone();
 if (IS_TOUCH_DEVICE) document.body.classList.add('touch');
